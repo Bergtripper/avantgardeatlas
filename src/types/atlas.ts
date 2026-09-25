@@ -157,8 +157,8 @@ export interface CulturalCity {
   id: string;
   name: string;
   country: string;
-  xPercent: number; // For abstract European coordinate system (0-100)
-  yPercent: number; // 0-100
+  latitude: number;
+  longitude: number;
   activeEras: { start: number; end: number };
   activeMovements: MovementId[];
   historicalNotes: string;
