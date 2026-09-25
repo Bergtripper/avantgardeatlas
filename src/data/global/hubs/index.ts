@@ -1,5 +1,7 @@
+import { barcelonaHub } from './barcelona';
 import { buenosAiresHub } from './buenos-aires';
 import { chicagoHub } from './chicago';
+import { leidenHub } from './leiden';
 import { mexicoCityHub } from './mexico-city';
 import { montevideoHub } from './montevideo';
 import { newYorkHub } from './new-york';
@@ -8,8 +10,10 @@ import { telAvivHub } from './tel-aviv';
 import { tokyoHub } from './tokyo';
 
 export {
+  barcelonaHub,
   buenosAiresHub,
   chicagoHub,
+  leidenHub,
   mexicoCityHub,
   montevideoHub,
   newYorkHub,
@@ -19,6 +23,8 @@ export {
 };
 
 export const ALL_GLOBAL_HUBS = [
+  barcelonaHub,
+  leidenHub,
   tokyoHub,
   chicagoHub,
   montevideoHub,
