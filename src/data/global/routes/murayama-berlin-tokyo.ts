@@ -7,8 +7,9 @@ export const murayamaBerlinTokyoRoute: DiffusionRoute = {
   destination: { scope: 'global', id: 'tokyo' },
   startYear: 1923,
   personRefs: [{ scope: 'global', id: 'tomoyoshi-murayama' }],
-  mechanisms: ['travel', 'return', 'reinterpretation'],
+  mechanisms: ['travel', 'return', 'print', 'reinterpretation'],
   sourceMovementIds: ['dada', 'constructivism'],
+  transmissionEntityIds: ['mavo'],
   destinationEntityIds: ['mavo'],
   media: ['publishing', 'typography', 'collage', 'performance'],
   summary:
