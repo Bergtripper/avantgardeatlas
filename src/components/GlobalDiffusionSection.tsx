@@ -609,12 +609,14 @@ export const GlobalDiffusionSection: React.FC = () => {
                     ))}
                   </dd>
                 </div>
-                <div>
-                  <dt className="font-mono uppercase tracking-wider text-[var(--atlas-text-muted)]">Local expression</dt>
-                  <dd className="mt-1 text-[var(--atlas-text)]">
-                    {selectedEntities.map((entity) => entity?.name).join(', ')}
-                  </dd>
-                </div>
+                {selectedEntities.length > 0 && (
+                  <div>
+                    <dt className="font-mono uppercase tracking-wider text-[var(--atlas-text-muted)]">Local expression</dt>
+                    <dd className="mt-1 text-[var(--atlas-text)]">
+                      {selectedEntities.map((entity) => entity?.name).join(', ')}
+                    </dd>
+                  </div>
+                )}
                 <div>
                   <dt className="font-mono uppercase tracking-wider text-[var(--atlas-text-muted)]">Media</dt>
                   <dd className="mt-1 text-[var(--atlas-text-secondary)]">
