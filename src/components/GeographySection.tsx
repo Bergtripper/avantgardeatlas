@@ -1,7 +1,8 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import { MovementId } from '../types/atlas';
 import { ALL_PLACES } from '../data/places';
 import {
+  EUROPE_LANDMASSES,
   EUROPE_MAP,
   GEOGRAPHY_CONNECTIONS,
   LATITUDE_TICKS,
@@ -9,6 +10,7 @@ import {
   projectLatitude,
   projectLongitude,
   projectPlace,
+  toSvgPolygonPoints,
 } from '../data/geography';
 
 interface GeographySectionProps {
@@ -17,6 +19,23 @@ interface GeographySectionProps {
   onSelectYear: (year: number) => void;
 }
 
+interface MapViewBox {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+
+const INITIAL_VIEWBOX: MapViewBox = {
+  x: 0,
+  y: 0,
+  width: EUROPE_MAP.width,
+  height: EUROPE_MAP.height,
+};
+
+const MIN_VIEWBOX_WIDTH = 220;
+const MAX_VIEWBOX_WIDTH = EUROPE_MAP.width;
+
 export const GeographySection: React.FC<GeographySectionProps> = ({
   onSelectMovement,
   selectedYear,
@@ -24,6 +43,16 @@ export const GeographySection: React.FC<GeographySectionProps> = ({
 }) => {
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [activeCityId, setActiveCityId] = useState<string>('dessau');
+  const [hoveredCityId, setHoveredCityId] = useState<string | null>(null);
+  const [viewBox, setViewBox] = useState<MapViewBox>(INITIAL_VIEWBOX);
+  const [isPanning, setIsPanning] = useState(false);
+
+  const svgRef = useRef<SVGSVGElement | null>(null);
+  const panStartRef = useRef<{
+    clientX: number;
+    clientY: number;
+    viewBox: MapViewBox;
+  } | null>(null);
 
   const activeCities = ALL_PLACES.filter(
     (city) => selectedYear >= city.activeEras.start && selectedYear <= city.activeEras.end,
@@ -53,6 +82,94 @@ export const GeographySection: React.FC<GeographySectionProps> = ({
   const selectCity = (cityId: string) => {
     setActiveCityId(cityId);
   };
+
+  const clampViewBox = (next: MapViewBox): MapViewBox => {
+    const width = Math.min(MAX_VIEWBOX_WIDTH, Math.max(MIN_VIEWBOX_WIDTH, next.width));
+    const height = width * (EUROPE_MAP.height / EUROPE_MAP.width);
+    const x = Math.min(EUROPE_MAP.width - width, Math.max(0, next.x));
+    const y = Math.min(EUROPE_MAP.height - height, Math.max(0, next.y));
+
+    return { x, y, width, height };
+  };
+
+  const zoomAround = (scale: number, anchorX: number, anchorY: number) => {
+    setViewBox((current) => {
+      const nextWidth = current.width * scale;
+      const widthRatio = nextWidth / current.width;
+      const nextHeight = current.height * widthRatio;
+
+      return clampViewBox({
+        x: anchorX - (anchorX - current.x) * widthRatio,
+        y: anchorY - (anchorY - current.y) * widthRatio,
+        width: nextWidth,
+        height: nextHeight,
+      });
+    });
+  };
+
+  const zoomFromCenter = (scale: number) => {
+    const centerX = viewBox.x + viewBox.width / 2;
+    const centerY = viewBox.y + viewBox.height / 2;
+    zoomAround(scale, centerX, centerY);
+  };
+
+  const handleWheel = (event: React.WheelEvent<SVGSVGElement>) => {
+    event.preventDefault();
+
+    const svg = svgRef.current;
+    if (!svg) return;
+
+    const rect = svg.getBoundingClientRect();
+    const anchorX = viewBox.x + ((event.clientX - rect.left) / rect.width) * viewBox.width;
+    const anchorY = viewBox.y + ((event.clientY - rect.top) / rect.height) * viewBox.height;
+    const scale = event.deltaY < 0 ? 0.86 : 1.16;
+
+    zoomAround(scale, anchorX, anchorY);
+  };
+
+  const handlePointerDown = (event: React.PointerEvent<SVGSVGElement>) => {
+    if ((event.target as Element).closest('[data-city-node="true"]')) return;
+
+    event.currentTarget.setPointerCapture(event.pointerId);
+    panStartRef.current = {
+      clientX: event.clientX,
+      clientY: event.clientY,
+      viewBox,
+    };
+    setIsPanning(true);
+  };
+
+  const handlePointerMove = (event: React.PointerEvent<SVGSVGElement>) => {
+    const start = panStartRef.current;
+    const svg = svgRef.current;
+    if (!start || !svg) return;
+
+    const rect = svg.getBoundingClientRect();
+    const dx = ((event.clientX - start.clientX) / rect.width) * start.viewBox.width;
+    const dy = ((event.clientY - start.clientY) / rect.height) * start.viewBox.height;
+
+    setViewBox(
+      clampViewBox({
+        ...start.viewBox,
+        x: start.viewBox.x - dx,
+        y: start.viewBox.y - dy,
+      }),
+    );
+  };
+
+  const stopPanning = (event: React.PointerEvent<SVGSVGElement>) => {
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId);
+    }
+    panStartRef.current = null;
+    setIsPanning(false);
+  };
+
+  const resetView = () => {
+    setViewBox(INITIAL_VIEWBOX);
+  };
+
+  const zoomLevel = Math.round((EUROPE_MAP.width / viewBox.width) * 100);
 
   return (
     <section
@@ -119,17 +236,56 @@ export const GeographySection: React.FC<GeographySectionProps> = ({
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           <div className="lg:col-span-8 border border-[#E5E4DF] bg-[#FAF9F5] p-4 relative overflow-hidden select-none">
+            <div className="absolute top-6 right-6 z-10 flex items-center border border-[#D8D7D0] bg-[#FBFBFA]/95 shadow-sm">
+              <button
+                type="button"
+                onClick={() => zoomFromCenter(0.8)}
+                className="w-9 h-9 border-r border-[#D8D7D0] font-mono text-lg hover:bg-[#121212] hover:text-white"
+                aria-label="Zoom in"
+              >
+                +
+              </button>
+              <button
+                type="button"
+                onClick={() => zoomFromCenter(1.25)}
+                className="w-9 h-9 border-r border-[#D8D7D0] font-mono text-lg hover:bg-[#121212] hover:text-white"
+                aria-label="Zoom out"
+              >
+                −
+              </button>
+              <button
+                type="button"
+                onClick={resetView}
+                className="h-9 px-3 font-mono text-[10px] uppercase hover:bg-[#121212] hover:text-white"
+                aria-label="Reset map view"
+              >
+                Reset
+              </button>
+            </div>
+
+            <div className="absolute top-16 right-6 z-10 bg-[#FBFBFA]/90 px-2 py-1 font-mono text-[9px] text-[#737373]">
+              ZOOM {zoomLevel}%
+            </div>
+
             <svg
-              viewBox={`0 0 ${EUROPE_MAP.width} ${EUROPE_MAP.height}`}
-              className="w-full h-auto bg-[#FAF9F5]"
+              ref={svgRef}
+              viewBox={`${viewBox.x} ${viewBox.y} ${viewBox.width} ${viewBox.height}`}
+              className={`w-full h-auto bg-[#FAF9F5] touch-none ${
+                isPanning ? 'cursor-grabbing' : 'cursor-grab'
+              }`}
               xmlns="http://www.w3.org/2000/svg"
               role="img"
               aria-labelledby="geography-map-title geography-map-description"
+              onWheel={handleWheel}
+              onPointerDown={handlePointerDown}
+              onPointerMove={handlePointerMove}
+              onPointerUp={stopPanning}
+              onPointerCancel={stopPanning}
             >
               <title id="geography-map-title">European avant-garde cultural hubs</title>
               <desc id="geography-map-description">
                 Geographic projection of European cultural centers between 1900 and 1940.
-                City positions are based on latitude and longitude.
+                Scroll to zoom and drag to pan. City positions are based on latitude and longitude.
               </desc>
 
               <rect
@@ -140,7 +296,20 @@ export const GeographySection: React.FC<GeographySectionProps> = ({
                 fill="#FAF9F5"
               />
 
-              <g stroke="#E5E4DF" strokeWidth="0.75" strokeDasharray="3 3">
+              <g aria-label="European geographic basemap">
+                {EUROPE_LANDMASSES.map((landmass) => (
+                  <polygon
+                    key={landmass.id}
+                    points={toSvgPolygonPoints(landmass.points)}
+                    fill="#EFEEE7"
+                    stroke="#D4D3CB"
+                    strokeWidth="1.2"
+                    vectorEffect="non-scaling-stroke"
+                  />
+                ))}
+              </g>
+
+              <g stroke="#E1E0D9" strokeWidth="0.75" strokeDasharray="3 3">
                 {LONGITUDE_TICKS.map((longitude) => {
                   const x = projectLongitude(longitude);
                   return (
@@ -150,6 +319,7 @@ export const GeographySection: React.FC<GeographySectionProps> = ({
                       y1={EUROPE_MAP.paddingY}
                       x2={x}
                       y2={EUROPE_MAP.height - EUROPE_MAP.paddingY}
+                      vectorEffect="non-scaling-stroke"
                     />
                   );
                 })}
@@ -162,6 +332,7 @@ export const GeographySection: React.FC<GeographySectionProps> = ({
                       y1={y}
                       x2={EUROPE_MAP.width - EUROPE_MAP.paddingX}
                       y2={y}
+                      vectorEffect="non-scaling-stroke"
                     />
                   );
                 })}
@@ -215,10 +386,11 @@ export const GeographySection: React.FC<GeographySectionProps> = ({
                       y1={sourcePoint.y}
                       x2={targetPoint.x}
                       y2={targetPoint.y}
-                      stroke={isActive ? '#B8B6AC' : '#E5E4DF'}
+                      stroke={isActive ? '#AAA89E' : '#DAD9D1'}
                       strokeWidth={isActive ? 1.25 : 0.75}
                       strokeDasharray="3 4"
-                      opacity={isActive ? 0.9 : 0.55}
+                      opacity={isActive ? 0.9 : 0.5}
+                      vectorEffect="non-scaling-stroke"
                     >
                       <title>{connection.label}</title>
                     </line>
@@ -230,14 +402,24 @@ export const GeographySection: React.FC<GeographySectionProps> = ({
                 const isActive =
                   selectedYear >= city.activeEras.start && selectedYear <= city.activeEras.end;
                 const isSelected = activeCityId === city.id;
+                const isHovered = hoveredCityId === city.id;
                 const point = projectPlace(city);
 
                 return (
                   <g
                     key={city.id}
+                    data-city-node="true"
                     transform={`translate(${point.x}, ${point.y})`}
                     className="cursor-pointer group outline-none"
                     onClick={() => selectCity(city.id)}
+                    onPointerEnter={() => {
+                      if (isActive) setHoveredCityId(city.id);
+                    }}
+                    onPointerLeave={() => setHoveredCityId(null)}
+                    onFocus={() => {
+                      if (isActive) setHoveredCityId(city.id);
+                    }}
+                    onBlur={() => setHoveredCityId(null)}
                     onKeyDown={(event) => {
                       if (event.key === 'Enter' || event.key === ' ') {
                         event.preventDefault();
@@ -260,23 +442,51 @@ export const GeographySection: React.FC<GeographySectionProps> = ({
                         strokeWidth="1"
                         strokeDasharray={isSelected ? '2 2' : undefined}
                         opacity="0.6"
+                        vectorEffect="non-scaling-stroke"
                       />
+                    )}
+
+                    {isActive && isHovered && (
+                      <circle
+                        cx="0"
+                        cy="0"
+                        r="7"
+                        fill="none"
+                        stroke="#D82B2B"
+                        strokeWidth="1.5"
+                        opacity="0.75"
+                        vectorEffect="non-scaling-stroke"
+                        pointerEvents="none"
+                      >
+                        <animate
+                          attributeName="r"
+                          values="7;18;7"
+                          dur="0.9s"
+                          repeatCount="indefinite"
+                        />
+                        <animate
+                          attributeName="opacity"
+                          values="0.8;0.05;0.8"
+                          dur="0.9s"
+                          repeatCount="indefinite"
+                        />
+                      </circle>
                     )}
 
                     <circle
                       cx="0"
                       cy="0"
-                      r={isSelected ? 5 : 3.5}
-                      fill={isSelected ? '#D82B2B' : isActive ? '#121212' : '#A8A79E'}
+                      r={isSelected || isHovered ? 5 : 3.5}
+                      fill={isSelected || isHovered ? '#D82B2B' : isActive ? '#121212' : '#A8A79E'}
                     />
 
                     <text
                       x="8"
                       y="4"
                       fontFamily="IBM Plex Sans"
-                      fontSize={isSelected ? '12' : '10'}
-                      fontWeight={isSelected ? '700' : '600'}
-                      fill={isSelected ? '#D82B2B' : isActive ? '#121212' : '#8C8C88'}
+                      fontSize={isSelected || isHovered ? '12' : '10'}
+                      fontWeight={isSelected || isHovered ? '700' : '600'}
+                      fill={isSelected || isHovered ? '#D82B2B' : isActive ? '#121212' : '#8C8C88'}
                       letterSpacing="0.02em"
                     >
                       {city.name}
@@ -287,7 +497,7 @@ export const GeographySection: React.FC<GeographySectionProps> = ({
             </svg>
 
             <div className="mt-3 flex flex-wrap justify-between gap-2 text-[10px] font-mono uppercase tracking-wide text-[#8C8C88]">
-              <span>Projection // lon −5° to 42° · lat 43° to 58°</span>
+              <span>Scroll // Zoom · Drag // Pan · Hover // Pulse</span>
               <span>Coordinates // geographic, not illustrative</span>
             </div>
           </div>
