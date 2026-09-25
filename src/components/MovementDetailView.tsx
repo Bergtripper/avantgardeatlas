@@ -304,7 +304,16 @@ export const MovementDetailView: React.FC<MovementDetailViewProps> = ({
                   {influencesFrom.map((m) => (
                     <div
                       key={m.id}
+                      role="button"
+                      tabIndex={0}
+                      aria-label={`Open ${m.name} monograph`}
                       onClick={() => onSelectMovement(m.id)}
+                      onKeyDown={(event) => {
+                        if (event.key === 'Enter' || event.key === ' ') {
+                          event.preventDefault();
+                          onSelectMovement(m.id);
+                        }
+                      }}
                       className="p-3 bg-[var(--atlas-card)] border border-[var(--atlas-border-control)] hover:border-[var(--atlas-text)] cursor-pointer transition-colors"
                     >
                       <div className="font-semibold text-sm text-[var(--atlas-text)]">
@@ -333,7 +342,16 @@ export const MovementDetailView: React.FC<MovementDetailViewProps> = ({
                   {influencesTo.map((m) => (
                     <div
                       key={m.id}
+                      role="button"
+                      tabIndex={0}
+                      aria-label={`Open ${m.name} monograph`}
                       onClick={() => onSelectMovement(m.id)}
+                      onKeyDown={(event) => {
+                        if (event.key === 'Enter' || event.key === ' ') {
+                          event.preventDefault();
+                          onSelectMovement(m.id);
+                        }
+                      }}
                       className="p-3 bg-[var(--atlas-card)] border border-[var(--atlas-border-control)] hover:border-[var(--atlas-text)] cursor-pointer transition-colors"
                     >
                       <div className="font-semibold text-sm text-[var(--atlas-text)]">
