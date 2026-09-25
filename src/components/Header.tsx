@@ -7,13 +7,21 @@ interface HeaderProps {
   onSelectTab: (tab: NavTab) => void;
   selectedYear: number;
   onSelectYear: (year: number) => void;
+  theme: 'light' | 'dark';
+  onToggleTheme: () => void;
+  gridEnabled: boolean;
+  onToggleGrid: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
   currentTab,
   onSelectTab,
   selectedYear,
-  onSelectYear
+  onSelectYear,
+  theme,
+  onToggleTheme,
+  gridEnabled,
+  onToggleGrid
 }) => {
   return (
     <header className="sticky top-0 z-40 w-full bg-[#FBFBFA]/95 backdrop-blur-xs border-b border-[#E5E4DF] transition-colors">
@@ -116,7 +124,27 @@ export const Header: React.FC<HeaderProps> = ({
         </nav>
 
         {/* Zone 3: 1-2 primary actions (Year display / quick jumper) */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={onToggleTheme}
+            className="atlas-control px-2.5 py-1.5 border border-[#E5E4DF] bg-[#F7F6F2] font-mono text-[10px] uppercase tracking-wider hover:border-[#121212]"
+            aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} theme`}
+            aria-pressed={theme === 'dark'}
+            title="Toggle light / dark theme"
+          >
+            {theme === 'light' ? 'Light' : 'Dark'}
+          </button>
+          <button
+            type="button"
+            onClick={onToggleGrid}
+            className="atlas-control px-2.5 py-1.5 border border-[#E5E4DF] bg-[#F7F6F2] font-mono text-[10px] uppercase tracking-wider hover:border-[#121212]"
+            aria-label={`${gridEnabled ? 'Disable' : 'Enable'} architectural grid`}
+            aria-pressed={gridEnabled}
+            title="Toggle architectural grid"
+          >
+            Grid {gridEnabled ? 'On' : 'Off'}
+          </button>
           <div className="flex items-center gap-2 border border-[#E5E4DF] bg-[#F7F6F2] px-3 py-1.5 rounded-none text-xs">
             <span className="font-mono text-[#737373] text-[10px] tracking-wider uppercase">Active Year</span>
             <input
