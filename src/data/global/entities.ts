@@ -1,4 +1,5 @@
 import { GlobalEntity } from './types';
+import { ALL_GLOBAL_EXHIBITIONS } from './exhibitions';
 import { ALL_GLOBAL_EXPRESSIONS } from './expressions';
 import { ALL_GLOBAL_INSTITUTIONS } from './institutions';
 import { ALL_GLOBAL_PUBLICATIONS } from './publications';
@@ -6,6 +7,7 @@ import { ALL_GLOBAL_PUBLICATIONS } from './publications';
 export const ALL_GLOBAL_ENTITIES: GlobalEntity[] = [
   ...ALL_GLOBAL_PUBLICATIONS,
   ...ALL_GLOBAL_INSTITUTIONS,
+  ...ALL_GLOBAL_EXHIBITIONS,
   ...ALL_GLOBAL_EXPRESSIONS,
 ];
 
