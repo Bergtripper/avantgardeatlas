@@ -242,3 +242,45 @@
   --network-border: #45443E;
   --network-node-stroke: #151512;
 }
+
+
+/* Accessibility primitives */
+.atlas-skip-link {
+  position: fixed;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: 100;
+  transform: translateY(-160%);
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--atlas-text);
+  background: var(--atlas-bg);
+  color: var(--atlas-text);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.atlas-skip-link:focus {
+  transform: translateY(0);
+}
+
+.atlas-shell :where(button, input, [role='button'], [tabindex]):focus-visible {
+  outline: 2px solid var(--atlas-text);
+  outline-offset: 3px;
+}
+
+.atlas-shell [aria-current='page'] {
+  text-decoration-thickness: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .atlas-shell *,
+  .atlas-shell *::before,
+  .atlas-shell *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

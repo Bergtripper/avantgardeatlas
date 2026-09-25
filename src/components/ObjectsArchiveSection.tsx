@@ -113,7 +113,16 @@ export const ObjectsArchiveSection: React.FC<ObjectsArchiveSectionProps> = ({
           {filteredObjects.map((obj) => (
             <div
               key={obj.id}
+              role="button"
+              tabIndex={0}
+              aria-label={`Inspect ${obj.title}, ${obj.year}`}
               onClick={() => setSelectedObject(obj)}
+              onKeyDown={(event) => {
+                if (event.key === 'Enter' || event.key === ' ') {
+                  event.preventDefault();
+                  setSelectedObject(obj);
+                }
+              }}
               className="border border-[var(--atlas-border)] bg-[var(--atlas-surface)] p-5 flex flex-col justify-between cursor-pointer group hover:border-[var(--atlas-text)] transition-all hover:shadow-xs"
             >
               <div>

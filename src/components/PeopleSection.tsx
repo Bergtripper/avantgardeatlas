@@ -128,6 +128,8 @@ export const PeopleSection: React.FC<PeopleSectionProps> = ({ onSelectMovement }
                 <div className="mt-6 pt-3 border-t border-[var(--atlas-border)] flex items-center justify-between text-xs font-mono">
                   <button
                     onClick={() => setActiveFigureId(isExpanded ? null : fig.id)}
+                    aria-expanded={isExpanded}
+                    aria-controls={`person-details-${fig.id}`}
                     className="underline text-[var(--atlas-text-muted)] hover:text-[var(--atlas-text)] cursor-pointer"
                   >
                     {isExpanded ? 'Less ↑' : `More details (${fig.interventions.length}) ↓`}

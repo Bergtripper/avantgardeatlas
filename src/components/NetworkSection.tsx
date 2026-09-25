@@ -146,7 +146,20 @@ export const NetworkSection: React.FC<NetworkSectionProps> = ({ onSelectMovement
                 const pathD = `M ${source.x} ${source.y} C ${cx1} ${cy1}, ${cx2} ${cy2}, ${target.x} ${target.y}`;
 
                 return (
-                  <g key={`conn-${idx}`} className="cursor-pointer" onClick={() => setSelectedConnectionIndex(idx)}>
+                  <g
+                    key={`conn-${idx}`}
+                    className="cursor-pointer"
+                    role="button"
+                    tabIndex={0}
+                    aria-label={`Inspect connection from ${source.name} to ${target.name}`}
+                    onClick={() => setSelectedConnectionIndex(idx)}
+                    onKeyDown={(event) => {
+                      if (event.key === 'Enter' || event.key === ' ') {
+                        event.preventDefault();
+                        setSelectedConnectionIndex(idx);
+                      }
+                    }}
+                  >
                     {/* Hover Hitbox */}
                     <path
                       d={pathD}
@@ -201,11 +214,24 @@ export const NetworkSection: React.FC<NetworkSectionProps> = ({ onSelectMovement
                     transform={`translate(${node.x}, ${node.y})`}
                     className="cursor-pointer group transition-opacity duration-200"
                     opacity={opacity}
+                    role="button"
+                    tabIndex={0}
+                    aria-label={`${node.name}, ${node.startYear} to ${node.endYear}. Press Enter to focus; double-click to open.`}
+                    aria-pressed={isSelected}
                     onClick={() => {
                       setActiveNodeId(node.id);
                       setSelectedConnectionIndex(null);
                     }}
                     onDoubleClick={() => onSelectMovement(node.id)}
+                    onKeyDown={(event) => {
+                      if (event.key === 'Enter') {
+                        setActiveNodeId(node.id);
+                        setSelectedConnectionIndex(null);
+                      } else if (event.key === ' ') {
+                        event.preventDefault();
+                        onSelectMovement(node.id);
+                      }
+                    }}
                   >
                     {/* Center anchor pin */}
                     <circle

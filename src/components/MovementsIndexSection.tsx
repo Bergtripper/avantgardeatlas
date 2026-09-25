@@ -51,7 +51,16 @@ export const MovementsIndexSection: React.FC<MovementsIndexSectionProps> = ({
           {filteredMovements.map((movement, idx) => (
             <div
               key={movement.id}
+              role="button"
+              tabIndex={0}
+              aria-label={`Open ${movement.name} monograph`}
               onClick={() => onSelectMovement(movement.id)}
+              onKeyDown={(event) => {
+                if (event.key === 'Enter' || event.key === ' ') {
+                  event.preventDefault();
+                  onSelectMovement(movement.id);
+                }
+              }}
               className="border border-[var(--atlas-border)] bg-[var(--atlas-surface)] p-6 flex flex-col justify-between cursor-pointer group hover:border-[var(--atlas-text)] transition-colors"
             >
               <div>

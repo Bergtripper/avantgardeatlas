@@ -125,6 +125,8 @@ export default function App() {
       data-theme={theme}
       data-grid={gridEnabled ? 'on' : 'off'}
     >
+      <a href="#main-content" className="atlas-skip-link">Skip to main content</a>
+
       {/* Swiss Modernist Header */}
       <Header
         currentTab={currentTab}
@@ -138,7 +140,7 @@ export default function App() {
       />
 
       {/* Main Content Area */}
-      <main className="flex-1 w-full">
+      <main id="main-content" className="flex-1 w-full" tabIndex={-1}>
         {selectedMovement ? (
           /* Dedicated Immersive Movement Page (e.g. Bauhaus, De Stijl, Constructivism, etc.) */
           <MovementDetailView

@@ -165,10 +165,21 @@ export const TimelineSection: React.FC<TimelineSectionProps> = ({
                 return (
                   <div
                     key={movement.id}
+                    role="button"
+                    tabIndex={0}
+                    aria-label={`Open ${movement.name}, ${movement.period}`}
                     className="relative h-10 flex items-center group cursor-pointer transition-opacity"
                     onMouseEnter={() => setHoveredMovementId(movement.id)}
                     onMouseLeave={() => setHoveredMovementId(null)}
+                    onFocus={() => setHoveredMovementId(movement.id)}
+                    onBlur={() => setHoveredMovementId(null)}
                     onClick={() => onSelectMovement(movement.id)}
+                    onKeyDown={(event) => {
+                      if (event.key === 'Enter' || event.key === ' ') {
+                        event.preventDefault();
+                        onSelectMovement(movement.id);
+                      }
+                    }}
                   >
                     {/* Duration Range Bar */}
                     <div
