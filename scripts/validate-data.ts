@@ -7,8 +7,20 @@ import {
   ALL_STORIES,
   getMovementById,
   getObjectById,
-  getPersonById
+  getPersonById,
+  getPlaceById
 } from '../src/data/index';
+import {
+  ALL_DIFFUSION_ROUTES,
+  ALL_GLOBAL_ENTITIES,
+  ALL_GLOBAL_HUBS,
+  ALL_GLOBAL_PEOPLE,
+  ALL_GLOBAL_SOURCES,
+  getGlobalEntityById,
+  getGlobalHubById,
+  getGlobalPersonById,
+  getGlobalSourceById
+} from '../src/data/global';
 
 const errors: string[] = [];
 const warnings: string[] = [];
@@ -31,6 +43,11 @@ checkUnique('Person', ALL_PEOPLE.map((p) => p.id));
 checkUnique('Object', ALL_OBJECTS.map((o) => o.id));
 checkUnique('Place', ALL_PLACES.map((p) => p.id));
 checkUnique('Story', ALL_STORIES.map((s) => s.id));
+checkUnique('Global hub', ALL_GLOBAL_HUBS.map((hub) => hub.id));
+checkUnique('Global person', ALL_GLOBAL_PEOPLE.map((person) => person.id));
+checkUnique('Global entity', ALL_GLOBAL_ENTITIES.map((entity) => entity.id));
+checkUnique('Diffusion route', ALL_DIFFUSION_ROUTES.map((route) => route.id));
+checkUnique('Global source', ALL_GLOBAL_SOURCES.map((source) => source.id));
 
 for (const movement of ALL_MOVEMENTS) {
   requireText(`Movement ${movement.id} name`, movement.name);
@@ -164,6 +181,113 @@ for (const story of ALL_STORIES) {
   });
 }
 
+
+// Global diffusion map data
+for (const source of ALL_GLOBAL_SOURCES) {
+  requireText(`Global source ${source.id} title`, source.title);
+  requireText(`Global source ${source.id} publisher`, source.publisher);
+  try {
+    new URL(source.url);
+  } catch {
+    errors.push(`Global source ${source.id}: invalid URL "${source.url}"`);
+  }
+}
+
+for (const hub of ALL_GLOBAL_HUBS) {
+  requireText(`Global hub ${hub.id} name`, hub.name);
+  if (hub.latitude < -90 || hub.latitude > 90) {
+    errors.push(`Global hub ${hub.id}: invalid latitude ${hub.latitude}`);
+  }
+  if (hub.longitude < -180 || hub.longitude > 180) {
+    errors.push(`Global hub ${hub.id}: invalid longitude ${hub.longitude}`);
+  }
+  for (const era of hub.activeEras) {
+    if (era.start > era.end) {
+      errors.push(`Global hub ${hub.id}: active era start is after end`);
+    }
+  }
+  for (const sourceId of hub.sourceIds) {
+    if (!getGlobalSourceById(sourceId)) {
+      errors.push(`Global hub ${hub.id}: unknown source "${sourceId}"`);
+    }
+  }
+}
+
+for (const person of ALL_GLOBAL_PEOPLE) {
+  requireText(`Global person ${person.id} name`, person.name);
+  for (const sourceId of person.sourceIds) {
+    if (!getGlobalSourceById(sourceId)) {
+      errors.push(`Global person ${person.id}: unknown source "${sourceId}"`);
+    }
+  }
+}
+
+for (const entity of ALL_GLOBAL_ENTITIES) {
+  requireText(`Global entity ${entity.id} name`, entity.name);
+  if (!getGlobalHubById(entity.hubId)) {
+    errors.push(`Global entity ${entity.id}: unknown hub "${entity.hubId}"`);
+  }
+  if (entity.endYear !== undefined && entity.startYear > entity.endYear) {
+    errors.push(`Global entity ${entity.id}: startYear is after endYear`);
+  }
+  for (const movementId of entity.movementLinks) {
+    if (!getMovementById(movementId)) {
+      errors.push(`Global entity ${entity.id}: unknown movement "${movementId}"`);
+    }
+  }
+  for (const sourceId of entity.sourceIds) {
+    if (!getGlobalSourceById(sourceId)) {
+      errors.push(`Global entity ${entity.id}: unknown source "${sourceId}"`);
+    }
+  }
+}
+
+for (const route of ALL_DIFFUSION_ROUTES) {
+  requireText(`Diffusion route ${route.id} title`, route.title);
+  if (route.endYear !== undefined && route.startYear > route.endYear) {
+    errors.push(`Diffusion route ${route.id}: startYear is after endYear`);
+  }
+
+  for (const [label, place] of [
+    ['origin', route.origin],
+    ['destination', route.destination],
+  ] as const) {
+    const exists = place.scope === 'atlas'
+      ? Boolean(getPlaceById(place.id))
+      : Boolean(getGlobalHubById(place.id));
+    if (!exists) {
+      errors.push(`Diffusion route ${route.id}: unknown ${label} ${place.scope} place "${place.id}"`);
+    }
+  }
+
+  for (const person of route.personRefs) {
+    const exists = person.scope === 'atlas'
+      ? Boolean(getPersonById(person.id))
+      : Boolean(getGlobalPersonById(person.id));
+    if (!exists) {
+      errors.push(`Diffusion route ${route.id}: unknown ${person.scope} person "${person.id}"`);
+    }
+  }
+
+  for (const movementId of route.sourceMovementIds) {
+    if (!getMovementById(movementId)) {
+      errors.push(`Diffusion route ${route.id}: unknown movement "${movementId}"`);
+    }
+  }
+
+  for (const entityId of route.destinationEntityIds) {
+    if (!getGlobalEntityById(entityId)) {
+      errors.push(`Diffusion route ${route.id}: unknown destination entity "${entityId}"`);
+    }
+  }
+
+  for (const sourceId of route.sourceIds) {
+    if (!getGlobalSourceById(sourceId)) {
+      errors.push(`Diffusion route ${route.id}: unknown source "${sourceId}"`);
+    }
+  }
+}
+
 const movementIds = new Set(ALL_MOVEMENTS.map((m) => m.id));
 for (const movementId of movementIds) {
   const movement = getMovementById(movementId);
@@ -185,7 +309,7 @@ for (const movementId of movementIds) {
 }
 
 console.log(
-  `Validated ${ALL_MOVEMENTS.length} movements, ${ALL_PEOPLE.length} people, ${ALL_OBJECTS.length} objects, ${ALL_PLACES.length} places, ${ALL_CONNECTIONS.length} connections and ${ALL_STORIES.length} stories.`
+  `Validated ${ALL_MOVEMENTS.length} movements, ${ALL_PEOPLE.length} people, ${ALL_OBJECTS.length} objects, ${ALL_PLACES.length} places, ${ALL_CONNECTIONS.length} connections, ${ALL_STORIES.length} stories, ${ALL_GLOBAL_HUBS.length} global hubs, ${ALL_GLOBAL_ENTITIES.length} global entities and ${ALL_DIFFUSION_ROUTES.length} diffusion routes.`
 );
 
 if (warnings.length) {
