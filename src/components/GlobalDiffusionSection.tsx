@@ -4,6 +4,7 @@ import { getPlaceById } from '../data/places';
 import {
   ALL_DIFFUSION_ROUTES,
   ALL_GLOBAL_HUBS,
+  DiffusionMechanism,
   DiffusionPlaceRef,
   DiffusionRoute,
   getGlobalEntityById,
@@ -29,6 +30,95 @@ const resolvePlace = (ref: DiffusionPlaceRef) => {
     longitude: place.longitude,
   };
 };
+
+
+type RouteSemanticId =
+  | 'circulation'
+  | 'displacement'
+  | 'print'
+  | 'institution'
+  | 'commercial'
+  | 'reinterpretation';
+
+interface RouteSemantic {
+  id: RouteSemanticId;
+  label: string;
+  description: string;
+  dash?: string;
+  marker: 'arrow' | 'diamond' | 'square';
+}
+
+const ROUTE_SEMANTICS: Record<RouteSemanticId, RouteSemantic> = {
+  circulation: {
+    id: 'circulation',
+    label: 'Travel / Study / Return',
+    description: 'Knowledge carried through travel, study or return journeys.',
+    marker: 'arrow',
+  },
+  displacement: {
+    id: 'displacement',
+    label: 'Exile / Migration',
+    description: 'Ideas transferred through forced or long-term relocation.',
+    dash: '10 5',
+    marker: 'arrow',
+  },
+  print: {
+    id: 'print',
+    label: 'Print / Publishing',
+    description: 'Transmission through journals, books, posters and printed networks.',
+    dash: '2 4',
+    marker: 'square',
+  },
+  institution: {
+    id: 'institution',
+    label: 'Institution / Exhibition',
+    description: 'Transfer through schools, museums, exhibitions and formal institutions.',
+    dash: '12 3 2 3',
+    marker: 'square',
+  },
+  commercial: {
+    id: 'commercial',
+    label: 'Commercial Application',
+    description: 'Translation into advertising, publishing and applied graphic practice.',
+    dash: '1 4',
+    marker: 'arrow',
+  },
+  reinterpretation: {
+    id: 'reinterpretation',
+    label: 'Local Reinterpretation',
+    description: 'A local reformulation that produces a new cultural expression.',
+    dash: '6 3 1 3',
+    marker: 'diamond',
+  },
+};
+
+const semanticForMechanisms = (mechanisms: DiffusionMechanism[]): RouteSemantic => {
+  if (mechanisms.some((item) => item === 'exile' || item === 'migration')) {
+    return ROUTE_SEMANTICS.displacement;
+  }
+  if (mechanisms.some((item) => item === 'travel' || item === 'study')) {
+    return ROUTE_SEMANTICS.circulation;
+  }
+  if (mechanisms.includes('print')) {
+    return ROUTE_SEMANTICS.print;
+  }
+  if (mechanisms.some((item) => item === 'institution-transfer' || item === 'exhibition')) {
+    return ROUTE_SEMANTICS.institution;
+  }
+  if (mechanisms.includes('commercial-application')) {
+    return ROUTE_SEMANTICS.commercial;
+  }
+  return ROUTE_SEMANTICS.reinterpretation;
+};
+
+const SEMANTIC_LEGEND: RouteSemantic[] = [
+  ROUTE_SEMANTICS.circulation,
+  ROUTE_SEMANTICS.displacement,
+  ROUTE_SEMANTICS.print,
+  ROUTE_SEMANTICS.institution,
+  ROUTE_SEMANTICS.commercial,
+  ROUTE_SEMANTICS.reinterpretation,
+];
 
 const routePath = (route: DiffusionRoute) => {
   const origin = resolvePlace(route.origin);
@@ -64,6 +154,10 @@ export const GlobalDiffusionSection: React.FC = () => {
 
     return Array.from(seen.values()).filter(Boolean) as NonNullable<ReturnType<typeof resolvePlace>>[];
   }, []);
+
+  const selectedSemantic = selectedRoute
+    ? semanticForMechanisms(selectedRoute.mechanisms)
+    : ROUTE_SEMANTICS.circulation;
 
   const selectedOrigin = selectedRoute ? resolvePlace(selectedRoute.origin) : null;
   const selectedDestination = selectedRoute ? resolvePlace(selectedRoute.destination) : null;
@@ -111,6 +205,48 @@ export const GlobalDiffusionSection: React.FC = () => {
               </span>
             </div>
 
+            <div className="px-4 py-3 border-b border-[var(--atlas-border)] bg-[var(--atlas-card)]">
+              <div className="font-mono text-[9px] uppercase tracking-widest text-[var(--atlas-text-muted)] mb-2">
+                Transmission grammar
+              </div>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-x-5 gap-y-2">
+                {SEMANTIC_LEGEND.map((semantic) => (
+                  <div key={semantic.id} className="flex items-center gap-2 min-w-0">
+                    <svg viewBox="0 0 46 10" className="w-11 h-3 shrink-0" aria-hidden="true">
+                      <line
+                        x1="1"
+                        y1="5"
+                        x2="43"
+                        y2="5"
+                        stroke="var(--atlas-text)"
+                        strokeWidth="1.5"
+                        strokeDasharray={semantic.dash}
+                      />
+                      {semantic.marker === 'diamond' && (
+                        <rect
+                          x="39"
+                          y="2"
+                          width="6"
+                          height="6"
+                          fill="var(--atlas-text)"
+                          transform="rotate(45 42 5)"
+                        />
+                      )}
+                      {semantic.marker === 'square' && (
+                        <rect x="39" y="2" width="6" height="6" fill="var(--atlas-text)" />
+                      )}
+                      {semantic.marker === 'arrow' && (
+                        <path d="M 39 1 L 45 5 L 39 9 Z" fill="var(--atlas-text)" />
+                      )}
+                    </svg>
+                    <span className="font-mono text-[9px] uppercase tracking-wide text-[var(--atlas-text-secondary)] truncate">
+                      {semantic.label}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
             <svg
               viewBox={`0 0 ${GLOBAL_MAP.width} ${GLOBAL_MAP.height}`}
               className="w-full h-auto min-h-[320px] bg-[var(--geo-water)]"
@@ -122,6 +258,18 @@ export const GlobalDiffusionSection: React.FC = () => {
                 Pilot map showing routes from Berlin to Tokyo, Dessau to Chicago and Paris to Montevideo.
               </desc>
 
+              <defs>
+                <marker id="global-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="strokeWidth">
+                  <path d="M 0 0 L 8 4 L 0 8 Z" fill="context-stroke" />
+                </marker>
+                <marker id="global-diamond" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto" markerUnits="strokeWidth">
+                  <rect x="1.5" y="1.5" width="5" height="5" transform="rotate(45 4 4)" fill="context-stroke" />
+                </marker>
+                <marker id="global-square" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto" markerUnits="strokeWidth">
+                  <rect x="1.5" y="1.5" width="5" height="5" fill="context-stroke" />
+                </marker>
+              </defs>
+
               <path
                 d={GLOBAL_BASEMAP_PATH}
                 fill="var(--geo-land)"
@@ -131,19 +279,25 @@ export const GlobalDiffusionSection: React.FC = () => {
 
               {ALL_DIFFUSION_ROUTES.map((route) => {
                 const active = route.id === selectedRoute?.id;
+                const semantic = semanticForMechanisms(route.mechanisms);
+                const markerId =
+                  semantic.marker === 'diamond'
+                    ? 'global-diamond'
+                    : semantic.marker === 'square'
+                    ? 'global-square'
+                    : 'global-arrow';
+
                 return (
                   <g key={route.id}>
                     <path
                       d={routePath(route)}
                       fill="none"
-                      stroke={active ? '#D82B2B' : 'var(--geo-connection-active)'}
-                      strokeWidth={active ? 3 : 1.5}
-                      strokeDasharray={active ? undefined : '5 4'}
-                      opacity={active ? 1 : 0.65}
+                      stroke="transparent"
+                      strokeWidth="16"
                       className="cursor-pointer"
                       role="button"
                       tabIndex={0}
-                      aria-label={route.title}
+                      aria-label={`${route.title}. ${semantic.label}.`}
                       onClick={() => setSelectedRouteId(route.id)}
                       onKeyDown={(event) => {
                         if (event.key === 'Enter' || event.key === ' ') {
@@ -151,6 +305,17 @@ export const GlobalDiffusionSection: React.FC = () => {
                           setSelectedRouteId(route.id);
                         }
                       }}
+                    />
+                    <path
+                      d={routePath(route)}
+                      fill="none"
+                      stroke={active ? '#D82B2B' : 'var(--geo-connection-active)'}
+                      strokeWidth={active ? 3 : 1.6}
+                      strokeDasharray={semantic.dash}
+                      markerEnd={`url(#${markerId})`}
+                      opacity={active ? 1 : 0.7}
+                      pointerEvents="none"
+                      className="transition-all duration-200"
                     />
                   </g>
                 );
@@ -226,6 +391,9 @@ export const GlobalDiffusionSection: React.FC = () => {
                     <span className="block text-sm font-semibold leading-tight">
                       {route.title.split(':')[0]}
                     </span>
+                    <span className="block mt-1 font-mono text-[9px] uppercase tracking-wide opacity-65">
+                      {semanticForMechanisms(route.mechanisms).label}
+                    </span>
                   </button>
                 );
               })}
@@ -240,6 +408,14 @@ export const GlobalDiffusionSection: React.FC = () => {
               <h3 className="text-2xl font-semibold tracking-tight text-[var(--atlas-text)]">
                 {selectedRoute.title}
               </h3>
+              <div className="mt-2 inline-flex items-center gap-2 border border-[var(--atlas-border-control)] bg-[var(--atlas-card)] px-2.5 py-1.5">
+                <span className="font-mono text-[9px] uppercase tracking-wider text-[var(--atlas-text-muted)]">
+                  Primary mode
+                </span>
+                <span className="font-mono text-[9px] uppercase tracking-wider font-semibold text-[var(--atlas-text)]">
+                  {selectedSemantic.label}
+                </span>
+              </div>
 
               <div className="mt-5 grid grid-cols-2 gap-px bg-[var(--atlas-border)] border border-[var(--atlas-border)]">
                 <div className="bg-[var(--atlas-card)] p-3">
@@ -254,6 +430,9 @@ export const GlobalDiffusionSection: React.FC = () => {
 
               <p className="mt-5 text-sm leading-relaxed text-[var(--atlas-text-body)]">
                 {selectedRoute.summary}
+              </p>
+              <p className="mt-2 text-[11px] leading-relaxed text-[var(--atlas-text-muted)]">
+                {selectedSemantic.description}
               </p>
 
               <div className="mt-5 border-l-2 border-[#D82B2B] pl-4">
