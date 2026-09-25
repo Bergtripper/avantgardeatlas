@@ -7,7 +7,6 @@ import { lajosKassak } from './lajos-kassak';
 import { lenaBergner } from './lena-bergner';
 import { manRay } from './man-ray';
 import { richardHuelsenbeck } from './richard-huelsenbeck';
-import { theoVanDoesburg } from './theo-van-doesburg';
 import { tomoyoshiMurayama } from './tomoyoshi-murayama';
 
 export {
@@ -20,12 +19,10 @@ export {
   lenaBergner,
   manRay,
   richardHuelsenbeck,
-  theoVanDoesburg,
   tomoyoshiMurayama,
 };
 
 export const ALL_GLOBAL_PEOPLE = [
-  theoVanDoesburg,
   lajosKassak,
   francisPicabia,
   tomoyoshiMurayama,
