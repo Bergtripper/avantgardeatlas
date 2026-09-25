@@ -82,7 +82,7 @@ export const CompareSection: React.FC<CompareSectionProps> = ({
 
         {/* Comparative Columns Container */}
         <div className="overflow-x-auto pb-6">
-          <div className="min-w-[900px]">
+          <div className="min-w-[760px] sm:min-w-[900px]">
             {/* Columns Header Grid */}
             <div className={`grid grid-cols-12 gap-px bg-[var(--atlas-border-control)] border border-[var(--atlas-border-control)]`}>
               {/* Category Label Column */}
