@@ -59,6 +59,7 @@
   --atlas-text-muted: #737373;
   --atlas-text-quiet: #8C8C88;
   --atlas-text-faint: #A8A79E;
+  --atlas-text-lead: #262626;
   --atlas-text-body: #444444;
   --atlas-text-soft: #555555;
   --atlas-text-subtle: #666666;
@@ -66,6 +67,8 @@
   --atlas-border-soft: #EAE9E4;
   --atlas-border-control: #DDDCD4;
   --atlas-border-strong: #D5D4CC;
+  --atlas-soft-fill: #EBEAE4;
+  --atlas-popover: #18181B;
   --atlas-rule-subtle: rgba(18, 18, 18, 0.15);
   --atlas-grid-major: rgba(18, 18, 18, 0.08);
   --atlas-grid-minor: rgba(18, 18, 18, 0.03);
@@ -107,6 +110,7 @@
   --atlas-text-muted: #A7A69E;
   --atlas-text-quiet: #8F8E87;
   --atlas-text-faint: #A8A79E;
+  --atlas-text-lead: #ECEBE3;
   --atlas-text-body: #C7C6BE;
   --atlas-text-soft: #B5B4AC;
   --atlas-text-subtle: #B5B4AC;
@@ -114,6 +118,8 @@
   --atlas-border-soft: #35352F;
   --atlas-border-control: #35352F;
   --atlas-border-strong: #45443E;
+  --atlas-soft-fill: #292923;
+  --atlas-popover: #18181B;
   --atlas-rule-subtle: rgba(241, 240, 232, 0.15);
   --atlas-grid-major: rgba(241, 240, 232, 0.08);
   --atlas-grid-minor: rgba(241, 240, 232, 0.03);
