@@ -9,7 +9,8 @@ const TAB_TO_PATH: Record<NavTab, string> = {
   compare: 'compare',
   people: 'people',
   stories: 'stories',
-  geography: 'geography'
+  geography: 'geography',
+  global: 'global'
 };
 
 const PATH_TO_TAB: Record<string, NavTab> = Object.fromEntries(
