@@ -60,7 +60,7 @@ export default function App() {
 
   return (
     <div
-      className="atlas-shell min-h-screen bg-[#FBFBFA] text-[#121212] selection:bg-[#121212] selection:text-white flex flex-col font-sans"
+      className="atlas-shell min-h-screen bg-[var(--atlas-bg)] text-[var(--atlas-text)] selection:bg-[var(--atlas-text)] selection:text-white flex flex-col font-sans"
       data-theme={theme}
       data-grid={gridEnabled ? 'on' : 'off'}
     >
