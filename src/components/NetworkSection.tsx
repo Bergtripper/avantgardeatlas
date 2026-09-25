@@ -33,26 +33,26 @@ export const NetworkSection: React.FC<NetworkSectionProps> = ({ onSelectMovement
   const activeNode = activeNodeId ? nodeMap.get(activeNodeId) : null;
 
   return (
-    <section id="network-section" className="w-full py-16 px-4 sm:px-6 lg:px-12 border-b border-[#E5E4DF] bg-[#FBFBFA]">
+    <section id="network-section" className="w-full py-16 px-4 sm:px-6 lg:px-12 border-b border-[var(--atlas-border)] bg-[var(--atlas-bg)]">
       <div className="max-w-7xl mx-auto">
         {/* Section Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between border-b border-[#121212] pb-6 mb-8 gap-4">
+        <div className="flex flex-col md:flex-row md:items-end justify-between border-b border-[var(--atlas-text)] pb-6 mb-8 gap-4">
           <div>
-            <div className="text-xs font-mono uppercase tracking-widest text-[#737373]">
+            <div className="text-xs font-mono uppercase tracking-widest text-[var(--atlas-text-muted)]">
               Section 02 // Genealogical Matrix
             </div>
-            <h2 className="text-3xl sm:text-5xl font-semibold tracking-tight text-[#121212] mt-1">
+            <h2 className="text-3xl sm:text-5xl font-semibold tracking-tight text-[var(--atlas-text)] mt-1">
               Network of Influences
             </h2>
           </div>
-          <div className="text-xs font-mono text-[#525252] max-w-md">
+          <div className="text-xs font-mono text-[var(--atlas-text-secondary)] max-w-md">
             The birth of modernism was not a solitary invention but an intense web of migrations, polemics, and cross-pollination. Hover or click any node to trace its lines of inheritance.
           </div>
         </div>
 
         {/* Quick Node Selector Tabs */}
         <div className="flex items-center gap-2 overflow-x-auto pb-3 mb-6 text-xs font-mono">
-          <span className="text-[#8C8C88] uppercase mr-2 shrink-0">Focus Node:</span>
+          <span className="text-[var(--atlas-text-quiet)] uppercase mr-2 shrink-0">Focus Node:</span>
           {NETWORK_NODES.map((node) => {
             const isSelected = activeNodeId === node.id;
             return (
@@ -64,8 +64,8 @@ export const NetworkSection: React.FC<NetworkSectionProps> = ({ onSelectMovement
                 }}
                 className={`px-3 py-1 cursor-pointer transition-all uppercase tracking-wider shrink-0 border ${
                   isSelected
-                    ? 'bg-[#121212] text-[#FFFFFF] border-[#121212] font-semibold'
-                    : 'bg-[#F5F4EE] text-[#525252] border-[#DDDCD4] hover:border-[#121212] hover:text-[#121212]'
+                    ? 'bg-[#121212] text-[#FFFFFF] border-[var(--atlas-text)] font-semibold'
+                    : 'bg-[var(--atlas-surface-alt)] text-[var(--atlas-text-secondary)] border-[var(--atlas-border-control)] hover:border-[var(--atlas-text)] hover:text-[var(--atlas-text)]'
                 }`}
               >
                 {node.name}
@@ -77,7 +77,7 @@ export const NetworkSection: React.FC<NetworkSectionProps> = ({ onSelectMovement
         {/* Network Layout Canvas */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           {/* Left/Center: Interactive SVG Diagram */}
-          <div className="lg:col-span-8 border border-[#E5E4DF] bg-[#FAF9F5] p-2 relative overflow-hidden select-none">
+          <div className="lg:col-span-8 border border-[var(--atlas-border)] bg-[var(--atlas-surface)] p-2 relative overflow-hidden select-none">
             <svg
               viewBox="0 0 1000 620"
               className="w-full h-auto aspect-1000/620"
@@ -247,7 +247,7 @@ export const NetworkSection: React.FC<NetworkSectionProps> = ({ onSelectMovement
                       y="16"
                       fontFamily="IBM Plex Mono"
                       fontSize="9"
-                      fill={isSelected ? '#D82B2B' : '#8C8C88'}
+                      fill={isSelected ? '#D82B2B' : 'var(--network-muted)'}
                       letterSpacing="0.05em"
                     >
                       {node.startYear}—{node.endYear}
@@ -259,14 +259,14 @@ export const NetworkSection: React.FC<NetworkSectionProps> = ({ onSelectMovement
           </div>
 
           {/* Right: Educational Relationship Inspector Card */}
-          <div className="lg:col-span-4 border border-[#E5E4DF] bg-[#FAF9F5] p-6 flex flex-col justify-between min-h-[480px]">
+          <div className="lg:col-span-4 border border-[var(--atlas-border)] bg-[var(--atlas-surface)] p-6 flex flex-col justify-between min-h-[480px]">
             <div>
-              <div className="flex items-center justify-between border-b border-[#E5E4DF] pb-3 text-xs font-mono">
-                <span className="text-[#8C8C88] uppercase">Lineage Inspector</span>
+              <div className="flex items-center justify-between border-b border-[var(--atlas-border)] pb-3 text-xs font-mono">
+                <span className="text-[var(--atlas-text-quiet)] uppercase">Lineage Inspector</span>
                 {activeNode && (
                   <button
                     onClick={() => onSelectMovement(activeNode.id)}
-                    className="text-[#121212] font-semibold underline hover:text-[#D82B2B] cursor-pointer"
+                    className="text-[var(--atlas-text)] font-semibold underline hover:text-[#D82B2B] cursor-pointer"
                   >
                     Open Full Monograph →
                   </button>
@@ -276,26 +276,26 @@ export const NetworkSection: React.FC<NetworkSectionProps> = ({ onSelectMovement
               {activeNode ? (
                 <div className="mt-4">
                   <div className="flex items-baseline gap-2">
-                    <h3 className="text-2xl font-bold tracking-tight text-[#121212]">
+                    <h3 className="text-2xl font-bold tracking-tight text-[var(--atlas-text)]">
                       {activeNode.name}
                     </h3>
-                    <span className="font-mono text-xs text-[#737373]">
+                    <span className="font-mono text-xs text-[var(--atlas-text-muted)]">
                       ({activeNode.startYear}—{activeNode.endYear})
                     </span>
                   </div>
 
-                  <p className="mt-2 text-xs text-[#525252] leading-relaxed">
+                  <p className="mt-2 text-xs text-[var(--atlas-text-secondary)] leading-relaxed">
                     Active genealogical links: {activeConnections.length} direct influence lines.
                   </p>
 
                   {/* Connections List */}
                   <div className="mt-6 space-y-4">
-                    <div className="text-[11px] font-mono uppercase tracking-wider text-[#8C8C88] border-b border-[#EAE9E4] pb-1">
+                    <div className="text-[11px] font-mono uppercase tracking-wider text-[var(--atlas-text-quiet)] border-b border-[var(--atlas-border-soft)] pb-1">
                       Direct Relationships:
                     </div>
 
                     {activeConnections.length === 0 ? (
-                      <div className="text-xs text-[#8C8C88] italic py-2">
+                      <div className="text-xs text-[var(--atlas-text-quiet)] italic py-2">
                         No primary direct vectors recorded for this node.
                       </div>
                     ) : (
@@ -311,7 +311,7 @@ export const NetworkSection: React.FC<NetworkSectionProps> = ({ onSelectMovement
                             className={`p-3 border text-xs cursor-pointer transition-colors ${
                               isSelectedConn
                                 ? 'bg-[#18181B] text-white border-[#18181B]'
-                                : 'bg-white border-[#E5E4DF] hover:border-[#121212]'
+                                : 'bg-[var(--atlas-card)] border-[var(--atlas-border)] hover:border-[var(--atlas-text)]'
                             }`}
                           >
                             <div className="flex items-center justify-between font-mono font-semibold text-[11px] mb-1">
@@ -320,7 +320,7 @@ export const NetworkSection: React.FC<NetworkSectionProps> = ({ onSelectMovement
                               </span>
                               <span className="uppercase">{otherNode?.name}</span>
                             </div>
-                            <p className={`mt-1.5 leading-relaxed text-[12px] ${isSelectedConn ? 'text-gray-200' : 'text-[#333]'}`}>
+                            <p className={`mt-1.5 leading-relaxed text-[12px] ${isSelectedConn ? 'text-gray-200' : 'text-[var(--atlas-text-body)]'}`}>
                               {conn.rationale}
                             </p>
                             <div className="mt-2 flex flex-wrap gap-1.5">
@@ -330,7 +330,7 @@ export const NetworkSection: React.FC<NetworkSectionProps> = ({ onSelectMovement
                                   className={`text-[10px] font-mono px-1.5 py-0.5 border ${
                                     isSelectedConn
                                       ? 'bg-black/40 border-gray-700 text-gray-300'
-                                      : 'bg-[#F5F4EE] border-[#DDDCD4] text-[#555]'
+                                      : 'bg-[var(--atlas-surface-alt)] border-[var(--atlas-border-control)] text-[var(--atlas-text-soft)]'
                                   }`}
                                 >
                                   {theme}
@@ -344,13 +344,13 @@ export const NetworkSection: React.FC<NetworkSectionProps> = ({ onSelectMovement
                   </div>
                 </div>
               ) : (
-                <div className="py-16 text-center text-xs font-mono text-[#8C8C88]">
+                <div className="py-16 text-center text-xs font-mono text-[var(--atlas-text-quiet)]">
                   Select a movement node in the diagram to inspect its genealogical connections.
                 </div>
               )}
             </div>
 
-            <div className="pt-4 border-t border-[#E5E4DF] text-[11px] font-mono text-[#737373] flex justify-between">
+            <div className="pt-4 border-t border-[var(--atlas-border)] text-[11px] font-mono text-[var(--atlas-text-muted)] flex justify-between">
               <span>DOUBLE-CLICK NODE TO ENTER</span>
               <span>1890—1940 ARCHIVE</span>
             </div>
