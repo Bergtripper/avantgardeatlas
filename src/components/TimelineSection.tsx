@@ -39,38 +39,38 @@ export const TimelineSection: React.FC<TimelineSectionProps> = ({
   };
 
   return (
-    <section id="timeline-section" className="w-full py-16 px-4 sm:px-6 lg:px-12 border-b border-[#E5E4DF] bg-[#FBFBFA]">
+    <section id="timeline-section" className="w-full py-16 px-4 sm:px-6 lg:px-12 border-b border-[var(--atlas-border)] bg-[var(--atlas-bg)]">
       <div className="max-w-7xl mx-auto">
         {/* Section Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between border-b border-[#121212] pb-6 mb-8 gap-4">
+        <div className="flex flex-col md:flex-row md:items-end justify-between border-b border-[var(--atlas-text)] pb-6 mb-8 gap-4">
           <div>
-            <div className="text-xs font-mono uppercase tracking-widest text-[#737373]">
+            <div className="text-xs font-mono uppercase tracking-widest text-[var(--atlas-text-muted)]">
               Chronological Synchronicity // 1890—1940
             </div>
-            <h2 className="text-3xl sm:text-5xl font-semibold tracking-tight text-[#121212] mt-1">
+            <h2 className="text-3xl sm:text-5xl font-semibold tracking-tight text-[var(--atlas-text)] mt-1">
               Simultaneous Durations
             </h2>
           </div>
-          <div className="text-xs font-mono text-[#525252] max-w-md">
+          <div className="text-xs font-mono text-[var(--atlas-text-secondary)] max-w-md">
             Movements are visualized as duration ranges. Hover anywhere to scrub through years and see simultaneous revolutions across Europe.
           </div>
         </div>
 
         {/* Current Year Status Banner */}
-        <div className="mb-6 flex flex-wrap items-center justify-between gap-4 py-3 px-4 bg-[#F5F4EE] border border-[#E5E4DF] text-xs">
+        <div className="mb-6 flex flex-wrap items-center justify-between gap-4 py-3 px-4 bg-[var(--atlas-surface-alt)] border border-[var(--atlas-border)] text-xs">
           <div className="flex items-center gap-3">
-            <span className="font-mono text-[#737373] uppercase tracking-wider">Historical Focus</span>
-            <span className="font-mono text-xl font-bold text-[#121212]">
+            <span className="font-mono text-[var(--atlas-text-muted)] uppercase tracking-wider">Historical Focus</span>
+            <span className="font-mono text-xl font-bold text-[var(--atlas-text)]">
               {activeYearToCheck}
             </span>
           </div>
-          <div className="flex items-center gap-2 flex-wrap text-[#525252]">
-            <span className="font-mono text-[#737373] uppercase text-[11px]">Co-Existing Movements ({activeMovementsInYear.length}):</span>
+          <div className="flex items-center gap-2 flex-wrap text-[var(--atlas-text-secondary)]">
+            <span className="font-mono text-[var(--atlas-text-muted)] uppercase text-[11px]">Co-Existing Movements ({activeMovementsInYear.length}):</span>
             {activeMovementsInYear.map((m) => (
               <button
                 key={m.id}
                 onClick={() => onSelectMovement(m.id)}
-                className="cursor-pointer text-[#121212] font-medium hover:underline px-1.5 py-0.5 bg-white border border-[#DDDCD4]"
+                className="cursor-pointer text-[var(--atlas-text)] font-medium hover:underline px-1.5 py-0.5 bg-[var(--atlas-card)] border border-[var(--atlas-border-control)]"
               >
                 {m.name}
               </button>
@@ -83,7 +83,7 @@ export const TimelineSection: React.FC<TimelineSectionProps> = ({
           <div className="min-w-[850px] relative select-none">
             {/* Top Year Ruler */}
             <div
-              className="relative h-12 border-b-2 border-[#121212] flex items-end cursor-crosshair"
+              className="relative h-12 border-b-2 border-[var(--atlas-text)] flex items-end cursor-crosshair"
               onMouseMove={(e) => {
                 const rect = e.currentTarget.getBoundingClientRect();
                 const clientX = e.clientX - rect.left;
@@ -107,13 +107,13 @@ export const TimelineSection: React.FC<TimelineSectionProps> = ({
                   >
                     <span
                       className={`font-mono text-[11px] mb-1.5 ${
-                        isMajor ? 'text-[#121212] font-semibold' : 'text-[#8C8C88]'
+                        isMajor ? 'text-[var(--atlas-text)] font-semibold' : 'text-[var(--atlas-text-quiet)]'
                       }`}
                     >
                       {year}
                     </span>
                     <div
-                      className={`w-[1px] bg-[#121212] ${isMajor ? 'h-3.5' : 'h-2'}`}
+                      className={`w-[1px] bg-[var(--atlas-ink-button)] ${isMajor ? 'h-3.5' : 'h-2'}`}
                     />
                   </div>
                 );
@@ -142,7 +142,7 @@ export const TimelineSection: React.FC<TimelineSectionProps> = ({
                       className="absolute top-0 bottom-0 w-[1px]"
                       style={{
                         left: `${getPercentage(year)}%`,
-                        backgroundColor: isMajor ? 'rgba(18, 18, 18, 0.08)' : 'rgba(18, 18, 18, 0.03)'
+                        backgroundColor: isMajor ? 'var(--atlas-grid-major)' : 'var(--atlas-grid-minor)'
                       }}
                     />
                   );
@@ -179,10 +179,10 @@ export const TimelineSection: React.FC<TimelineSectionProps> = ({
                         backgroundColor: isHovered
                           ? movement.styleTheme.accentColor
                           : isActiveInCurrentYear
-                          ? '#18181B'
-                          : '#EBEAE4',
-                        color: isHovered || isActiveInCurrentYear ? '#FFFFFF' : '#121212',
-                        borderColor: isHovered ? '#121212' : '#D5D4CC',
+                          ? 'var(--atlas-range-active)'
+                          : 'var(--atlas-range-inactive)',
+                        color: isHovered || isActiveInCurrentYear ? 'var(--atlas-range-active-text)' : 'var(--atlas-text)',
+                        borderColor: isHovered ? 'var(--atlas-text)' : 'var(--atlas-border-strong)',
                         boxShadow: isHovered ? '0 4px 12px rgba(0,0,0,0.1)' : 'none'
                       }}
                     >
@@ -197,7 +197,7 @@ export const TimelineSection: React.FC<TimelineSectionProps> = ({
                     {/* Popover on hover showing concise metadata */}
                     {isHovered && (
                       <div
-                        className="absolute z-30 -top-16 bg-[#18181B] text-white p-2.5 shadow-xl pointer-events-none border border-[#333] text-xs font-mono whitespace-nowrap"
+                        className="absolute z-30 -top-16 bg-[var(--atlas-popover)] text-white p-2.5 shadow-xl pointer-events-none border border-[#333] text-xs font-mono whitespace-nowrap"
                         style={{
                           left: `${Math.min(75, Math.max(10, startPct))}%`
                         }}
@@ -221,7 +221,7 @@ export const TimelineSection: React.FC<TimelineSectionProps> = ({
         </div>
 
         {/* Timeline Bottom Explanatory Caption */}
-        <div className="mt-8 pt-4 border-t border-[#E5E4DF] flex flex-col sm:flex-row justify-between text-xs text-[#737373] font-mono">
+        <div className="mt-8 pt-4 border-t border-[var(--atlas-border)] flex flex-col sm:flex-row justify-between text-xs text-[var(--atlas-text-muted)] font-mono">
           <div>
             NOTE // Click any movement to open its complete architectural & typographic monograph.
           </div>
