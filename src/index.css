@@ -41,3 +41,76 @@
   background-image: radial-gradient(rgba(18, 18, 18, 0.12) 1px, transparent 0);
   background-size: 24px 24px;
 }
+
+
+/* Atlas UI layers: persistent theme + optional architectural grid */
+.atlas-shell {
+  position: relative;
+  isolation: isolate;
+  transition: background-color 180ms ease, color 180ms ease;
+}
+
+.atlas-shell[data-grid='on']::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  background-image:
+    linear-gradient(to right, rgba(18, 18, 18, 0.055) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(18, 18, 18, 0.055) 1px, transparent 1px);
+  background-size: 24px 24px;
+  mix-blend-mode: multiply;
+}
+
+.atlas-shell[data-theme='dark'] {
+  filter: invert(0);
+  background: #11110F;
+  color: #F1F0E8;
+}
+
+.atlas-shell[data-theme='dark'] [class*='bg-[#FBFBFA]'] { background-color: #11110F !important; }
+.atlas-shell[data-theme='dark'] [class*='bg-[#FAF9F5]'] { background-color: #151512 !important; }
+.atlas-shell[data-theme='dark'] [class*='bg-[#F7F6F2]'] { background-color: #191916 !important; }
+.atlas-shell[data-theme='dark'] [class*='bg-[#F5F4EE]'] { background-color: #1D1D19 !important; }
+.atlas-shell[data-theme='dark'] [class*='bg-[#F4F4EE]'] { background-color: #1D1D19 !important; }
+.atlas-shell[data-theme='dark'] [class*='bg-white'] { background-color: #171714 !important; }
+
+.atlas-shell[data-theme='dark'] [class*='text-[#121212]'] { color: #F1F0E8 !important; }
+.atlas-shell[data-theme='dark'] [class*='text-[#525252]'] { color: #C2C1B9 !important; }
+.atlas-shell[data-theme='dark'] [class*='text-[#737373]'] { color: #A7A69E !important; }
+.atlas-shell[data-theme='dark'] [class*='text-[#8C8C88]'] { color: #8F8E87 !important; }
+.atlas-shell[data-theme='dark'] [class*='text-[#333]'] { color: #D6D5CD !important; }
+.atlas-shell[data-theme='dark'] [class*='text-[#444]'] { color: #C7C6BE !important; }
+
+.atlas-shell[data-theme='dark'] [class*='border-[#E5E4DF]'],
+.atlas-shell[data-theme='dark'] [class*='border-[#EAE9E4]'],
+.atlas-shell[data-theme='dark'] [class*='border-[#DDDCD4]'],
+.atlas-shell[data-theme='dark'] [class*='border-[#D8D7D0]'],
+.atlas-shell[data-theme='dark'] [class*='border-[#D5D4CC]'],
+.atlas-shell[data-theme='dark'] [class*='border-[#EBEAE4]'] {
+  border-color: #35352F !important;
+}
+
+.atlas-shell[data-theme='dark'] [class*='selection:bg-[#121212]']::selection {
+  background: #F1F0E8;
+  color: #11110F;
+}
+
+.atlas-shell[data-theme='dark'] .atlas-control {
+  background: #191916 !important;
+  color: #F1F0E8 !important;
+}
+
+.atlas-shell[data-theme='dark'][data-grid='on']::before {
+  background-image:
+    linear-gradient(to right, rgba(241, 240, 232, 0.045) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(241, 240, 232, 0.045) 1px, transparent 1px);
+  mix-blend-mode: screen;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .atlas-shell {
+    transition: none;
+  }
+}
