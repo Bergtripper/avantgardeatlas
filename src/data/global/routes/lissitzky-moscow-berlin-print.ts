@@ -7,7 +7,7 @@ export const lissitzkyMoscowBerlinPrintRoute: DiffusionRoute = {
   destination: { scope: 'atlas', id: 'berlin' },
   startYear: 1922,
   personRefs: [{ scope: 'atlas', id: 'el-lissitzky' }],
-  mechanisms: ['travel', 'print', 'reinterpretation'],
+  mechanisms: ['print', 'reinterpretation'],
   sourceMovementIds: ['constructivism', 'new-typography'],
   transmissionEntityIds: ['veshch-gegenstand-objet'],
   destinationEntityIds: ['veshch-gegenstand-objet'],
