@@ -198,7 +198,7 @@ export const GeographySection: React.FC<GeographySectionProps> = ({
               <button
                 type="button"
                 onClick={() => setIsPlaying(!isPlaying)}
-                className="font-mono text-xs px-3 py-1.5 bg-[#121212] text-white hover:bg-[#333] cursor-pointer"
+                className="font-mono text-xs px-3 py-1.5 bg-[var(--atlas-ink-button)] text-white hover:bg-[var(--atlas-ink-button-hover)] cursor-pointer"
                 aria-pressed={isPlaying}
               >
                 {isPlaying ? 'PAUSE ❚❚' : 'PLAY ANIMATION ▶'}
@@ -221,7 +221,7 @@ export const GeographySection: React.FC<GeographySectionProps> = ({
               max={1940}
               value={selectedYear}
               onChange={(event) => onSelectYear(Number(event.target.value))}
-              className="w-full h-2 bg-[#DDDCD4] appearance-none cursor-pointer accent-[#D82B2B]"
+              className="w-full h-2 bg-[var(--atlas-border-control)] appearance-none cursor-pointer accent-[#D82B2B]"
             />
             <div className="flex justify-between text-[11px] font-mono text-[var(--atlas-text-quiet)] mt-2">
               <span>1900 // FIN-DE-SIÈCLE</span>
