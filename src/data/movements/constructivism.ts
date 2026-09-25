@@ -68,7 +68,7 @@ export const constructivismMovement: Movement = {
   keyWorks: [
     'obj-tatlin-tower',
     'obj-beat-the-whites',
-    'obj-lengiz-books-poster'
+    'obj-lengiz-books'
   ],
   influencesFrom: ['suprematism', 'cubo-futurism'],
   influencesTo: ['bauhaus', 'new-typography', 'international-style'],
