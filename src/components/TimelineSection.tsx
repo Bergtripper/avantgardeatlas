@@ -197,7 +197,7 @@ export const TimelineSection: React.FC<TimelineSectionProps> = ({
                     {/* Popover on hover showing concise metadata */}
                     {isHovered && (
                       <div
-                        className="absolute z-30 -top-16 bg-[#18181B] text-white p-2.5 shadow-xl pointer-events-none border border-[#333] text-xs font-mono whitespace-nowrap"
+                        className="absolute z-30 -top-16 bg-[var(--atlas-popover)] text-white p-2.5 shadow-xl pointer-events-none border border-[#333] text-xs font-mono whitespace-nowrap"
                         style={{
                           left: `${Math.min(75, Math.max(10, startPct))}%`
                         }}
