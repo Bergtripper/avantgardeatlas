@@ -1,23 +1,87 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://ai.google.dev/static/site-assets/images/share-ais-513315318.png" />
-</div>
+# Avant-Garde Atlas 1890—1940
 
-# Run and deploy your AI Studio app
+An interactive editorial atlas exploring the artistic, architectural, graphic and design movements that shaped the European avant-garde between 1890 and 1940.
 
-This contains everything you need to run your app locally.
+## Live site
 
-View your app in AI Studio: https://ai.studio/apps/747dc981-7247-45d9-b56a-614432facf1b
+The current GitHub Pages deployment is available at:
 
-## Run Locally
+https://bergtripper.github.io/avantgardeatlas/
 
-**Prerequisites:**  Node.js
+## Features
 
+- movement timeline and detailed movement monographs
+- influence and relationship network
+- archival objects and key works
+- people and connection stories
+- geographic map based on real coordinates and Natural Earth data
+- light and dark themes
+- optional architectural grid
+- responsive section navigation
+- deep-link URLs for sections and individual movements
+- keyboard accessibility and reduced-motion support
+- automated content-integrity validation
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+## Development
 
+### Requirements
 
-<!-- pages redeploy trigger -->
+- Node.js 22 or newer
+- npm
+
+### Install
+
+```bash
+npm install
+```
+
+### Start the development server
+
+```bash
+npm run dev
+```
+
+### TypeScript check
+
+```bash
+npm run lint
+```
+
+### Validate atlas data
+
+```bash
+npm run data:validate
+```
+
+### Production build
+
+```bash
+npm run build
+```
+
+The production build also creates `dist/404.html` so direct SPA deep links work on GitHub Pages.
+
+## Project structure
+
+- `src/components/` — interface and editorial components
+- `src/data/` — movements, people, objects, places, stories and relationships
+- `src/types/` — shared atlas data types
+- `src/routing.ts` — lightweight History API routing
+- `scripts/validate-data.ts` — dataset integrity checks
+- `.github/workflows/` — CI and GitHub Pages deployment
+
+## Deployment
+
+Pushes to `main` are built and deployed automatically with GitHub Actions.
+
+GitHub Pages currently uses the repository base path `/avantgardeatlas/`. The routing layer is designed so the project can later move to a custom domain without changing the content model.
+
+## Data integrity
+
+Every CI run checks:
+
+1. TypeScript
+2. atlas data integrity
+3. production build
+
+Broken IDs, invalid cross-references and other structural dataset errors therefore block merging before they reach production.
