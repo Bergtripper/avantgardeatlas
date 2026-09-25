@@ -63,7 +63,7 @@ export const newTypographyMovement: Movement = {
     'kurt-schwitters'
   ],
   keyWorks: [
-    'obj-die-neue-typographie',
+    'obj-die-neue-typographie-book',
     'obj-futura-specimen'
   ],
   influencesFrom: ['bauhaus', 'constructivism', 'dada', 'de-stijl'],
