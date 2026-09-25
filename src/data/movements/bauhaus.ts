@@ -72,7 +72,7 @@ export const bauhausMovement: Movement = {
   keyWorks: [
     'obj-bauhaus-dessau',
     'obj-wassily-chair',
-    'obj-bauhaus-exhibition-poster'
+    'obj-bauhaus-poster'
   ],
   influencesFrom: ['deutscher-werkbund', 'de-stijl', 'constructivism', 'vienna-secession'],
   influencesTo: ['new-typography', 'international-style', 'rationalism'],
