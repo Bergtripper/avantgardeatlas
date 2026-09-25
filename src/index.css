@@ -114,3 +114,42 @@
     transition: none;
   }
 }
+
+
+/* Dark-theme coverage for remaining neutral typography */
+.atlas-shell[data-theme='dark'] [class*='text-[#262626]'],
+.atlas-shell[data-theme='dark'] [class*='text-[#222222]'],
+.atlas-shell[data-theme='dark'] [class*='text-[#18181B]'] {
+  color: #ECEBE3 !important;
+}
+
+.atlas-shell[data-theme='dark'] [class*='text-[#555]'],
+.atlas-shell[data-theme='dark'] [class*='text-[#666]'] {
+  color: #B5B4AC !important;
+}
+
+.atlas-shell[data-theme='dark'] :where(h1, h2, h3, h4, h5, h6, p):not([class*='text-']) {
+  color: inherit;
+}
+
+/* Network SVG receives its own semantic palette because SVG presentation
+   attributes do not participate in the Tailwind neutral remapping above. */
+.atlas-shell {
+  --network-ink: #121212;
+  --network-paper: #FAF9F5;
+  --network-muted: #A8A79E;
+  --network-line: #D5D4CC;
+  --network-grid: #E5E4DF;
+  --network-border: #DDDCD4;
+  --network-node-stroke: #FFFFFF;
+}
+
+.atlas-shell[data-theme='dark'] {
+  --network-ink: #F1F0E8;
+  --network-paper: #151512;
+  --network-muted: #98978F;
+  --network-line: #4A4942;
+  --network-grid: #31312C;
+  --network-border: #45443E;
+  --network-node-stroke: #151512;
+}
