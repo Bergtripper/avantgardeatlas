@@ -153,6 +153,20 @@ export const GlobalDiffusionSection: React.FC = () => {
     ? fracture1933.sourceIds.map((id) => getGlobalSourceById(id)).filter(Boolean)
     : [];
 
+  const phaseStats = useMemo(() => {
+    const before = ALL_DIFFUSION_ROUTES.filter((route) => route.startYear < 1933);
+    const after = ALL_DIFFUSION_ROUTES.filter((route) => route.startYear >= 1933);
+    const displacementCount = (routes: DiffusionRoute[]) =>
+      routes.filter((route) =>
+        route.mechanisms.some((item) => item === 'exile' || item === 'migration'),
+      ).length;
+
+    return {
+      before: { total: before.length, displacement: displacementCount(before) },
+      after: { total: after.length, displacement: displacementCount(after) },
+    };
+  }, []);
+
   const availableMedia = useMemo(
     () =>
       Array.from(new Set(ALL_DIFFUSION_ROUTES.flatMap((route) => route.media))).sort() as DiffusionMedium[],
@@ -374,6 +388,7 @@ export const GlobalDiffusionSection: React.FC = () => {
           </div>
 
           {fracture1933 && (
+            <>
             <div
               className={`border-t border-[var(--atlas-border)] px-4 py-4 md:px-5 flex flex-col md:flex-row md:items-start justify-between gap-4 ${
                 yearFilter >= fracture1933.year
@@ -409,6 +424,32 @@ export const GlobalDiffusionSection: React.FC = () => {
                 {yearFilter >= fracture1933.year ? 'Active in view' : 'Beyond current year'}
               </span>
             </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 border-t border-[var(--atlas-border)]">
+              <div className="p-4 bg-[var(--atlas-surface)]">
+                <div className="font-mono text-[9px] uppercase tracking-widest text-[var(--atlas-text-muted)]">
+                  Before 1933
+                </div>
+                <div className="mt-1 text-sm font-semibold text-[var(--atlas-text)]">
+                  {phaseStats.before.total} documented routes
+                </div>
+                <div className="mt-1 text-[11px] text-[var(--atlas-text-secondary)]">
+                  {phaseStats.before.displacement} classified as exile / migration
+                </div>
+              </div>
+              <div className="p-4 bg-[var(--atlas-card)] sm:border-l border-[var(--atlas-border)]">
+                <div className="font-mono text-[9px] uppercase tracking-widest text-[#D82B2B]">
+                  1933—{maxRouteYear}
+                </div>
+                <div className="mt-1 text-sm font-semibold text-[var(--atlas-text)]">
+                  {phaseStats.after.total} documented routes
+                </div>
+                <div className="mt-1 text-[11px] text-[var(--atlas-text-secondary)]">
+                  {phaseStats.after.displacement} classified as exile / migration
+                </div>
+              </div>
+            </div>
+            </>
           )}
         </div>
 
