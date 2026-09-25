@@ -98,10 +98,20 @@ export interface DiffusionRoute {
   personRefs: DiffusionPersonRef[];
   mechanisms: DiffusionMechanism[];
   sourceMovementIds: MovementId[];
+  historicalContextIds?: string[];
   destinationEntityIds: string[];
   media: DiffusionMedium[];
   summary: string;
   transformationNote: string;
+  sourceIds: string[];
+}
+
+export interface GlobalHistoricalEvent {
+  id: string;
+  year: number;
+  label: string;
+  title: string;
+  summary: string;
   sourceIds: string[];
 }
 

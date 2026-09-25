@@ -3,12 +3,14 @@ import { getPersonById } from '../data/people';
 import { getPlaceById } from '../data/places';
 import {
   ALL_DIFFUSION_ROUTES,
+  ALL_GLOBAL_HISTORICAL_EVENTS,
   ALL_GLOBAL_HUBS,
   DiffusionMechanism,
   DiffusionMedium,
   DiffusionPlaceRef,
   DiffusionRoute,
   getGlobalEntityById,
+  getGlobalHistoricalEventById,
   getGlobalHubById,
   getGlobalPersonById,
   getGlobalSourceById,
@@ -141,6 +143,16 @@ const routePath = (route: DiffusionRoute) => {
 export const GlobalDiffusionSection: React.FC = () => {
   const minRouteYear = Math.min(...ALL_DIFFUSION_ROUTES.map((route) => route.startYear));
   const maxRouteYear = Math.max(...ALL_DIFFUSION_ROUTES.map((route) => route.endYear ?? route.startYear));
+  const fracture1933 = ALL_GLOBAL_HISTORICAL_EVENTS.find(
+    (event) => event.id === 'political-fracture-1933',
+  );
+  const fracturePosition = fracture1933
+    ? ((fracture1933.year - minRouteYear) / (maxRouteYear - minRouteYear)) * 100
+    : 0;
+  const fractureSources = fracture1933
+    ? fracture1933.sourceIds.map((id) => getGlobalSourceById(id)).filter(Boolean)
+    : [];
+
   const availableMedia = useMemo(
     () =>
       Array.from(new Set(ALL_DIFFUSION_ROUTES.flatMap((route) => route.media))).sort() as DiffusionMedium[],
@@ -222,6 +234,10 @@ export const GlobalDiffusionSection: React.FC = () => {
     .map((id) => getGlobalEntityById(id))
     .filter(Boolean) ?? [];
 
+  const selectedHistoricalContexts = selectedRoute?.historicalContextIds
+    ?.map((id) => getGlobalHistoricalEventById(id))
+    .filter(Boolean) ?? [];
+
   const selectedSources = selectedRoute?.sourceIds
     .map((id) => getGlobalSourceById(id))
     .filter(Boolean) ?? [];
@@ -296,6 +312,20 @@ export const GlobalDiffusionSection: React.FC = () => {
                 <span>{minRouteYear}</span>
                 <span>{maxRouteYear}</span>
               </div>
+              {fracture1933 && (
+                <div className="relative h-5 mt-1" aria-label="1933 historical fracture marker">
+                  <div
+                    className="absolute top-0 h-3 border-l border-[#D82B2B]"
+                    style={{ left: `${fracturePosition}%` }}
+                  />
+                  <span
+                    className="absolute top-2 -translate-x-1/2 font-mono text-[8px] uppercase tracking-wider text-[#D82B2B]"
+                    style={{ left: `${fracturePosition}%` }}
+                  >
+                    1933
+                  </span>
+                </div>
+              )}
             </div>
 
             <div className="bg-[var(--atlas-card)] p-4">
@@ -342,6 +372,44 @@ export const GlobalDiffusionSection: React.FC = () => {
               </select>
             </div>
           </div>
+
+          {fracture1933 && (
+            <div
+              className={`border-t border-[var(--atlas-border)] px-4 py-4 md:px-5 flex flex-col md:flex-row md:items-start justify-between gap-4 ${
+                yearFilter >= fracture1933.year
+                  ? 'bg-[var(--atlas-card)]'
+                  : 'bg-[var(--atlas-surface)] opacity-60'
+              }`}
+            >
+              <div className="max-w-3xl">
+                <div className="font-mono text-[9px] uppercase tracking-widest text-[#D82B2B]">
+                  {fracture1933.label} // {fracture1933.year}
+                </div>
+                <h3 className="mt-1 text-sm font-semibold text-[var(--atlas-text)]">
+                  {fracture1933.title}
+                </h3>
+                <p className="mt-2 text-xs leading-relaxed text-[var(--atlas-text-secondary)]">
+                  {fracture1933.summary}
+                </p>
+                <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1">
+                  {fractureSources.map((source) => (
+                    <a
+                      key={source?.id}
+                      href={source?.url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="font-mono text-[9px] underline underline-offset-2 text-[var(--atlas-text-muted)] hover:text-[var(--atlas-text)]"
+                    >
+                      {source?.publisher}
+                    </a>
+                  ))}
+                </div>
+              </div>
+              <span className="shrink-0 font-mono text-[9px] uppercase tracking-wider text-[var(--atlas-text-muted)]">
+                {yearFilter >= fracture1933.year ? 'Active in view' : 'Beyond current year'}
+              </span>
+            </div>
+          )}
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
@@ -544,6 +612,11 @@ export const GlobalDiffusionSection: React.FC = () => {
                     <span className="block mt-1 font-mono text-[9px] uppercase tracking-wide opacity-65">
                       {semanticForMechanisms(route.mechanisms).label}
                     </span>
+                    {route.historicalContextIds?.includes('political-fracture-1933') && (
+                      <span className="block mt-2 font-mono text-[8px] uppercase tracking-wider text-[#D82B2B]">
+                        1933 context
+                      </span>
+                    )}
                   </button>
                 );
               })}
@@ -593,6 +666,24 @@ export const GlobalDiffusionSection: React.FC = () => {
                   {selectedRoute.transformationNote}
                 </p>
               </div>
+
+              {selectedHistoricalContexts.length > 0 && (
+                <div className="mt-5 border border-[#D82B2B] p-3 bg-[var(--atlas-card)]">
+                  <div className="font-mono text-[9px] uppercase tracking-wider text-[#D82B2B]">
+                    Historical context
+                  </div>
+                  {selectedHistoricalContexts.map((event) => (
+                    <div key={event?.id} className="mt-1">
+                      <div className="text-xs font-semibold text-[var(--atlas-text)]">
+                        {event?.title}
+                      </div>
+                      <p className="mt-1 text-[11px] leading-relaxed text-[var(--atlas-text-secondary)]">
+                        {event?.summary}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              )}
 
               <dl className="mt-6 space-y-4 text-xs">
                 <div>

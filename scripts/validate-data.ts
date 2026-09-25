@@ -13,10 +13,12 @@ import {
 import {
   ALL_DIFFUSION_ROUTES,
   ALL_GLOBAL_ENTITIES,
+  ALL_GLOBAL_HISTORICAL_EVENTS,
   ALL_GLOBAL_HUBS,
   ALL_GLOBAL_PEOPLE,
   ALL_GLOBAL_SOURCES,
   getGlobalEntityById,
+  getGlobalHistoricalEventById,
   getGlobalHubById,
   getGlobalPersonById,
   getGlobalSourceById
@@ -46,6 +48,7 @@ checkUnique('Story', ALL_STORIES.map((s) => s.id));
 checkUnique('Global hub', ALL_GLOBAL_HUBS.map((hub) => hub.id));
 checkUnique('Global person', ALL_GLOBAL_PEOPLE.map((person) => person.id));
 checkUnique('Global entity', ALL_GLOBAL_ENTITIES.map((entity) => entity.id));
+checkUnique('Global historical event', ALL_GLOBAL_HISTORICAL_EVENTS.map((event) => event.id));
 checkUnique('Diffusion route', ALL_DIFFUSION_ROUTES.map((route) => route.id));
 checkUnique('Global source', ALL_GLOBAL_SOURCES.map((source) => source.id));
 
@@ -222,6 +225,19 @@ for (const person of ALL_GLOBAL_PEOPLE) {
   }
 }
 
+for (const event of ALL_GLOBAL_HISTORICAL_EVENTS) {
+  requireText(`Global historical event ${event.id} title`, event.title);
+  requireText(`Global historical event ${event.id} summary`, event.summary);
+  if (!Number.isInteger(event.year) || event.year < 1800 || event.year > 2000) {
+    errors.push(`Global historical event ${event.id}: implausible year ${event.year}`);
+  }
+  for (const sourceId of event.sourceIds) {
+    if (!getGlobalSourceById(sourceId)) {
+      errors.push(`Global historical event ${event.id}: unknown source "${sourceId}"`);
+    }
+  }
+}
+
 for (const entity of ALL_GLOBAL_ENTITIES) {
   requireText(`Global entity ${entity.id} name`, entity.name);
   if (!getGlobalHubById(entity.hubId)) {
@@ -275,6 +291,12 @@ for (const route of ALL_DIFFUSION_ROUTES) {
     }
   }
 
+  for (const contextId of route.historicalContextIds ?? []) {
+    if (!getGlobalHistoricalEventById(contextId)) {
+      errors.push(`Diffusion route ${route.id}: unknown historical context "${contextId}"`);
+    }
+  }
+
   for (const entityId of route.destinationEntityIds) {
     if (!getGlobalEntityById(entityId)) {
       errors.push(`Diffusion route ${route.id}: unknown destination entity "${entityId}"`);
@@ -309,7 +331,7 @@ for (const movementId of movementIds) {
 }
 
 console.log(
-  `Validated ${ALL_MOVEMENTS.length} movements, ${ALL_PEOPLE.length} people, ${ALL_OBJECTS.length} objects, ${ALL_PLACES.length} places, ${ALL_CONNECTIONS.length} connections, ${ALL_STORIES.length} stories, ${ALL_GLOBAL_HUBS.length} global hubs, ${ALL_GLOBAL_ENTITIES.length} global entities and ${ALL_DIFFUSION_ROUTES.length} diffusion routes.`
+  `Validated ${ALL_MOVEMENTS.length} movements, ${ALL_PEOPLE.length} people, ${ALL_OBJECTS.length} objects, ${ALL_PLACES.length} places, ${ALL_CONNECTIONS.length} connections, ${ALL_STORIES.length} stories, ${ALL_GLOBAL_HUBS.length} global hubs, ${ALL_GLOBAL_ENTITIES.length} global entities, ${ALL_GLOBAL_HISTORICAL_EVENTS.length} historical events and ${ALL_DIFFUSION_ROUTES.length} diffusion routes.`
 );
 
 if (warnings.length) {
