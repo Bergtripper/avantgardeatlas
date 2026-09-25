@@ -2,6 +2,7 @@ import { ariehSharon } from './arieh-sharon';
 import { greteStern } from './grete-stern';
 import { horacioCoppola } from './horacio-coppola';
 import { joaquinTorresGarcia } from './joaquin-torres-garcia';
+import { lenaBergner } from './lena-bergner';
 import { manRay } from './man-ray';
 import { richardHuelsenbeck } from './richard-huelsenbeck';
 import { tomoyoshiMurayama } from './tomoyoshi-murayama';
@@ -11,6 +12,7 @@ export {
   greteStern,
   horacioCoppola,
   joaquinTorresGarcia,
+  lenaBergner,
   manRay,
   richardHuelsenbeck,
   tomoyoshiMurayama,
@@ -19,6 +21,7 @@ export {
 export const ALL_GLOBAL_PEOPLE = [
   tomoyoshiMurayama,
   joaquinTorresGarcia,
+  lenaBergner,
   richardHuelsenbeck,
   manRay,
   ariehSharon,
