@@ -2,7 +2,7 @@ import React, { useMemo, useRef, useState } from 'react';
 import { MovementId } from '../types/atlas';
 import { ALL_PLACES } from '../data/places';
 import {
-  EUROPE_LANDMASSES,
+  EUROPE_BASEMAP_PATH,
   EUROPE_MAP,
   GEOGRAPHY_CONNECTIONS,
   LATITUDE_TICKS,
@@ -10,7 +10,6 @@ import {
   projectLatitude,
   projectLongitude,
   projectPlace,
-  toSvgPolygonPoints,
 } from '../data/geography';
 
 interface GeographySectionProps {
@@ -297,16 +296,13 @@ export const GeographySection: React.FC<GeographySectionProps> = ({
               />
 
               <g aria-label="European geographic basemap">
-                {EUROPE_LANDMASSES.map((landmass) => (
-                  <polygon
-                    key={landmass.id}
-                    points={toSvgPolygonPoints(landmass.points)}
-                    fill="#EFEEE7"
-                    stroke="#D4D3CB"
-                    strokeWidth="1.2"
-                    vectorEffect="non-scaling-stroke"
-                  />
-                ))}
+                <path
+                  d={EUROPE_BASEMAP_PATH}
+                  fill="#EFEEE7"
+                  stroke="#CFCFC7"
+                  strokeWidth="1.1"
+                  vectorEffect="non-scaling-stroke"
+                />
               </g>
 
               <g stroke="#E1E0D9" strokeWidth="0.75" strokeDasharray="3 3">
