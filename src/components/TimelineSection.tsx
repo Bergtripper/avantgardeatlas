@@ -1,5 +1,9 @@
 import React, { useState } from 'react';
 import { Movement, MovementId } from '../types/atlas';
+import {
+  ALL_GLOBAL_HISTORICAL_EVENTS,
+  getGlobalSourceById,
+} from '../data/global';
 
 interface TimelineSectionProps {
   movements: Movement[];
@@ -20,6 +24,12 @@ export const TimelineSection: React.FC<TimelineSectionProps> = ({
   const startTimelineYear = 1890;
   const endTimelineYear = 1940;
   const totalYears = endTimelineYear - startTimelineYear;
+  const fracture1933 = ALL_GLOBAL_HISTORICAL_EVENTS.find(
+    (event) => event.id === 'political-fracture-1933',
+  );
+  const fractureSources = fracture1933
+    ? fracture1933.sourceIds.map((id) => getGlobalSourceById(id)).filter(Boolean)
+    : [];
 
   // Generate decade marks
   const decadeMarks: number[] = [];
@@ -78,6 +88,37 @@ export const TimelineSection: React.FC<TimelineSectionProps> = ({
           </div>
         </div>
 
+        {fracture1933 && (
+          <div className="mb-6 border border-[#D82B2B] bg-[var(--atlas-card)] p-4">
+            <div className="font-mono text-[9px] uppercase tracking-widest text-[#D82B2B]">
+              {fracture1933.label} // {fracture1933.year}
+            </div>
+            <div className="mt-1 flex flex-col lg:flex-row lg:items-start lg:justify-between gap-3">
+              <div className="max-w-4xl">
+                <h3 className="text-sm font-semibold text-[var(--atlas-text)]">
+                  {fracture1933.title}
+                </h3>
+                <p className="mt-2 text-xs leading-relaxed text-[var(--atlas-text-secondary)]">
+                  {fracture1933.summary}
+                </p>
+              </div>
+              <div className="flex flex-wrap gap-x-3 gap-y-1 shrink-0">
+                {fractureSources.map((source) => (
+                  <a
+                    key={source?.id}
+                    href={source?.url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="font-mono text-[9px] underline underline-offset-2 text-[var(--atlas-text-muted)] hover:text-[var(--atlas-text)]"
+                  >
+                    {source?.publisher}
+                  </a>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Timeline Visualization Container */}
         <div className="relative overflow-x-auto pb-6 pt-2">
           <div className="min-w-[720px] sm:min-w-[850px] relative select-none">
@@ -119,6 +160,18 @@ export const TimelineSection: React.FC<TimelineSectionProps> = ({
                 );
               })}
 
+              {fracture1933 && (
+                <div
+                  className="absolute top-0 bottom-0 border-l-2 border-dashed border-[#D82B2B] pointer-events-none z-10"
+                  style={{ left: `${getPercentage(fracture1933.year)}%` }}
+                  aria-hidden="true"
+                >
+                  <div className="absolute top-0 -translate-x-1/2 -translate-y-full bg-[var(--atlas-bg)] px-1 font-mono text-[9px] uppercase tracking-wider text-[#D82B2B] whitespace-nowrap">
+                    1933 // fracture
+                  </div>
+                </div>
+              )}
+
               {/* Active Year Vertical Guide Line */}
               <div
                 className="absolute top-0 bottom-0 w-[1.5px] bg-[#D82B2B] pointer-events-none z-20 transition-all duration-75"
@@ -147,6 +200,12 @@ export const TimelineSection: React.FC<TimelineSectionProps> = ({
                     />
                   );
                 })}
+                {fracture1933 && (
+                  <div
+                    className="absolute top-0 bottom-0 border-l-2 border-dashed border-[#D82B2B]/70 pointer-events-none"
+                    style={{ left: `${getPercentage(fracture1933.year)}%` }}
+                  />
+                )}
                 {/* Active year vertical hairline through entire chart */}
                 <div
                   className="absolute top-0 bottom-0 w-[1.5px] bg-[#D82B2B]/40 pointer-events-none"
