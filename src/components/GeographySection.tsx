@@ -173,39 +173,39 @@ export const GeographySection: React.FC<GeographySectionProps> = ({
   return (
     <section
       id="geography-section"
-      className="w-full py-16 px-4 sm:px-6 lg:px-12 border-b border-[#E5E4DF] bg-[#FBFBFA]"
+      className="w-full py-16 px-4 sm:px-6 lg:px-12 border-b border-[var(--atlas-border)] bg-[var(--atlas-bg)]"
     >
       <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col md:flex-row md:items-end justify-between border-b border-[#121212] pb-6 mb-8 gap-4">
+        <div className="flex flex-col md:flex-row md:items-end justify-between border-b border-[var(--atlas-text)] pb-6 mb-8 gap-4">
           <div>
-            <div className="text-xs font-mono uppercase tracking-widest text-[#737373]">
+            <div className="text-xs font-mono uppercase tracking-widest text-[var(--atlas-text-muted)]">
               Section 07 // Spatial Geopolitics
             </div>
-            <h2 className="text-3xl sm:text-5xl font-semibold tracking-tight text-[#121212] mt-1">
+            <h2 className="text-3xl sm:text-5xl font-semibold tracking-tight text-[var(--atlas-text)] mt-1">
               European Cultural Map
             </h2>
           </div>
-          <div className="text-xs font-mono text-[#525252] max-w-md">
+          <div className="text-xs font-mono text-[var(--atlas-text-secondary)] max-w-md">
             Ideas traveled by rail, journals, and exile between European cultural poles. Drag
             the year slider to witness how the avant-garde gravitational center shifted across
             four decades.
           </div>
         </div>
 
-        <div className="mb-8 p-6 bg-[#F5F4EE] border border-[#E5E4DF]">
+        <div className="mb-8 p-6 bg-[var(--atlas-surface-alt)] border border-[var(--atlas-border)]">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-4">
             <div className="flex items-center gap-4">
               <button
                 type="button"
                 onClick={() => setIsPlaying(!isPlaying)}
-                className="font-mono text-xs px-3 py-1.5 bg-[#121212] text-white hover:bg-[#333] cursor-pointer"
+                className="font-mono text-xs px-3 py-1.5 bg-[var(--atlas-ink-button)] text-white hover:bg-[var(--atlas-ink-button-hover)] cursor-pointer"
                 aria-pressed={isPlaying}
               >
                 {isPlaying ? 'PAUSE ❚❚' : 'PLAY ANIMATION ▶'}
               </button>
-              <div className="font-mono text-2xl font-bold text-[#121212]">{selectedYear}</div>
+              <div className="font-mono text-2xl font-bold text-[var(--atlas-text)]">{selectedYear}</div>
             </div>
-            <div className="font-mono text-xs text-[#737373]">
+            <div className="font-mono text-xs text-[var(--atlas-text-muted)]">
               ACTIVE HUBS IN {selectedYear}: {activeCities.map((city) => city.name).join(', ')}
             </div>
           </div>
@@ -221,9 +221,9 @@ export const GeographySection: React.FC<GeographySectionProps> = ({
               max={1940}
               value={selectedYear}
               onChange={(event) => onSelectYear(Number(event.target.value))}
-              className="w-full h-2 bg-[#DDDCD4] appearance-none cursor-pointer accent-[#D82B2B]"
+              className="w-full h-2 bg-[var(--atlas-border-control)] appearance-none cursor-pointer accent-[#D82B2B]"
             />
-            <div className="flex justify-between text-[11px] font-mono text-[#8C8C88] mt-2">
+            <div className="flex justify-between text-[11px] font-mono text-[var(--atlas-text-quiet)] mt-2">
               <span>1900 // FIN-DE-SIÈCLE</span>
               <span>1914 // WAR & DADA</span>
               <span>1925 // DESSAU & VKhUTEMAS</span>
@@ -234,12 +234,12 @@ export const GeographySection: React.FC<GeographySectionProps> = ({
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          <div className="lg:col-span-8 border border-[#E5E4DF] bg-[#FAF9F5] p-4 relative overflow-hidden select-none">
-            <div className="absolute top-6 right-6 z-10 flex items-center border border-[#D8D7D0] bg-[#FBFBFA]/95 shadow-sm">
+          <div className="lg:col-span-8 border border-[var(--atlas-border)] bg-[var(--atlas-surface)] p-4 relative overflow-hidden select-none">
+            <div className="absolute top-6 right-6 z-10 flex items-center border border-[var(--geo-control-border)] bg-[var(--atlas-bg)]/95 shadow-sm">
               <button
                 type="button"
                 onClick={() => zoomFromCenter(0.8)}
-                className="w-9 h-9 border-r border-[#D8D7D0] font-mono text-lg hover:bg-[#121212] hover:text-white"
+                className="w-9 h-9 border-r border-[var(--geo-control-border)] font-mono text-lg hover:bg-[var(--atlas-text)] hover:text-white"
                 aria-label="Zoom in"
               >
                 +
@@ -247,7 +247,7 @@ export const GeographySection: React.FC<GeographySectionProps> = ({
               <button
                 type="button"
                 onClick={() => zoomFromCenter(1.25)}
-                className="w-9 h-9 border-r border-[#D8D7D0] font-mono text-lg hover:bg-[#121212] hover:text-white"
+                className="w-9 h-9 border-r border-[var(--geo-control-border)] font-mono text-lg hover:bg-[var(--atlas-text)] hover:text-white"
                 aria-label="Zoom out"
               >
                 −
@@ -255,21 +255,21 @@ export const GeographySection: React.FC<GeographySectionProps> = ({
               <button
                 type="button"
                 onClick={resetView}
-                className="h-9 px-3 font-mono text-[10px] uppercase hover:bg-[#121212] hover:text-white"
+                className="h-9 px-3 font-mono text-[10px] uppercase hover:bg-[var(--atlas-text)] hover:text-white"
                 aria-label="Reset map view"
               >
                 Reset
               </button>
             </div>
 
-            <div className="absolute top-16 right-6 z-10 bg-[#FBFBFA]/90 px-2 py-1 font-mono text-[9px] text-[#737373]">
+            <div className="absolute top-16 right-6 z-10 bg-[var(--atlas-bg)]/90 px-2 py-1 font-mono text-[9px] text-[var(--atlas-text-muted)]">
               ZOOM {zoomLevel}%
             </div>
 
             <svg
               ref={svgRef}
               viewBox={`${viewBox.x} ${viewBox.y} ${viewBox.width} ${viewBox.height}`}
-              className={`w-full h-auto bg-[#FAF9F5] touch-none ${
+              className={`w-full h-auto bg-[var(--atlas-surface)] touch-none ${
                 isPanning ? 'cursor-grabbing' : 'cursor-grab'
               }`}
               xmlns="http://www.w3.org/2000/svg"
@@ -292,20 +292,20 @@ export const GeographySection: React.FC<GeographySectionProps> = ({
                 y="0"
                 width={EUROPE_MAP.width}
                 height={EUROPE_MAP.height}
-                fill="#FAF9F5"
+                fill="var(--geo-water)"
               />
 
               <g aria-label="European geographic basemap">
                 <path
                   d={EUROPE_BASEMAP_PATH}
-                  fill="#EFEEE7"
-                  stroke="#CFCFC7"
+                  fill="var(--geo-land)"
+                  stroke="var(--geo-coast)"
                   strokeWidth="1.1"
                   vectorEffect="non-scaling-stroke"
                 />
               </g>
 
-              <g stroke="#E1E0D9" strokeWidth="0.75" strokeDasharray="3 3">
+              <g stroke="var(--geo-grid)" strokeWidth="0.75" strokeDasharray="3 3">
                 {LONGITUDE_TICKS.map((longitude) => {
                   const x = projectLongitude(longitude);
                   return (
@@ -335,7 +335,7 @@ export const GeographySection: React.FC<GeographySectionProps> = ({
               </g>
 
               <g
-                fill="#9A9992"
+                fill="var(--geo-label)"
                 fontFamily="IBM Plex Mono"
                 fontSize="9"
                 aria-hidden="true"
@@ -382,7 +382,7 @@ export const GeographySection: React.FC<GeographySectionProps> = ({
                       y1={sourcePoint.y}
                       x2={targetPoint.x}
                       y2={targetPoint.y}
-                      stroke={isActive ? '#AAA89E' : '#DAD9D1'}
+                      stroke={isActive ? 'var(--geo-connection-active)' : 'var(--geo-connection-muted)'}
                       strokeWidth={isActive ? 1.25 : 0.75}
                       strokeDasharray="3 4"
                       opacity={isActive ? 0.9 : 0.5}
@@ -434,7 +434,7 @@ export const GeographySection: React.FC<GeographySectionProps> = ({
                         cy="0"
                         r={isSelected ? 14 : 9}
                         fill="none"
-                        stroke={isSelected ? '#D82B2B' : '#121212'}
+                        stroke={isSelected ? '#D82B2B' : 'var(--geo-city-active)'}
                         strokeWidth="1"
                         strokeDasharray={isSelected ? '2 2' : undefined}
                         opacity="0.6"
@@ -473,7 +473,7 @@ export const GeographySection: React.FC<GeographySectionProps> = ({
                       cx="0"
                       cy="0"
                       r={isSelected || isHovered ? 5 : 3.5}
-                      fill={isSelected || isHovered ? '#D82B2B' : isActive ? '#121212' : '#A8A79E'}
+                      fill={isSelected || isHovered ? '#D82B2B' : isActive ? 'var(--geo-city-active)' : 'var(--geo-city-muted)'}
                     />
 
                     <text
@@ -482,7 +482,7 @@ export const GeographySection: React.FC<GeographySectionProps> = ({
                       fontFamily="IBM Plex Sans"
                       fontSize={isSelected || isHovered ? '12' : '10'}
                       fontWeight={isSelected || isHovered ? '700' : '600'}
-                      fill={isSelected || isHovered ? '#D82B2B' : isActive ? '#121212' : '#8C8C88'}
+                      fill={isSelected || isHovered ? '#D82B2B' : isActive ? 'var(--geo-city-active)' : 'var(--atlas-text-quiet)'}
                       letterSpacing="0.02em"
                     >
                       {city.name}
@@ -492,39 +492,39 @@ export const GeographySection: React.FC<GeographySectionProps> = ({
               })}
             </svg>
 
-            <div className="mt-3 flex flex-wrap justify-between gap-2 text-[10px] font-mono uppercase tracking-wide text-[#8C8C88]">
+            <div className="mt-3 flex flex-wrap justify-between gap-2 text-[10px] font-mono uppercase tracking-wide text-[var(--atlas-text-quiet)]">
               <span>Scroll // Zoom · Drag // Pan · Hover // Pulse</span>
               <span>Coordinates // geographic, not illustrative</span>
             </div>
           </div>
 
-          <div className="lg:col-span-4 border border-[#E5E4DF] bg-[#FAF9F5] p-6 min-h-[460px] flex flex-col justify-between">
+          <div className="lg:col-span-4 border border-[var(--atlas-border)] bg-[var(--atlas-surface)] p-6 min-h-[460px] flex flex-col justify-between">
             <div>
-              <div className="flex items-center justify-between border-b border-[#E5E4DF] pb-3 text-xs font-mono">
-                <span className="text-[#8C8C88] uppercase">Urban Epicenter</span>
-                <span className="text-[#121212] font-semibold">{selectedCity.country}</span>
+              <div className="flex items-center justify-between border-b border-[var(--atlas-border)] pb-3 text-xs font-mono">
+                <span className="text-[var(--atlas-text-quiet)] uppercase">Urban Epicenter</span>
+                <span className="text-[var(--atlas-text)] font-semibold">{selectedCity.country}</span>
               </div>
 
               <div className="mt-4">
-                <h3 className="text-3xl font-bold tracking-tight text-[#121212]">
+                <h3 className="text-3xl font-bold tracking-tight text-[var(--atlas-text)]">
                   {selectedCity.name}
                 </h3>
-                <div className="font-mono text-xs text-[#737373] mt-1">
+                <div className="font-mono text-xs text-[var(--atlas-text-muted)] mt-1">
                   Active Cultural Span: {selectedCity.activeEras.start}—{selectedCity.activeEras.end}
                 </div>
-                <div className="font-mono text-[10px] text-[#8C8C88] mt-1">
+                <div className="font-mono text-[10px] text-[var(--atlas-text-quiet)] mt-1">
                   {selectedCity.latitude.toFixed(4)}°N / {selectedCity.longitude.toFixed(4)}°E
                 </div>
 
-                <p className="mt-4 text-xs text-[#444] leading-relaxed">
+                <p className="mt-4 text-xs text-[var(--atlas-text-body)] leading-relaxed">
                   {selectedCity.historicalNotes}
                 </p>
 
-                <div className="mt-6 pt-4 border-t border-[#EAE9E4]">
-                  <span className="font-mono text-[10px] text-[#8C8C88] uppercase block mb-1">
+                <div className="mt-6 pt-4 border-t border-[var(--atlas-border-soft)]">
+                  <span className="font-mono text-[10px] text-[var(--atlas-text-quiet)] uppercase block mb-1">
                     Key Historical Institutions & Ateliers
                   </span>
-                  <ul className="text-xs text-[#333] space-y-1">
+                  <ul className="text-xs text-[var(--atlas-text-body)] space-y-1">
                     {selectedCity.keyInstitutions.map((institution) => (
                       <li key={institution} className="flex items-start gap-1.5">
                         <span className="text-[#D82B2B] font-mono">▪</span>
@@ -534,8 +534,8 @@ export const GeographySection: React.FC<GeographySectionProps> = ({
                   </ul>
                 </div>
 
-                <div className="mt-6 pt-4 border-t border-[#EAE9E4]">
-                  <span className="font-mono text-[10px] text-[#8C8C88] uppercase block mb-2">
+                <div className="mt-6 pt-4 border-t border-[var(--atlas-border-soft)]">
+                  <span className="font-mono text-[10px] text-[var(--atlas-text-quiet)] uppercase block mb-2">
                     Movements Connected to {selectedCity.name}:
                   </span>
                   <div className="flex flex-wrap gap-1.5">
@@ -544,7 +544,7 @@ export const GeographySection: React.FC<GeographySectionProps> = ({
                         type="button"
                         key={movementId}
                         onClick={() => onSelectMovement(movementId)}
-                        className="font-mono text-xs px-2.5 py-1 bg-white hover:bg-[#121212] hover:text-white border border-[#DDDCD4] cursor-pointer transition-colors"
+                        className="font-mono text-xs px-2.5 py-1 bg-[var(--atlas-card)] hover:bg-[var(--atlas-text)] hover:text-white border border-[var(--atlas-border-control)] cursor-pointer transition-colors"
                       >
                         {movementId.toUpperCase()} →
                       </button>
@@ -554,7 +554,7 @@ export const GeographySection: React.FC<GeographySectionProps> = ({
               </div>
             </div>
 
-            <div className="pt-4 border-t border-[#E5E4DF] text-[11px] font-mono text-[#8C8C88]">
+            <div className="pt-4 border-t border-[var(--atlas-border)] text-[11px] font-mono text-[var(--atlas-text-quiet)]">
               COORDINATES // EUROPEAN MODERNIST CONTINUUM
             </div>
           </div>
