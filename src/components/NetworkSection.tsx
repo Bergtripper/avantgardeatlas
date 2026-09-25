@@ -93,7 +93,7 @@ export const NetworkSection: React.FC<NetworkSectionProps> = ({ onSelectMovement
                   markerHeight="6"
                   orient="auto-start-reverse"
                 >
-                  <path d="M 0 1 L 10 5 L 0 9 z" fill="#121212" />
+                  <path d="M 0 1 L 10 5 L 0 9 z" fill="var(--network-ink)" />
                 </marker>
                 <marker
                   id="arrow-active"
@@ -109,7 +109,7 @@ export const NetworkSection: React.FC<NetworkSectionProps> = ({ onSelectMovement
               </defs>
 
               {/* Background architectural grid */}
-              <g stroke="#E5E4DF" strokeWidth="0.75" opacity="0.6">
+              <g stroke="var(--network-grid)" strokeWidth="0.75" opacity="0.6">
                 <line x1="100" y1="0" x2="100" y2="620" />
                 <line x1="300" y1="0" x2="300" y2="620" />
                 <line x1="500" y1="0" x2="500" y2="620" />
@@ -121,9 +121,9 @@ export const NetworkSection: React.FC<NetworkSectionProps> = ({ onSelectMovement
               </g>
 
               {/* Era Header Markers in SVG */}
-              <text x="100" y="30" fontFamily="IBM Plex Mono" fontSize="10" fill="#A8A79E" letterSpacing="0.1em">1890—1905 PRECURSORS</text>
-              <text x="400" y="30" fontFamily="IBM Plex Mono" fontSize="10" fill="#A8A79E" letterSpacing="0.1em">1905—1920 ABSTRACTION & DISRUPTION</text>
-              <text x="750" y="30" fontFamily="IBM Plex Mono" fontSize="10" fill="#A8A79E" letterSpacing="0.1em">1920—1940 SYNTHESIS & MODERN CANON</text>
+              <text x="100" y="30" fontFamily="IBM Plex Mono" fontSize="10" fill="var(--network-muted)" letterSpacing="0.1em">1890—1905 PRECURSORS</text>
+              <text x="400" y="30" fontFamily="IBM Plex Mono" fontSize="10" fill="var(--network-muted)" letterSpacing="0.1em">1905—1920 ABSTRACTION & DISRUPTION</text>
+              <text x="750" y="30" fontFamily="IBM Plex Mono" fontSize="10" fill="var(--network-muted)" letterSpacing="0.1em">1920—1940 SYNTHESIS & MODERN CANON</text>
 
               {/* Network Connections */}
               {ALL_CONNECTIONS.map((conn, idx) => {
@@ -162,8 +162,8 @@ export const NetworkSection: React.FC<NetworkSectionProps> = ({ onSelectMovement
                         isDirectlySelected
                           ? '#D82B2B'
                           : isConnectedToActive
-                          ? '#121212'
-                          : '#D5D4CC'
+                          ? 'var(--network-ink)'
+                          : 'var(--network-line)'
                       }
                       strokeWidth={
                         isDirectlySelected ? 3 : isConnectedToActive ? 2 : 1
@@ -212,8 +212,8 @@ export const NetworkSection: React.FC<NetworkSectionProps> = ({ onSelectMovement
                       cx="0"
                       cy="0"
                       r={isSelected ? 6 : 4}
-                      fill={isSelected ? '#D82B2B' : '#121212'}
-                      stroke="#FFFFFF"
+                      fill={isSelected ? '#D82B2B' : 'var(--network-ink)'}
+                      stroke="var(--network-node-stroke)"
                       strokeWidth="1.5"
                     />
 
@@ -223,8 +223,8 @@ export const NetworkSection: React.FC<NetworkSectionProps> = ({ onSelectMovement
                       y="-28"
                       width={node.name.length * 9.5 + 20}
                       height="24"
-                      fill={isSelected ? '#121212' : '#FAF9F5'}
-                      stroke={isSelected ? '#121212' : '#DDDCD4'}
+                      fill={isSelected ? 'var(--network-ink)' : 'var(--network-paper)'}
+                      stroke={isSelected ? 'var(--network-ink)' : 'var(--network-border)'}
                       strokeWidth="1"
                     />
 
@@ -235,7 +235,7 @@ export const NetworkSection: React.FC<NetworkSectionProps> = ({ onSelectMovement
                       fontFamily="IBM Plex Sans"
                       fontSize="12"
                       fontWeight={isSelected ? '700' : '600'}
-                      fill={isSelected ? '#FFFFFF' : '#121212'}
+                      fill={isSelected ? 'var(--network-paper)' : 'var(--network-ink)'}
                       letterSpacing="-0.01em"
                     >
                       {node.name}
