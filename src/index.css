@@ -79,6 +79,18 @@
   --atlas-ink-button-hover: #262626;
   --atlas-on-ink: #FBFBFA;
 
+  /* Interactive geography palette */
+  --geo-water: #FAF9F5;
+  --geo-land: #EFEEE7;
+  --geo-coast: #CFCFC7;
+  --geo-grid: #E1E0D9;
+  --geo-label: #9A9992;
+  --geo-city-muted: #A8A79E;
+  --geo-city-active: #121212;
+  --geo-connection-muted: #DAD9D1;
+  --geo-connection-active: #AAA89E;
+  --geo-control-border: #D8D7D0;
+
   position: relative;
   isolation: isolate;
   transition: background-color 180ms ease, color 180ms ease;
@@ -129,6 +141,17 @@
   --atlas-ink-button: #121212;
   --atlas-ink-button-hover: #262626;
   --atlas-on-ink: #FBFBFA;
+
+  --geo-water: #151512;
+  --geo-land: #24241F;
+  --geo-coast: #55544C;
+  --geo-grid: #35352F;
+  --geo-label: #99988F;
+  --geo-city-muted: #77766F;
+  --geo-city-active: #F1F0E8;
+  --geo-connection-muted: #393833;
+  --geo-connection-active: #77766F;
+  --geo-control-border: #45443E;
 
   filter: invert(0);
   background: var(--atlas-bg);
