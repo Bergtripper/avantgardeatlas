@@ -1,10 +1,11 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { getPersonById } from '../data/people';
 import { getPlaceById } from '../data/places';
 import {
   ALL_DIFFUSION_ROUTES,
   ALL_GLOBAL_HUBS,
   DiffusionMechanism,
+  DiffusionMedium,
   DiffusionPlaceRef,
   DiffusionRoute,
   getGlobalEntityById,
@@ -138,14 +139,44 @@ const routePath = (route: DiffusionRoute) => {
 };
 
 export const GlobalDiffusionSection: React.FC = () => {
+  const minRouteYear = Math.min(...ALL_DIFFUSION_ROUTES.map((route) => route.startYear));
+  const maxRouteYear = Math.max(...ALL_DIFFUSION_ROUTES.map((route) => route.endYear ?? route.startYear));
+  const availableMedia = useMemo(
+    () =>
+      Array.from(new Set(ALL_DIFFUSION_ROUTES.flatMap((route) => route.media))).sort() as DiffusionMedium[],
+    [],
+  );
+
   const [selectedRouteId, setSelectedRouteId] = useState(ALL_DIFFUSION_ROUTES[0]?.id ?? '');
+  const [yearFilter, setYearFilter] = useState(maxRouteYear);
+  const [semanticFilter, setSemanticFilter] = useState<RouteSemanticId | 'all'>('all');
+  const [mediumFilter, setMediumFilter] = useState<DiffusionMedium | 'all'>('all');
+
+  const filteredRoutes = useMemo(
+    () =>
+      ALL_DIFFUSION_ROUTES.filter((route) => {
+        const routeYear = route.startYear;
+        const semantic = semanticForMechanisms(route.mechanisms);
+        const matchesYear = routeYear <= yearFilter;
+        const matchesSemantic = semanticFilter === 'all' || semantic.id === semanticFilter;
+        const matchesMedium = mediumFilter === 'all' || route.media.includes(mediumFilter);
+        return matchesYear && matchesSemantic && matchesMedium;
+      }),
+    [yearFilter, semanticFilter, mediumFilter],
+  );
+
+  useEffect(() => {
+    if (filteredRoutes.some((route) => route.id === selectedRouteId)) return;
+    setSelectedRouteId(filteredRoutes[0]?.id ?? '');
+  }, [filteredRoutes, selectedRouteId]);
+
   const selectedRoute =
-    ALL_DIFFUSION_ROUTES.find((route) => route.id === selectedRouteId) ?? ALL_DIFFUSION_ROUTES[0];
+    filteredRoutes.find((route) => route.id === selectedRouteId) ?? filteredRoutes[0];
 
   const atlasRoutePlaces = useMemo(() => {
     const seen = new Map<string, ReturnType<typeof resolvePlace>>();
 
-    ALL_DIFFUSION_ROUTES.forEach((route) => {
+    filteredRoutes.forEach((route) => {
       [route.origin, route.destination].forEach((ref) => {
         if (ref.scope !== 'atlas' || seen.has(ref.id)) return;
         seen.set(ref.id, resolvePlace(ref));
@@ -153,7 +184,17 @@ export const GlobalDiffusionSection: React.FC = () => {
     });
 
     return Array.from(seen.values()).filter(Boolean) as NonNullable<ReturnType<typeof resolvePlace>>[];
-  }, []);
+  }, [filteredRoutes]);
+
+  const visibleGlobalHubIds = useMemo(() => {
+    const ids = new Set<string>();
+    filteredRoutes.forEach((route) => {
+      [route.origin, route.destination].forEach((ref) => {
+        if (ref.scope === 'global') ids.add(ref.id);
+      });
+    });
+    return ids;
+  }, [filteredRoutes]);
 
   const selectedSemantic = selectedRoute
     ? semanticForMechanisms(selectedRoute.mechanisms)
@@ -176,6 +217,15 @@ export const GlobalDiffusionSection: React.FC = () => {
     .map((id) => getGlobalSourceById(id))
     .filter(Boolean) ?? [];
 
+  const resetFilters = () => {
+    setYearFilter(maxRouteYear);
+    setSemanticFilter('all');
+    setMediumFilter('all');
+  };
+
+  const hasActiveFilters =
+    yearFilter !== maxRouteYear || semanticFilter !== 'all' || mediumFilter !== 'all';
+
   return (
     <section className="w-full py-16 px-4 sm:px-6 lg:px-12 border-b border-[var(--atlas-border)] bg-[var(--atlas-bg)]">
       <div className="max-w-7xl mx-auto">
@@ -194,14 +244,105 @@ export const GlobalDiffusionSection: React.FC = () => {
           </div>
         </div>
 
+
+        <div className="mb-8 border border-[var(--atlas-border)] bg-[var(--atlas-surface)]">
+          <div className="px-4 py-3 border-b border-[var(--atlas-border)] flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <div className="font-mono text-[9px] uppercase tracking-widest text-[var(--atlas-text-muted)]">
+                Filter transmission network
+              </div>
+              <div className="mt-1 text-xs text-[var(--atlas-text-secondary)]">
+                {filteredRoutes.length} of {ALL_DIFFUSION_ROUTES.length} routes visible
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={resetFilters}
+              disabled={!hasActiveFilters}
+              className="font-mono text-[10px] uppercase tracking-wider px-3 py-1.5 border border-[var(--atlas-border-control)] disabled:opacity-35 disabled:cursor-default hover:border-[var(--atlas-text)]"
+            >
+              Reset filters
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-[var(--atlas-border)]">
+            <div className="bg-[var(--atlas-card)] p-4">
+              <label
+                htmlFor="global-year-filter"
+                className="flex items-center justify-between gap-3 font-mono text-[10px] uppercase tracking-wider text-[var(--atlas-text-muted)]"
+              >
+                <span>Up to year</span>
+                <span className="font-semibold text-[var(--atlas-text)]">{yearFilter}</span>
+              </label>
+              <input
+                id="global-year-filter"
+                type="range"
+                min={minRouteYear}
+                max={maxRouteYear}
+                value={yearFilter}
+                onChange={(event) => setYearFilter(Number(event.target.value))}
+                className="w-full mt-3 accent-[#D82B2B]"
+              />
+              <div className="mt-1 flex justify-between font-mono text-[9px] text-[var(--atlas-text-quiet)]">
+                <span>{minRouteYear}</span>
+                <span>{maxRouteYear}</span>
+              </div>
+            </div>
+
+            <div className="bg-[var(--atlas-card)] p-4">
+              <label
+                htmlFor="global-mechanism-filter"
+                className="block font-mono text-[10px] uppercase tracking-wider text-[var(--atlas-text-muted)] mb-2"
+              >
+                Primary mechanism
+              </label>
+              <select
+                id="global-mechanism-filter"
+                value={semanticFilter}
+                onChange={(event) => setSemanticFilter(event.target.value as RouteSemanticId | 'all')}
+                className="w-full border border-[var(--atlas-border-control)] bg-[var(--atlas-bg)] text-[var(--atlas-text)] px-3 py-2 text-xs font-mono"
+              >
+                <option value="all">All mechanisms</option>
+                {SEMANTIC_LEGEND.map((semantic) => (
+                  <option key={semantic.id} value={semantic.id}>
+                    {semantic.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="bg-[var(--atlas-card)] p-4">
+              <label
+                htmlFor="global-medium-filter"
+                className="block font-mono text-[10px] uppercase tracking-wider text-[var(--atlas-text-muted)] mb-2"
+              >
+                Medium / field
+              </label>
+              <select
+                id="global-medium-filter"
+                value={mediumFilter}
+                onChange={(event) => setMediumFilter(event.target.value as DiffusionMedium | 'all')}
+                className="w-full border border-[var(--atlas-border-control)] bg-[var(--atlas-bg)] text-[var(--atlas-text)] px-3 py-2 text-xs font-mono"
+              >
+                <option value="all">All media</option>
+                {availableMedia.map((medium) => (
+                  <option key={medium} value={medium}>
+                    {medium.replaceAll('-', ' ')}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           <div className="lg:col-span-8 border border-[var(--atlas-border)] bg-[var(--atlas-surface)] overflow-hidden">
             <div className="px-4 py-3 border-b border-[var(--atlas-border)] flex flex-wrap items-center justify-between gap-2">
               <span className="font-mono text-[10px] uppercase tracking-widest text-[var(--atlas-text-muted)]">
-                1923—1937 // Pilot Network
+                {minRouteYear}—{maxRouteYear} // Pilot Network
               </span>
               <span className="font-mono text-[10px] uppercase tracking-widest text-[var(--atlas-text-quiet)]">
-                3 routes · 6 geographic nodes
+                {filteredRoutes.length} route{filteredRoutes.length === 1 ? '' : 's'} · filtered view
               </span>
             </div>
 
@@ -277,7 +418,7 @@ export const GlobalDiffusionSection: React.FC = () => {
                 strokeWidth="0.7"
               />
 
-              {ALL_DIFFUSION_ROUTES.map((route) => {
+              {filteredRoutes.map((route) => {
                 const active = route.id === selectedRoute?.id;
                 const semantic = semanticForMechanisms(route.mechanisms);
                 const markerId =
@@ -340,7 +481,7 @@ export const GlobalDiffusionSection: React.FC = () => {
                 );
               })}
 
-              {ALL_GLOBAL_HUBS.map((hub) => {
+              {ALL_GLOBAL_HUBS.filter((hub) => visibleGlobalHubIds.has(hub.id)).map((hub) => {
                 const point = projectGlobalCoordinate(hub.longitude, hub.latitude);
                 const active =
                   selectedDestination?.id === hub.id || selectedOrigin?.id === hub.id;
@@ -371,7 +512,7 @@ export const GlobalDiffusionSection: React.FC = () => {
             </svg>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 border-t border-[var(--atlas-border)]">
-              {ALL_DIFFUSION_ROUTES.map((route, index) => {
+              {filteredRoutes.map((route, index) => {
                 const active = route.id === selectedRoute?.id;
                 return (
                   <button
