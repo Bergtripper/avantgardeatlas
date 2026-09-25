@@ -1,0 +1,6 @@
+{
+  "name": "Avant-Garde Atlas 1890—1940",
+  "description": "An interactive digital atlas and editorial archive dedicated to the major artistic, architectural, graphic, and design movements of the early 20th century.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
