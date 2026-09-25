@@ -248,6 +248,10 @@ export const GlobalDiffusionSection: React.FC = () => {
     .map((id) => getGlobalEntityById(id))
     .filter(Boolean) ?? [];
 
+  const selectedTransmissionEntities = selectedRoute?.transmissionEntityIds
+    ?.map((id) => getGlobalEntityById(id))
+    .filter(Boolean) ?? [];
+
   const selectedHistoricalContexts = selectedRoute?.historicalContextIds
     ?.map((id) => getGlobalHistoricalEventById(id))
     .filter(Boolean) ?? [];
@@ -741,6 +745,21 @@ export const GlobalDiffusionSection: React.FC = () => {
                     ))}
                   </dd>
                 </div>
+                {selectedTransmissionEntities.length > 0 && (
+                  <div>
+                    <dt className="font-mono uppercase tracking-wider text-[var(--atlas-text-muted)]">Publication carriers</dt>
+                    <dd className="mt-1 flex flex-wrap gap-1.5">
+                      {selectedTransmissionEntities.map((entity) => (
+                        <span
+                          key={entity?.id}
+                          className="px-2 py-1 border border-[var(--atlas-border-control)] bg-[var(--atlas-card)] font-mono text-[10px]"
+                        >
+                          {entity?.name}
+                        </span>
+                      ))}
+                    </dd>
+                  </div>
+                )}
                 {selectedEntities.length > 0 && (
                   <div>
                     <dt className="font-mono uppercase tracking-wider text-[var(--atlas-text-muted)]">Local expression</dt>
