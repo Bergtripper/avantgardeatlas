@@ -271,14 +271,14 @@ export const ArchivalVectorPlate: React.FC<ArchivalVectorPlateProps> = ({
   };
 
   return (
-    <div className={`relative border border-[#E5E4DF] bg-[#FAF9F5] flex flex-col ${className}`}>
+    <div className={`relative border border-[var(--atlas-border)] bg-[var(--atlas-surface)] flex flex-col ${className}`}>
       <div className="flex-1 flex items-center justify-center overflow-hidden">
         {renderSvg()}
       </div>
       {caption && showLabels && (
-        <div className="px-4 py-2 border-t border-[#E5E4DF] bg-[#F7F6F2] flex items-center justify-between text-xs text-[#737373]">
+        <div className="px-4 py-2 border-t border-[var(--atlas-border)] bg-[var(--atlas-control)] flex items-center justify-between text-xs text-[var(--atlas-text-muted)]">
           <span className="font-mono text-[11px] uppercase tracking-wider">{caption}</span>
-          <span className="font-mono text-[10px] text-[#A8A79E]">ARCHIVE ID: {type.toUpperCase()}</span>
+          <span className="font-mono text-[10px] text-[var(--atlas-text-faint)]">ARCHIVE ID: {type.toUpperCase()}</span>
         </div>
       )}
     </div>
