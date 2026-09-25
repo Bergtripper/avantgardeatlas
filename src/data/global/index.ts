@@ -3,6 +3,7 @@ export * from './hubs';
 export * from './people';
 export * from './publications';
 export * from './institutions';
+export * from './exhibitions';
 export * from './expressions';
 export * from './entities';
 export * from './routes';
