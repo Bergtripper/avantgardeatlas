@@ -45,6 +45,27 @@
 
 /* Atlas UI layers: persistent theme + optional architectural grid */
 .atlas-shell {
+  /* Core editorial design tokens.
+     Light values intentionally match the pre-refactor palette exactly. */
+  --atlas-bg: #FBFBFA;
+  --atlas-header-bg: rgba(251, 251, 250, 0.95);
+  --atlas-surface: #FAF9F5;
+  --atlas-surface-alt: #F5F4EE;
+  --atlas-control: #F7F6F2;
+  --atlas-hover-surface: #F4F4EE;
+  --atlas-text: #121212;
+  --atlas-text-secondary: #525252;
+  --atlas-text-muted: #737373;
+  --atlas-text-quiet: #8C8C88;
+  --atlas-text-faint: #A8A79E;
+  --atlas-border: #E5E4DF;
+  --atlas-border-soft: #EAE9E4;
+  --atlas-border-control: #DDDCD4;
+  --atlas-rule-subtle: rgba(18, 18, 18, 0.15);
+  --atlas-ink-button: #121212;
+  --atlas-ink-button-hover: #262626;
+  --atlas-on-ink: #FBFBFA;
+
   position: relative;
   isolation: isolate;
   transition: background-color 180ms ease, color 180ms ease;
@@ -64,9 +85,28 @@
 }
 
 .atlas-shell[data-theme='dark'] {
+  --atlas-bg: #11110F;
+  --atlas-header-bg: rgba(17, 17, 15, 0.95);
+  --atlas-surface: #151512;
+  --atlas-surface-alt: #1D1D19;
+  --atlas-control: #191916;
+  --atlas-hover-surface: #1D1D19;
+  --atlas-text: #F1F0E8;
+  --atlas-text-secondary: #C2C1B9;
+  --atlas-text-muted: #A7A69E;
+  --atlas-text-quiet: #8F8E87;
+  --atlas-text-faint: #A8A79E;
+  --atlas-border: #35352F;
+  --atlas-border-soft: #35352F;
+  --atlas-border-control: #35352F;
+  --atlas-rule-subtle: rgba(241, 240, 232, 0.15);
+  --atlas-ink-button: #121212;
+  --atlas-ink-button-hover: #262626;
+  --atlas-on-ink: #FBFBFA;
+
   filter: invert(0);
-  background: #11110F;
-  color: #F1F0E8;
+  background: var(--atlas-bg);
+  color: var(--atlas-text);
 }
 
 .atlas-shell[data-theme='dark'] [class*='bg-[#FBFBFA]'] { background-color: #11110F !important; }
