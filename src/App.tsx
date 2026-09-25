@@ -1,20 +1,38 @@
-import { useState, useEffect } from 'react';
+import { lazy, Suspense, useState, useEffect } from 'react';
 import { MovementId } from './types/atlas';
 import { ALL_MOVEMENTS, getMovementById } from './data/movements';
-import { ALL_OBJECTS } from './data/objects';
 import { Header, NavTab } from './components/Header';
 import { HeroSection } from './components/HeroSection';
 import { TimelineSection } from './components/TimelineSection';
 import { NetworkSection } from './components/NetworkSection';
 import { MovementsIndexSection } from './components/MovementsIndexSection';
-import { ObjectsArchiveSection } from './components/ObjectsArchiveSection';
-import { CompareSection } from './components/CompareSection';
-import { PeopleSection } from './components/PeopleSection';
-import { StoriesSection } from './components/StoriesSection';
-import { GeographySection } from './components/GeographySection';
-import { MovementDetailView } from './components/MovementDetailView';
 import { Footer } from './components/Footer';
 import { parseAtlasRoute, pathForMovement, pathForTab } from './routing';
+
+const ObjectsRouteSection = lazy(() => import('./routes/ObjectsRouteSection'));
+const CompareSection = lazy(() =>
+  import('./components/CompareSection').then((module) => ({ default: module.CompareSection }))
+);
+const PeopleSection = lazy(() =>
+  import('./components/PeopleSection').then((module) => ({ default: module.PeopleSection }))
+);
+const StoriesSection = lazy(() =>
+  import('./components/StoriesSection').then((module) => ({ default: module.StoriesSection }))
+);
+const GeographySection = lazy(() =>
+  import('./components/GeographySection').then((module) => ({ default: module.GeographySection }))
+);
+const MovementDetailView = lazy(() =>
+  import('./components/MovementDetailView').then((module) => ({ default: module.MovementDetailView }))
+);
+
+const SectionLoading = () => (
+  <div
+    className="min-h-[35vh] border-b border-[var(--atlas-border)] bg-[var(--atlas-bg)]"
+    aria-live="polite"
+    aria-label="Loading atlas section"
+  />
+);
 
 export default function App() {
   const initialRoute = parseAtlasRoute();
@@ -141,6 +159,7 @@ export default function App() {
 
       {/* Main Content Area */}
       <main id="main-content" className="flex-1 w-full" tabIndex={-1}>
+        <Suspense fallback={<SectionLoading />}>
         {selectedMovement ? (
           /* Dedicated Immersive Movement Page (e.g. Bauhaus, De Stijl, Constructivism, etc.) */
           <MovementDetailView
@@ -197,10 +216,7 @@ export default function App() {
             )}
 
             {currentTab === 'archive' && (
-              <ObjectsArchiveSection
-                objects={ALL_OBJECTS}
-                onSelectMovement={handleSelectMovement}
-              />
+              <ObjectsRouteSection onSelectMovement={handleSelectMovement} />
             )}
 
             {currentTab === 'compare' && (
@@ -227,6 +243,7 @@ export default function App() {
             )}
           </>
         )}
+        </Suspense>
       </main>
 
       {/* Editorial Colophon Footer */}

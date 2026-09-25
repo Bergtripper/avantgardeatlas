@@ -80,7 +80,7 @@ export const TimelineSection: React.FC<TimelineSectionProps> = ({
 
         {/* Timeline Visualization Container */}
         <div className="relative overflow-x-auto pb-6 pt-2">
-          <div className="min-w-[850px] relative select-none">
+          <div className="min-w-[720px] sm:min-w-[850px] relative select-none">
             {/* Top Year Ruler */}
             <div
               className="relative h-12 border-b-2 border-[var(--atlas-text)] flex items-end cursor-crosshair"
