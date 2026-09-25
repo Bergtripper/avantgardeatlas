@@ -192,7 +192,7 @@ export const GeographySection: React.FC<GeographySectionProps> = ({
           </div>
         </div>
 
-        <div className="mb-8 p-6 bg-[var(--atlas-surface-alt)] border border-[var(--atlas-border)]">
+        <div className="mb-8 p-4 sm:p-6 bg-[var(--atlas-surface-alt)] border border-[var(--atlas-border)]">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-4">
             <div className="flex items-center gap-4">
               <button
@@ -225,16 +225,16 @@ export const GeographySection: React.FC<GeographySectionProps> = ({
             />
             <div className="flex justify-between text-[11px] font-mono text-[var(--atlas-text-quiet)] mt-2">
               <span>1900 // FIN-DE-SIÈCLE</span>
-              <span>1914 // WAR & DADA</span>
-              <span>1925 // DESSAU & VKhUTEMAS</span>
-              <span>1933 // EXILE & CIAM</span>
+              <span className="hidden sm:inline">1914 // WAR & DADA</span>
+              <span className="hidden md:inline">1925 // DESSAU & VKhUTEMAS</span>
+              <span className="hidden sm:inline">1933 // EXILE & CIAM</span>
               <span>1940 // DISPERSAL</span>
             </div>
           </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          <div className="lg:col-span-8 border border-[var(--atlas-border)] bg-[var(--atlas-surface)] p-4 relative overflow-hidden select-none">
+          <div className="lg:col-span-8 border border-[var(--atlas-border)] bg-[var(--atlas-surface)] p-2 sm:p-4 relative overflow-hidden select-none">
             <div className="absolute top-6 right-6 z-10 flex items-center border border-[var(--geo-control-border)] bg-[var(--atlas-bg)]/95 shadow-sm">
               <button
                 type="button"
