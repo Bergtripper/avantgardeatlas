@@ -241,15 +241,15 @@ export const GlobalDiffusionSection: React.FC = () => {
         <div className="flex flex-col md:flex-row md:items-end justify-between border-b border-[var(--atlas-text)] pb-6 mb-8 gap-4">
           <div>
             <div className="text-xs font-mono uppercase tracking-widest text-[var(--atlas-text-muted)]">
-              Global Diffusion // Prototype 01
+              Global Diffusion // Transmission Network
             </div>
             <h2 className="text-3xl sm:text-5xl font-semibold tracking-tight text-[var(--atlas-text)] mt-1">
               The Avant-Garde in Transit
             </h2>
           </div>
           <div className="text-xs font-mono text-[var(--atlas-text-secondary)] max-w-lg leading-relaxed">
-            Three pilot routes test a global model based on travel, exile, institutional transfer
-            and local reinterpretation—not a one-way map of European influence.
+            A growing network traces how avant-garde ideas moved through travel, exile, print,
+            institutions, commercial practice and local reinterpretation—not as a one-way map of European influence.
           </div>
         </div>
 
@@ -348,7 +348,7 @@ export const GlobalDiffusionSection: React.FC = () => {
           <div className="lg:col-span-8 border border-[var(--atlas-border)] bg-[var(--atlas-surface)] overflow-hidden">
             <div className="px-4 py-3 border-b border-[var(--atlas-border)] flex flex-wrap items-center justify-between gap-2">
               <span className="font-mono text-[10px] uppercase tracking-widest text-[var(--atlas-text-muted)]">
-                {minRouteYear}—{maxRouteYear} // Pilot Network
+                {minRouteYear}—{maxRouteYear} // Transmission Network
               </span>
               <span className="font-mono text-[10px] uppercase tracking-widest text-[var(--atlas-text-quiet)]">
                 {filteredRoutes.length} route{filteredRoutes.length === 1 ? '' : 's'} · filtered view
@@ -405,7 +405,7 @@ export const GlobalDiffusionSection: React.FC = () => {
             >
               <title id="global-map-title">Global diffusion of the avant-garde</title>
               <desc id="global-map-desc">
-                Pilot map showing routes from Berlin to Tokyo, Dessau to Chicago and Paris to Montevideo.
+                Interactive world map of documented avant-garde transmission routes between European and global cultural hubs from 1917 to 1939.
               </desc>
 
               <defs>
@@ -653,7 +653,7 @@ export const GlobalDiffusionSection: React.FC = () => {
                 Adjust the filters
               </h3>
               <p className="mt-3 text-sm leading-relaxed text-[var(--atlas-text-secondary)]">
-                The current year, mechanism and medium combination excludes all pilot transmissions.
+                The current year, mechanism and medium combination excludes all documented transmissions.
               </p>
               <button
                 type="button"
