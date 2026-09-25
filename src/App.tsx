@@ -22,6 +22,9 @@ const StoriesSection = lazy(() =>
 const GeographySection = lazy(() =>
   import('./components/GeographySection').then((module) => ({ default: module.GeographySection }))
 );
+const GlobalDiffusionSection = lazy(() =>
+  import('./components/GlobalDiffusionSection').then((module) => ({ default: module.GlobalDiffusionSection }))
+);
 const MovementDetailView = lazy(() =>
   import('./components/MovementDetailView').then((module) => ({ default: module.MovementDetailView }))
 );
@@ -106,6 +109,8 @@ export default function App() {
       ? 'Objects'
       : currentTab === 'geography'
       ? 'Geography'
+      : currentTab === 'global'
+      ? 'Global Diffusion'
       : currentTab.charAt(0).toUpperCase() + currentTab.slice(1);
 
     document.title = movement
@@ -240,6 +245,10 @@ export default function App() {
                 selectedYear={selectedYear}
                 onSelectYear={setSelectedYear}
               />
+            )}
+
+            {currentTab === 'global' && (
+              <GlobalDiffusionSection />
             )}
           </>
         )}
