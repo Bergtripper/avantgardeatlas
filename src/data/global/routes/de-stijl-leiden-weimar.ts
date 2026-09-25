@@ -6,7 +6,7 @@ export const deStijlLeidenWeimarRoute: DiffusionRoute = {
   origin: { scope: 'global', id: 'leiden' },
   destination: { scope: 'atlas', id: 'weimar' },
   startYear: 1922,
-  personRefs: [{ scope: 'global', id: 'theo-van-doesburg' }],
+  personRefs: [{ scope: 'atlas', id: 'theo-van-doesburg' }],
   mechanisms: ['print', 'reinterpretation'],
   sourceMovementIds: ['de-stijl', 'constructivism'],
   transmissionEntityIds: ['de-stijl-magazine'],
