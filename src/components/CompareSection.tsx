@@ -84,9 +84,9 @@ export const CompareSection: React.FC<CompareSectionProps> = ({
         <div className="overflow-x-auto pb-6">
           <div className="min-w-[900px]">
             {/* Columns Header Grid */}
-            <div className={`grid grid-cols-12 gap-px bg-[#DDDCD4] border border-[var(--atlas-border-control)]`}>
+            <div className={`grid grid-cols-12 gap-px bg-[var(--atlas-border-control)] border border-[var(--atlas-border-control)]`}>
               {/* Category Label Column */}
-              <div className="col-span-3 bg-[#EBEAE4] p-4 text-xs font-mono uppercase tracking-wider text-[var(--atlas-text-muted)] flex items-center">
+              <div className="col-span-3 bg-[var(--atlas-soft-fill)] p-4 text-xs font-mono uppercase tracking-wider text-[var(--atlas-text-muted)] flex items-center">
                 CATEGORY
               </div>
 
@@ -118,7 +118,7 @@ export const CompareSection: React.FC<CompareSectionProps> = ({
             </div>
 
             {/* Row 1: Core Philosophy */}
-            <div className="grid grid-cols-12 gap-px bg-[#DDDCD4] border-x border-b border-[var(--atlas-border-control)]">
+            <div className="grid grid-cols-12 gap-px bg-[var(--atlas-border-control)] border-x border-b border-[var(--atlas-border-control)]">
               <div className="col-span-3 bg-[var(--atlas-surface-alt)] p-4 text-xs font-mono font-semibold uppercase text-[var(--atlas-text)]">
                 01 / CORE PHILOSOPHY
               </div>
@@ -133,7 +133,7 @@ export const CompareSection: React.FC<CompareSectionProps> = ({
             </div>
 
             {/* Row 2: Geometry & Visual DNA */}
-            <div className="grid grid-cols-12 gap-px bg-[#DDDCD4] border-x border-b border-[var(--atlas-border-control)]">
+            <div className="grid grid-cols-12 gap-px bg-[var(--atlas-border-control)] border-x border-b border-[var(--atlas-border-control)]">
               <div className="col-span-3 bg-[var(--atlas-surface-alt)] p-4 text-xs font-mono font-semibold uppercase text-[var(--atlas-text)]">
                 02 / GEOMETRY & FORM
               </div>
@@ -153,7 +153,7 @@ export const CompareSection: React.FC<CompareSectionProps> = ({
             </div>
 
             {/* Row 3: Colour Palette */}
-            <div className="grid grid-cols-12 gap-px bg-[#DDDCD4] border-x border-b border-[var(--atlas-border-control)]">
+            <div className="grid grid-cols-12 gap-px bg-[var(--atlas-border-control)] border-x border-b border-[var(--atlas-border-control)]">
               <div className="col-span-3 bg-[var(--atlas-surface-alt)] p-4 text-xs font-mono font-semibold uppercase text-[var(--atlas-text)]">
                 03 / COLOUR PALETTE
               </div>
@@ -180,7 +180,7 @@ export const CompareSection: React.FC<CompareSectionProps> = ({
             </div>
 
             {/* Row 4: Typography */}
-            <div className="grid grid-cols-12 gap-px bg-[#DDDCD4] border-x border-b border-[var(--atlas-border-control)]">
+            <div className="grid grid-cols-12 gap-px bg-[var(--atlas-border-control)] border-x border-b border-[var(--atlas-border-control)]">
               <div className="col-span-3 bg-[var(--atlas-surface-alt)] p-4 text-xs font-mono font-semibold uppercase text-[var(--atlas-text)]">
                 04 / TYPOGRAPHY
               </div>
@@ -205,7 +205,7 @@ export const CompareSection: React.FC<CompareSectionProps> = ({
             </div>
 
             {/* Row 5: Architecture */}
-            <div className="grid grid-cols-12 gap-px bg-[#DDDCD4] border-x border-b border-[var(--atlas-border-control)]">
+            <div className="grid grid-cols-12 gap-px bg-[var(--atlas-border-control)] border-x border-b border-[var(--atlas-border-control)]">
               <div className="col-span-3 bg-[var(--atlas-surface-alt)] p-4 text-xs font-mono font-semibold uppercase text-[var(--atlas-text)]">
                 05 / ARCHITECTURE
               </div>
@@ -220,7 +220,7 @@ export const CompareSection: React.FC<CompareSectionProps> = ({
             </div>
 
             {/* Row 6: Relationship with Industry */}
-            <div className="grid grid-cols-12 gap-px bg-[#DDDCD4] border-x border-b border-[var(--atlas-border-control)]">
+            <div className="grid grid-cols-12 gap-px bg-[var(--atlas-border-control)] border-x border-b border-[var(--atlas-border-control)]">
               <div className="col-span-3 bg-[var(--atlas-surface-alt)] p-4 text-xs font-mono font-semibold uppercase text-[var(--atlas-text)]">
                 06 / INDUSTRY & MANUFACTURE
               </div>
@@ -235,7 +235,7 @@ export const CompareSection: React.FC<CompareSectionProps> = ({
             </div>
 
             {/* Row 7: Canonical Key Work */}
-            <div className="grid grid-cols-12 gap-px bg-[#DDDCD4] border-x border-b border-[var(--atlas-border-control)]">
+            <div className="grid grid-cols-12 gap-px bg-[var(--atlas-border-control)] border-x border-b border-[var(--atlas-border-control)]">
               <div className="col-span-3 bg-[var(--atlas-surface-alt)] p-4 text-xs font-mono font-semibold uppercase text-[var(--atlas-text)]">
                 07 / CANONICAL WORK
               </div>
@@ -270,7 +270,7 @@ export const CompareSection: React.FC<CompareSectionProps> = ({
             </div>
 
             {/* Row 8: Key Figures */}
-            <div className="grid grid-cols-12 gap-px bg-[#DDDCD4] border-x border-b border-[var(--atlas-border-control)]">
+            <div className="grid grid-cols-12 gap-px bg-[var(--atlas-border-control)] border-x border-b border-[var(--atlas-border-control)]">
               <div className="col-span-3 bg-[var(--atlas-surface-alt)] p-4 text-xs font-mono font-semibold uppercase text-[var(--atlas-text)]">
                 08 / KEY FIGURES
               </div>
