@@ -64,7 +64,7 @@ export const NetworkSection: React.FC<NetworkSectionProps> = ({ onSelectMovement
                 }}
                 className={`px-3 py-1 cursor-pointer transition-all uppercase tracking-wider shrink-0 border ${
                   isSelected
-                    ? 'bg-[#121212] text-[#FFFFFF] border-[var(--atlas-text)] font-semibold'
+                    ? 'bg-[var(--atlas-ink-button)] text-[var(--atlas-on-ink)] border-[var(--atlas-text)] font-semibold'
                     : 'bg-[var(--atlas-surface-alt)] text-[var(--atlas-text-secondary)] border-[var(--atlas-border-control)] hover:border-[var(--atlas-text)] hover:text-[var(--atlas-text)]'
                 }`}
               >
@@ -310,7 +310,7 @@ export const NetworkSection: React.FC<NetworkSectionProps> = ({ onSelectMovement
                             onClick={() => setSelectedConnectionIndex(idx)}
                             className={`p-3 border text-xs cursor-pointer transition-colors ${
                               isSelectedConn
-                                ? 'bg-[#18181B] text-white border-[#18181B]'
+                                ? 'bg-[var(--atlas-popover)] text-white border-[var(--atlas-popover)]'
                                 : 'bg-[var(--atlas-card)] border-[var(--atlas-border)] hover:border-[var(--atlas-text)]'
                             }`}
                           >
