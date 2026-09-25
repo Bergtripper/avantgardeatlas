@@ -6,5 +6,6 @@ export * from './institutions';
 export * from './exhibitions';
 export * from './expressions';
 export * from './entities';
+export * from './events';
 export * from './routes';
 export * from './sources';
