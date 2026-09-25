@@ -65,6 +65,7 @@ export const Header: React.FC<HeaderProps> = ({
             <button
               key={item.id}
               onClick={() => selectTab(item.id)}
+              aria-current={currentTab === item.id ? 'page' : undefined}
               className={`cursor-pointer transition-colors py-1 whitespace-nowrap ${
                 currentTab === item.id
                   ? 'text-[var(--atlas-text)] border-b-2 border-[var(--atlas-text)] font-semibold'
@@ -147,6 +148,7 @@ export const Header: React.FC<HeaderProps> = ({
                   <button
                     key={item.id}
                     onClick={() => selectTab(item.id)}
+                    aria-current={active ? 'page' : undefined}
                     className={`min-h-16 px-4 py-3 text-left border-b border-r border-[var(--atlas-border)] transition-colors ${
                       active
                         ? 'bg-[var(--atlas-text)] text-[var(--atlas-bg)]'
