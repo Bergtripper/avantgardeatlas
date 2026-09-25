@@ -89,11 +89,13 @@ export default function App() {
         ) : (
           /* Multi-dimensional Atlas Sections */
           <>
-            {/* First Screen: Calm Architectural Hero Statement */}
-            <HeroSection
-              onExploreTimeline={() => handleSelectTab('timeline')}
-              onExploreNetwork={() => handleSelectTab('network')}
-            />
+            {/* The large editorial masthead belongs only to the atlas home/timeline view. */}
+            {currentTab === 'timeline' && (
+              <HeroSection
+                onExploreTimeline={() => handleSelectTab('timeline')}
+                onExploreNetwork={() => handleSelectTab('network')}
+              />
+            )}
 
             {/* Tab-driven Viewport or Continuous Reading Layout */}
             {currentTab === 'timeline' && (
