@@ -14,11 +14,20 @@ import { StoriesSection } from './components/StoriesSection';
 import { GeographySection } from './components/GeographySection';
 import { MovementDetailView } from './components/MovementDetailView';
 import { Footer } from './components/Footer';
+import { parseAtlasRoute, pathForMovement, pathForTab } from './routing';
 
 export default function App() {
-  const [currentTab, setCurrentTab] = useState<NavTab>('timeline');
+  const initialRoute = parseAtlasRoute();
+  const initialMovement = initialRoute.movementId ? getMovementById(initialRoute.movementId) : null;
+
+  const [currentTab, setCurrentTab] = useState<NavTab>(initialRoute.tab);
   const [selectedYear, setSelectedYear] = useState<number>(1925);
-  const [selectedMovementId, setSelectedMovementId] = useState<MovementId | null>(null);
+  const [selectedMovementId, setSelectedMovementId] = useState<MovementId | null>(
+    initialMovement ? initialRoute.movementId : null
+  );
+  const [lastOverviewTab, setLastOverviewTab] = useState<NavTab>(
+    initialMovement ? 'movements' : initialRoute.tab
+  );
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
     return localStorage.getItem('atlas-theme') === 'dark' ? 'dark' : 'light';
   });
@@ -35,24 +44,76 @@ export default function App() {
     localStorage.setItem('atlas-grid', gridEnabled ? 'on' : 'off');
   }, [gridEnabled]);
 
-  // Scroll to top when opening a detailed movement
   useEffect(() => {
-    if (selectedMovementId) {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+    const syncFromLocation = () => {
+      const route = parseAtlasRoute();
+      const movement = route.movementId ? getMovementById(route.movementId) : null;
+
+      if (movement && route.movementId) {
+        setSelectedMovementId(route.movementId);
+        setCurrentTab('movements');
+        setLastOverviewTab('movements');
+      } else {
+        setSelectedMovementId(null);
+        setCurrentTab(route.tab);
+        setLastOverviewTab(route.tab);
+      }
+
+      window.scrollTo({ top: 0, behavior: 'auto' });
+    };
+
+    window.addEventListener('popstate', syncFromLocation);
+    return () => window.removeEventListener('popstate', syncFromLocation);
+  }, []);
+
+  useEffect(() => {
+    const route = parseAtlasRoute();
+    const movement = route.movementId ? getMovementById(route.movementId) : null;
+    const isBasePath = window.location.pathname === import.meta.env.BASE_URL
+      || window.location.pathname === import.meta.env.BASE_URL.replace(/\/$/, '');
+
+    if (isBasePath) {
+      window.history.replaceState({}, '', pathForTab('timeline'));
+    } else if (route.movementId && !movement) {
+      window.history.replaceState({}, '', pathForTab('movements'));
+      setCurrentTab('movements');
+      setSelectedMovementId(null);
+      setLastOverviewTab('movements');
     }
-  }, [selectedMovementId]);
+  }, []);
+
+  useEffect(() => {
+    const movement = selectedMovementId ? getMovementById(selectedMovementId) : null;
+    const sectionTitle = currentTab === 'archive'
+      ? 'Objects'
+      : currentTab === 'geography'
+      ? 'Geography'
+      : currentTab.charAt(0).toUpperCase() + currentTab.slice(1);
+
+    document.title = movement
+      ? `${movement.name} — Avant-Garde Atlas`
+      : `${sectionTitle} — Avant-Garde Atlas`;
+  }, [currentTab, selectedMovementId]);
 
   const handleSelectMovement = (id: MovementId) => {
+    setLastOverviewTab(currentTab);
     setSelectedMovementId(id);
+    window.history.pushState({}, '', pathForMovement(id));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleBackToOverview = () => {
     setSelectedMovementId(null);
+    setCurrentTab(lastOverviewTab);
+    window.history.pushState({}, '', pathForTab(lastOverviewTab));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleSelectTab = (tab: NavTab) => {
     setSelectedMovementId(null);
     setCurrentTab(tab);
+    setLastOverviewTab(tab);
+    window.history.pushState({}, '', pathForTab(tab));
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
