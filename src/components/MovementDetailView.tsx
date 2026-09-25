@@ -98,7 +98,7 @@ export const MovementDetailView: React.FC<MovementDetailViewProps> = ({
             ))}
           </div>
 
-          <p className="text-xl sm:text-2xl lg:text-3xl text-[#262626] font-light max-w-4xl leading-relaxed mt-6">
+          <p className="text-xl sm:text-2xl lg:text-3xl text-[var(--atlas-text-lead)] font-light max-w-4xl leading-relaxed mt-6">
             {movement.summary}
           </p>
         </header>
