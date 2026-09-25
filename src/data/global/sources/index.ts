@@ -3,6 +3,11 @@ import { bauhausPalestineSharon } from './bauhaus-palestine-sharon';
 import { kanagawaMurayama2011 } from './kanagawa-murayama-2011';
 import { momaBauhaus1938 } from './moma-bauhaus-1938';
 import { momaHerbertBayer } from './moma-herbert-bayer';
+import { momaDadaHeritage } from './moma-dada-heritage';
+import { momaDadaOverview } from './moma-dada-overview';
+import { momaManRayStudio } from './moma-man-ray-studio';
+import { momaTzaraParis } from './moma-tzara-paris';
+import { metNewYorkDada } from './met-new-york-dada';
 import { momaSternCoppola } from './moma-stern-coppola';
 import { momaTorresGarcia } from './moma-torres-garcia';
 import { princetonMavo } from './princeton-mavo';
@@ -14,6 +19,11 @@ export {
   kanagawaMurayama2011,
   momaBauhaus1938,
   momaHerbertBayer,
+  momaDadaHeritage,
+  momaDadaOverview,
+  momaManRayStudio,
+  momaTzaraParis,
+  metNewYorkDada,
   momaSternCoppola,
   momaTorresGarcia,
   princetonMavo,
@@ -29,6 +39,11 @@ export const ALL_GLOBAL_SOURCES = [
   unescoTelAvivWhiteCity,
   momaHerbertBayer,
   momaBauhaus1938,
+  momaDadaHeritage,
+  momaDadaOverview,
+  momaManRayStudio,
+  momaTzaraParis,
+  metNewYorkDada,
   momaSternCoppola,
 ];
 
