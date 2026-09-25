@@ -42,6 +42,7 @@ export const StoriesSection: React.FC<StoriesSectionProps> = ({ onSelectMovement
             <button
               key={story.id}
               onClick={() => handleSelectStory(idx)}
+              aria-pressed={selectedStoryIndex === idx}
               className={`px-4 py-2 text-xs font-mono tracking-wider cursor-pointer whitespace-nowrap transition-colors border ${
                 selectedStoryIndex === idx
                   ? 'bg-[var(--atlas-ink-button)] text-white border-[var(--atlas-text)] font-semibold'
@@ -87,6 +88,7 @@ export const StoriesSection: React.FC<StoriesSectionProps> = ({ onSelectMovement
                     sIdx <= currentStepIndex ? 'bg-[var(--atlas-ink-button)]' : 'bg-[var(--atlas-border-control)]'
                   }`}
                   aria-label={`Jump to step ${sIdx + 1}`}
+                  aria-current={sIdx === currentStepIndex ? 'step' : undefined}
                 />
               ))}
             </div>
