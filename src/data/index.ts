@@ -8,6 +8,7 @@ export * from './connections';
 export * from './places';
 export * from './stories';
 export * from './relationships';
+export * from './global';
 
 // Import datasets for convenience aliases and normalized network nodes
 import { ALL_MOVEMENTS, getMovementById } from './movements';
