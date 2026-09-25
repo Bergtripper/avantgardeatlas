@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-export type NavTab = 'timeline' | 'network' | 'movements' | 'archive' | 'compare' | 'people' | 'stories' | 'geography';
+export type NavTab = 'timeline' | 'network' | 'movements' | 'archive' | 'compare' | 'people' | 'stories' | 'geography' | 'global';
 
 interface HeaderProps {
   currentTab: NavTab;
@@ -21,7 +21,8 @@ const NAV_ITEMS: Array<{ id: NavTab; label: string; compactLabel?: string }> = [
   { id: 'compare', label: 'Compare' },
   { id: 'people', label: 'People' },
   { id: 'stories', label: 'Stories' },
-  { id: 'geography', label: 'Europe Map', compactLabel: 'Map' }
+  { id: 'geography', label: 'Europe Map', compactLabel: 'Europe' },
+  { id: 'global', label: 'Global Map', compactLabel: 'Global' }
 ];
 
 export const Header: React.FC<HeaderProps> = ({
