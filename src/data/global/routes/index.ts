@@ -1,7 +1,12 @@
+import { route391BarcelonaNewYork } from './391-barcelona-new-york';
+import { route391NewYorkZurich } from './391-new-york-zurich';
+import { route391ZurichParis } from './391-zurich-paris';
 import { bayerBerlinNewYorkRoute } from './bayer-berlin-new-york';
+import { deStijlLeidenWeimarRoute } from './de-stijl-leiden-weimar';
 import { deperoRoveretoNewYorkRoute } from './depero-rovereto-new-york';
 import { huelsenbeckZurichBerlinRoute } from './huelsenbeck-zurich-berlin';
 import { lissitzkyMoscowBerlinPrintRoute } from './lissitzky-moscow-berlin-print';
+import { maViennaBerlinRoute } from './ma-vienna-berlin';
 import { manRayNewYorkParisRoute } from './man-ray-new-york-paris';
 import { meyerBergnerDessauMexicoCityRoute } from './meyer-bergner-dessau-mexico-city';
 import { moholyNagyDessauChicagoRoute } from './moholy-nagy-dessau-chicago';
@@ -12,6 +17,11 @@ import { torresGarciaParisMontevideoRoute } from './torres-garcia-paris-montevid
 import { tzaraZurichParisRoute } from './tzara-zurich-paris';
 
 export {
+  route391BarcelonaNewYork,
+  route391NewYorkZurich,
+  route391ZurichParis,
+  deStijlLeidenWeimarRoute,
+  maViennaBerlinRoute,
   bayerBerlinNewYorkRoute,
   deperoRoveretoNewYorkRoute,
   huelsenbeckZurichBerlinRoute,
@@ -27,6 +37,11 @@ export {
 };
 
 export const ALL_DIFFUSION_ROUTES = [
+  route391BarcelonaNewYork,
+  route391NewYorkZurich,
+  route391ZurichParis,
+  deStijlLeidenWeimarRoute,
+  maViennaBerlinRoute,
   huelsenbeckZurichBerlinRoute,
   lissitzkyMoscowBerlinPrintRoute,
   tzaraZurichParisRoute,
