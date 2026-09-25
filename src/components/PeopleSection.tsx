@@ -91,7 +91,7 @@ export const PeopleSection: React.FC<PeopleSectionProps> = ({ onSelectMovement }
                       <button
                         key={mId}
                         onClick={() => onSelectMovement(mId)}
-                        className="font-mono text-[10px] uppercase px-2 py-0.5 bg-[#EBEAE4] hover:bg-[var(--atlas-ink-button)] hover:text-white border border-[var(--atlas-border-strong)] cursor-pointer transition-colors"
+                        className="font-mono text-[10px] uppercase px-2 py-0.5 bg-[var(--atlas-soft-fill)] hover:bg-[var(--atlas-ink-button)] hover:text-white border border-[var(--atlas-border-strong)] cursor-pointer transition-colors"
                       >
                         {mId}
                       </button>
