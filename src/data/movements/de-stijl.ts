@@ -68,7 +68,7 @@ export const deStijlMovement: Movement = {
   keyWorks: [
     'obj-red-blue-chair',
     'obj-rietveld-schroder',
-    'obj-mondrian-composition'
+    'obj-mondrian-broadway'
   ],
   influencesFrom: ['cubism'],
   influencesTo: ['bauhaus', 'international-style', 'new-typography'],
