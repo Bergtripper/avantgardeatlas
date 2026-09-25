@@ -240,8 +240,19 @@ for (const event of ALL_GLOBAL_HISTORICAL_EVENTS) {
 
 for (const entity of ALL_GLOBAL_ENTITIES) {
   requireText(`Global entity ${entity.id} name`, entity.name);
-  if (!getGlobalHubById(entity.hubId)) {
-    errors.push(`Global entity ${entity.id}: unknown hub "${entity.hubId}"`);
+  if (entity.placeRef) {
+    const exists = entity.placeRef.scope === 'atlas'
+      ? Boolean(getPlaceById(entity.placeRef.id))
+      : Boolean(getGlobalHubById(entity.placeRef.id));
+    if (!exists) {
+      errors.push(`Global entity ${entity.id}: unknown ${entity.placeRef.scope} place "${entity.placeRef.id}"`);
+    }
+  } else if (entity.hubId) {
+    if (!getGlobalHubById(entity.hubId)) {
+      errors.push(`Global entity ${entity.id}: unknown hub "${entity.hubId}"`);
+    }
+  } else {
+    errors.push(`Global entity ${entity.id}: missing hubId/placeRef`);
   }
   if (entity.endYear !== undefined && entity.startYear > entity.endYear) {
     errors.push(`Global entity ${entity.id}: startYear is after endYear`);
@@ -294,6 +305,15 @@ for (const route of ALL_DIFFUSION_ROUTES) {
   for (const contextId of route.historicalContextIds ?? []) {
     if (!getGlobalHistoricalEventById(contextId)) {
       errors.push(`Diffusion route ${route.id}: unknown historical context "${contextId}"`);
+    }
+  }
+
+  for (const entityId of route.transmissionEntityIds ?? []) {
+    const entity = getGlobalEntityById(entityId);
+    if (!entity) {
+      errors.push(`Diffusion route ${route.id}: unknown transmission entity "${entityId}"`);
+    } else if (entity.kind !== 'publication') {
+      warnings.push(`Diffusion route ${route.id}: transmission entity "${entityId}" is not a publication`);
     }
   }
 

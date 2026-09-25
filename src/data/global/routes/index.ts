@@ -1,6 +1,7 @@
 import { bayerBerlinNewYorkRoute } from './bayer-berlin-new-york';
 import { deperoRoveretoNewYorkRoute } from './depero-rovereto-new-york';
 import { huelsenbeckZurichBerlinRoute } from './huelsenbeck-zurich-berlin';
+import { lissitzkyMoscowBerlinPrintRoute } from './lissitzky-moscow-berlin-print';
 import { manRayNewYorkParisRoute } from './man-ray-new-york-paris';
 import { meyerBergnerDessauMexicoCityRoute } from './meyer-bergner-dessau-mexico-city';
 import { moholyNagyDessauChicagoRoute } from './moholy-nagy-dessau-chicago';
@@ -14,6 +15,7 @@ export {
   bayerBerlinNewYorkRoute,
   deperoRoveretoNewYorkRoute,
   huelsenbeckZurichBerlinRoute,
+  lissitzkyMoscowBerlinPrintRoute,
   manRayNewYorkParisRoute,
   meyerBergnerDessauMexicoCityRoute,
   moholyNagyDessauChicagoRoute,
@@ -26,6 +28,7 @@ export {
 
 export const ALL_DIFFUSION_ROUTES = [
   huelsenbeckZurichBerlinRoute,
+  lissitzkyMoscowBerlinPrintRoute,
   tzaraZurichParisRoute,
   manRayNewYorkParisRoute,
   deperoRoveretoNewYorkRoute,

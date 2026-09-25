@@ -6,6 +6,7 @@ import { bauhausPalestineSharon } from './bauhaus-palestine-sharon';
 import { dhmHitlerChancellor1933 } from './dhm-hitler-chancellor-1933';
 import { kanagawaMurayama2011 } from './kanagawa-murayama-2011';
 import { martDeperoNewYork } from './mart-depero-new-york';
+import { momaMagazinesIntersection } from './moma-magazines-intersection';
 import { metNewYorkDada } from './met-new-york-dada';
 import { momaBauhaus1938 } from './moma-bauhaus-1938';
 import { momaDadaHeritage } from './moma-dada-heritage';
@@ -28,6 +29,7 @@ export {
   dhmHitlerChancellor1933,
   kanagawaMurayama2011,
   martDeperoNewYork,
+  momaMagazinesIntersection,
   metNewYorkDada,
   momaBauhaus1938,
   momaDadaHeritage,
@@ -56,6 +58,7 @@ export const ALL_GLOBAL_SOURCES = [
   momaBauhaus1938,
   momaDadaHeritage,
   momaDadaOverview,
+  momaMagazinesIntersection,
   momaManRayStudio,
   momaTzaraParis,
   metNewYorkDada,
