@@ -84,7 +84,7 @@ export const StoriesSection: React.FC<StoriesSectionProps> = ({ onSelectMovement
                   key={sIdx}
                   onClick={() => setCurrentStepIndex(sIdx)}
                   className={`h-2 transition-all cursor-pointer ${
-                    sIdx <= currentStepIndex ? 'bg-[var(--atlas-ink-button)]' : 'bg-[#DDDCD4]'
+                    sIdx <= currentStepIndex ? 'bg-[var(--atlas-ink-button)]' : 'bg-[var(--atlas-border-control)]'
                   }`}
                   aria-label={`Jump to step ${sIdx + 1}`}
                 />
