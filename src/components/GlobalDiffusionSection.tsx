@@ -1,10 +1,11 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { getPersonById } from '../data/people';
 import { getPlaceById } from '../data/places';
 import {
   ALL_DIFFUSION_ROUTES,
   ALL_GLOBAL_HUBS,
   DiffusionMechanism,
+  DiffusionMedium,
   DiffusionPlaceRef,
   DiffusionRoute,
   getGlobalEntityById,
@@ -138,14 +139,44 @@ const routePath = (route: DiffusionRoute) => {
 };
 
 export const GlobalDiffusionSection: React.FC = () => {
+  const minRouteYear = Math.min(...ALL_DIFFUSION_ROUTES.map((route) => route.startYear));
+  const maxRouteYear = Math.max(...ALL_DIFFUSION_ROUTES.map((route) => route.endYear ?? route.startYear));
+  const availableMedia = useMemo(
+    () =>
+      Array.from(new Set(ALL_DIFFUSION_ROUTES.flatMap((route) => route.media))).sort() as DiffusionMedium[],
+    [],
+  );
+
   const [selectedRouteId, setSelectedRouteId] = useState(ALL_DIFFUSION_ROUTES[0]?.id ?? '');
+  const [yearFilter, setYearFilter] = useState(maxRouteYear);
+  const [semanticFilter, setSemanticFilter] = useState<RouteSemanticId | 'all'>('all');
+  const [mediumFilter, setMediumFilter] = useState<DiffusionMedium | 'all'>('all');
+
+  const filteredRoutes = useMemo(
+    () =>
+      ALL_DIFFUSION_ROUTES.filter((route) => {
+        const routeYear = route.startYear;
+        const semantic = semanticForMechanisms(route.mechanisms);
+        const matchesYear = routeYear <= yearFilter;
+        const matchesSemantic = semanticFilter === 'all' || semantic.id === semanticFilter;
+        const matchesMedium = mediumFilter === 'all' || route.media.includes(mediumFilter);
+        return matchesYear && matchesSemantic && matchesMedium;
+      }),
+    [yearFilter, semanticFilter, mediumFilter],
+  );
+
+  useEffect(() => {
+    if (filteredRoutes.some((route) => route.id === selectedRouteId)) return;
+    setSelectedRouteId(filteredRoutes[0]?.id ?? '');
+  }, [filteredRoutes, selectedRouteId]);
+
   const selectedRoute =
-    ALL_DIFFUSION_ROUTES.find((route) => route.id === selectedRouteId) ?? ALL_DIFFUSION_ROUTES[0];
+    filteredRoutes.find((route) => route.id === selectedRouteId) ?? filteredRoutes[0];
 
   const atlasRoutePlaces = useMemo(() => {
     const seen = new Map<string, ReturnType<typeof resolvePlace>>();
 
-    ALL_DIFFUSION_ROUTES.forEach((route) => {
+    filteredRoutes.forEach((route) => {
       [route.origin, route.destination].forEach((ref) => {
         if (ref.scope !== 'atlas' || seen.has(ref.id)) return;
         seen.set(ref.id, resolvePlace(ref));
@@ -153,7 +184,17 @@ export const GlobalDiffusionSection: React.FC = () => {
     });
 
     return Array.from(seen.values()).filter(Boolean) as NonNullable<ReturnType<typeof resolvePlace>>[];
-  }, []);
+  }, [filteredRoutes]);
+
+  const visibleGlobalHubIds = useMemo(() => {
+    const ids = new Set<string>();
+    filteredRoutes.forEach((route) => {
+      [route.origin, route.destination].forEach((ref) => {
+        if (ref.scope === 'global') ids.add(ref.id);
+      });
+    });
+    return ids;
+  }, [filteredRoutes]);
 
   const selectedSemantic = selectedRoute
     ? semanticForMechanisms(selectedRoute.mechanisms)
@@ -175,6 +216,15 @@ export const GlobalDiffusionSection: React.FC = () => {
   const selectedSources = selectedRoute?.sourceIds
     .map((id) => getGlobalSourceById(id))
     .filter(Boolean) ?? [];
+
+  const resetFilters = () => {
+    setYearFilter(maxRouteYear);
+    setSemanticFilter('all');
+    setMediumFilter('all');
+  };
+
+  const hasActiveFilters =
+    yearFilter !== maxRouteYear || semanticFilter !== 'all' || mediumFilter !== 'all';
 
   return (
     <section className="w-full py-16 px-4 sm:px-6 lg:px-12 border-b border-[var(--atlas-border)] bg-[var(--atlas-bg)]">
