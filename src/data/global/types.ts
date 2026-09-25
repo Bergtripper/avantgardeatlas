@@ -79,7 +79,8 @@ export interface GlobalEntity {
   id: string;
   name: string;
   kind: GlobalEntityKind;
-  hubId: string;
+  hubId?: string;
+  placeRef?: DiffusionPlaceRef;
   startYear: number;
   endYear?: number;
   movementLinks: MovementId[];
@@ -99,6 +100,7 @@ export interface DiffusionRoute {
   mechanisms: DiffusionMechanism[];
   sourceMovementIds: MovementId[];
   historicalContextIds?: string[];
+  transmissionEntityIds?: string[];
   destinationEntityIds: string[];
   media: DiffusionMedium[];
   summary: string;
