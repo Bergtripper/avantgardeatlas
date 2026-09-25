@@ -146,6 +146,15 @@ export const GlobalDiffusionSection: React.FC = () => {
       Array.from(new Set(ALL_DIFFUSION_ROUTES.flatMap((route) => route.media))).sort() as DiffusionMedium[],
     [],
   );
+  const availableSemantics = useMemo(
+    () =>
+      SEMANTIC_LEGEND.filter((semantic) =>
+        ALL_DIFFUSION_ROUTES.some(
+          (route) => semanticForMechanisms(route.mechanisms).id === semantic.id,
+        ),
+      ),
+    [],
+  );
 
   const [selectedRouteId, setSelectedRouteId] = useState(ALL_DIFFUSION_ROUTES[0]?.id ?? '');
   const [yearFilter, setYearFilter] = useState(maxRouteYear);
@@ -303,7 +312,7 @@ export const GlobalDiffusionSection: React.FC = () => {
                 className="w-full border border-[var(--atlas-border-control)] bg-[var(--atlas-bg)] text-[var(--atlas-text)] px-3 py-2 text-xs font-mono"
               >
                 <option value="all">All mechanisms</option>
-                {SEMANTIC_LEGEND.map((semantic) => (
+                {availableSemantics.map((semantic) => (
                   <option key={semantic.id} value={semantic.id}>
                     {semantic.label}
                   </option>
@@ -541,7 +550,7 @@ export const GlobalDiffusionSection: React.FC = () => {
             </div>
           </div>
 
-          {selectedRoute && (
+          {selectedRoute ? (
             <aside className="lg:col-span-4 border border-[var(--atlas-border)] bg-[var(--atlas-surface)] p-6">
               <div className="font-mono text-[10px] uppercase tracking-widest text-[var(--atlas-text-muted)] mb-2">
                 Selected Transmission // {selectedRoute.startYear}
@@ -632,6 +641,25 @@ export const GlobalDiffusionSection: React.FC = () => {
                   ))}
                 </div>
               </div>
+            </aside>
+          ) : (
+            <aside className="lg:col-span-4 border border-[var(--atlas-border)] bg-[var(--atlas-surface)] p-6 min-h-[260px] flex flex-col justify-center">
+              <div className="font-mono text-[10px] uppercase tracking-widest text-[var(--atlas-text-muted)]">
+                No routes match
+              </div>
+              <h3 className="mt-2 text-2xl font-semibold tracking-tight text-[var(--atlas-text)]">
+                Adjust the filters
+              </h3>
+              <p className="mt-3 text-sm leading-relaxed text-[var(--atlas-text-secondary)]">
+                The current year, mechanism and medium combination excludes all pilot transmissions.
+              </p>
+              <button
+                type="button"
+                onClick={resetFilters}
+                className="mt-5 self-start font-mono text-[10px] uppercase tracking-wider underline underline-offset-4 text-[var(--atlas-text)]"
+              >
+                Show all routes
+              </button>
             </aside>
           )}
         </div>
