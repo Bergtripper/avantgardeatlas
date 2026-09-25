@@ -19,6 +19,21 @@ export default function App() {
   const [currentTab, setCurrentTab] = useState<NavTab>('timeline');
   const [selectedYear, setSelectedYear] = useState<number>(1925);
   const [selectedMovementId, setSelectedMovementId] = useState<MovementId | null>(null);
+  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
+    return localStorage.getItem('atlas-theme') === 'dark' ? 'dark' : 'light';
+  });
+  const [gridEnabled, setGridEnabled] = useState<boolean>(() => {
+    return localStorage.getItem('atlas-grid') === 'on';
+  });
+
+  useEffect(() => {
+    localStorage.setItem('atlas-theme', theme);
+    document.documentElement.style.colorScheme = theme;
+  }, [theme]);
+
+  useEffect(() => {
+    localStorage.setItem('atlas-grid', gridEnabled ? 'on' : 'off');
+  }, [gridEnabled]);
 
   // Scroll to top when opening a detailed movement
   useEffect(() => {
@@ -44,13 +59,21 @@ export default function App() {
   const selectedMovement = selectedMovementId ? getMovementById(selectedMovementId) : null;
 
   return (
-    <div className="min-h-screen bg-[#FBFBFA] text-[#121212] selection:bg-[#121212] selection:text-white flex flex-col font-sans">
+    <div
+      className="atlas-shell min-h-screen bg-[#FBFBFA] text-[#121212] selection:bg-[#121212] selection:text-white flex flex-col font-sans"
+      data-theme={theme}
+      data-grid={gridEnabled ? 'on' : 'off'}
+    >
       {/* Swiss Modernist Header */}
       <Header
         currentTab={currentTab}
         onSelectTab={handleSelectTab}
         selectedYear={selectedYear}
         onSelectYear={setSelectedYear}
+        theme={theme}
+        onToggleTheme={() => setTheme((current) => (current === 'light' ? 'dark' : 'light'))}
+        gridEnabled={gridEnabled}
+        onToggleGrid={() => setGridEnabled((current) => !current)}
       />
 
       {/* Main Content Area */}
