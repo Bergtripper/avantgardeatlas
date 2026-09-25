@@ -65,7 +65,7 @@ export const futurismMovement: Movement = {
     'fortunato-depero'
   ],
   keyWorks: [
-    'obj-boccioni-continuity',
+    'obj-boccioni-forms',
     'obj-citta-nuova',
     'obj-depero-bolted-book'
   ],
