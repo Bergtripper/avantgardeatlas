@@ -15,5 +15,7 @@ export const manRayNewYorkParisRoute: DiffusionRoute = {
     'Man Ray moved from New York to Paris in 1921 after participating in New York Dada with Marcel Duchamp, joining a Parisian Dada network already connected to Tristan Tzara.',
   transformationNote:
     'The route reverses a simple Europe-to-America model: New York Dada developed in parallel with Zurich, and Man Ray carried its experimental object and photographic culture into Paris.',
+  evidenceStatus: 'editorial-synthesis',
+  transformationEvidenceStatus: 'interpretive',
   sourceIds: ['moma-man-ray-studio', 'met-new-york-dada', 'moma-dada-overview'],
 };
