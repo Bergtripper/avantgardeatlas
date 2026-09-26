@@ -42,6 +42,27 @@ export interface VisualDNA {
 export type PersonId = string;
 export type ObjectId = string;
 
+export interface ClaimEvidence {
+  sourceIds: string[];
+  note?: string;
+}
+
+export type MovementClaimKey =
+  | 'summary'
+  | 'coreIdeas'
+  | 'historicalContext'
+  | 'architectureNotes'
+  | 'graphicDesignNotes'
+  | 'industryRelationship';
+
+export type ObjectClaimKey =
+  | 'description'
+  | 'significance'
+  | 'medium'
+  | 'location';
+
+export type StoryStepClaimKey = 'text' | 'graphicCue';
+
 export type SvgGraphicPlateType = 
   | 'bauhaus-building' 
   | 'rietveld-chair' 
@@ -90,6 +111,7 @@ export interface Movement {
   keyWorks: ObjectId[];
   influencesFrom: MovementId[];
   influencesTo: MovementId[];
+  provenance?: Partial<Record<MovementClaimKey, ClaimEvidence>>;
   styleTheme: {
     accentColor: string;
     secondaryColor: string;
@@ -117,6 +139,7 @@ export interface ArchivalObject {
   dimensions?: string;
   description: string;
   significance: string;
+  provenance?: Partial<Record<ObjectClaimKey, ClaimEvidence>>;
   graphicType: SvgGraphicPlateType;
   svgGraphicType?: SvgGraphicPlateType;
 }
@@ -142,6 +165,7 @@ export interface ConnectionStoryStep {
   text: string;
   graphicCue: string;
   focalMovements: MovementId[];
+  provenance?: Partial<Record<StoryStepClaimKey, ClaimEvidence>>;
 }
 
 export interface ConnectionStory {

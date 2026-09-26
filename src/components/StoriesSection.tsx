@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { MovementId } from '../types/atlas';
 import { ALL_STORIES } from '../data/stories';
 import { ALL_DIFFUSION_ROUTES } from '../data/global';
+import { ClaimSources } from './ClaimSources';
 
 interface StoriesSectionProps {
   onSelectMovement: (id: MovementId) => void;
@@ -137,6 +138,7 @@ export const StoriesSection: React.FC<StoriesSectionProps> = ({
               <p className="text-sm sm:text-base text-[#333] leading-relaxed">
                 {activeStep.text}
               </p>
+              <ClaimSources evidence={activeStep.provenance?.text} />
 
               {/* Focal Movements Tags */}
               <div className="mt-6 flex items-center gap-2 flex-wrap">
@@ -161,6 +163,7 @@ export const StoriesSection: React.FC<StoriesSectionProps> = ({
               <div className="font-bold text-base text-[var(--atlas-text)] leading-snug">
                 {activeStep.graphicCue}
               </div>
+              <ClaimSources evidence={activeStep.provenance?.graphicCue} compact />
               <div className="mt-4 w-12 h-0.5 bg-[#D82B2B]" />
               {activeStepGlobalRoutes.length > 0 && (
                 <button
