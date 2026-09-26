@@ -10,7 +10,11 @@ export const blackSquareObject: ArchivalObject = {
   medium: 'Oil on linen canvas',
   location: 'Tretyakov Gallery, Moscow',
   dimensions: '79.5 × 79.5 cm',
-  description: 'A stark black square enclosed by an off-white margin, hung high in the sacred "beautiful corner" of the gallery at the Last Futurist Exhibition 0.10.',
-  significance: 'The "zero of form" in European art history. Malevich discarded five centuries of representational painting, declaring pure non-objective feeling as the supreme artistic realm.',
+  description: 'A black quadrilateral set against an off-white ground, reducing the image to a minimal relation between geometric form, surface, and surrounding field.'
+  significance: 'An emblematic work of Suprematism and of Malevich’s attempt to establish a non-objective art based on geometric form and what he described as pure feeling or perception.'
+  provenance: {
+    description: { sourceIds: ['moma-suprematism'], status: 'editorial-synthesis' },
+    significance: { sourceIds: ['moma-suprematism'], status: 'documented' },
+  },
   graphicType: 'malevich-square'
 };
