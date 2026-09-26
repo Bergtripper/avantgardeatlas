@@ -164,6 +164,8 @@ const routePath = (route: DiffusionRoute) => {
 interface GlobalDiffusionSectionProps {
   selectedYear: number;
   onSelectYear: (year: number) => void;
+  onSelectMovement: (id: MovementId) => void;
+  focusedMovementId?: MovementId | null;
 }
 
 const ATLAS_START_YEAR = 1890;
@@ -172,6 +174,8 @@ const ATLAS_END_YEAR = 1940;
 export const GlobalDiffusionSection: React.FC<GlobalDiffusionSectionProps> = ({
   selectedYear,
   onSelectYear,
+  onSelectMovement,
+  focusedMovementId = null,
 }) => {
   const minRouteYear = Math.min(...ALL_DIFFUSION_ROUTES.map((route) => route.startYear));
   const maxRouteYear = Math.max(...ALL_DIFFUSION_ROUTES.map((route) => route.endYear ?? route.startYear));
@@ -225,9 +229,16 @@ export const GlobalDiffusionSection: React.FC<GlobalDiffusionSectionProps> = ({
   const [selectedCrossroadKey, setSelectedCrossroadKey] = useState('');
   const [semanticFilter, setSemanticFilter] = useState<RouteSemanticId | 'all'>('all');
   const [mediumFilter, setMediumFilter] = useState<DiffusionMedium | 'all'>('all');
-  const [movementFilter, setMovementFilter] = useState<string | 'all'>('all');
+  const [movementFilter, setMovementFilter] = useState<MovementId | 'all'>(
+    focusedMovementId ?? 'all',
+  );
   const [viewMode, setViewMode] = useState<GlobalViewMode>('map');
   const [showFractureInfo, setShowFractureInfo] = useState(false);
+
+  useEffect(() => {
+    if (!focusedMovementId) return;
+    setMovementFilter(focusedMovementId);
+  }, [focusedMovementId]);
 
   const visibleTransmissionNodes = useMemo(
     () =>
@@ -235,7 +246,7 @@ export const GlobalDiffusionSection: React.FC<GlobalDiffusionSectionProps> = ({
         if (!['exhibition', 'institution'].includes(entity.kind)) return false;
         if (entity.startYear > selectedYear) return false;
         if (mediumFilter !== 'all' && !entity.media.includes(mediumFilter)) return false;
-        if (movementFilter !== 'all' && !entity.movementLinks.includes(movementFilter as never)) return false;
+        if (movementFilter !== 'all' && !entity.movementLinks.includes(movementFilter)) return false;
         return (
           entity.kind === 'exhibition' ||
           entity.media.includes('advertising') ||
@@ -250,7 +261,7 @@ export const GlobalDiffusionSection: React.FC<GlobalDiffusionSectionProps> = ({
       ALL_GLOBAL_ENTITIES.filter((entity) => {
         if (entity.startYear > selectedYear) return false;
         if (mediumFilter !== 'all' && !entity.media.includes(mediumFilter)) return false;
-        if (movementFilter !== 'all' && !entity.movementLinks.includes(movementFilter as never)) return false;
+        if (movementFilter !== 'all' && !entity.movementLinks.includes(movementFilter)) return false;
         return true;
       }),
     [selectedYear, mediumFilter, movementFilter],
@@ -265,7 +276,7 @@ export const GlobalDiffusionSection: React.FC<GlobalDiffusionSectionProps> = ({
         const matchesSemantic = semanticFilter === 'all' || semantic.id === semanticFilter;
         const matchesMedium = mediumFilter === 'all' || route.media.includes(mediumFilter);
         const matchesMovement =
-          movementFilter === 'all' || route.sourceMovementIds.includes(movementFilter as never);
+          movementFilter === 'all' || route.sourceMovementIds.includes(movementFilter);
         return matchesYear && matchesSemantic && matchesMedium && matchesMovement;
       }),
     [selectedYear, semanticFilter, mediumFilter, movementFilter],
@@ -317,10 +328,6 @@ export const GlobalDiffusionSection: React.FC<GlobalDiffusionSectionProps> = ({
   const selectedNodeSources = selectedNode
     ? selectedNode.sourceIds.map((id) => getGlobalSourceById(id)).filter(Boolean)
     : [];
-  const selectedNodeMovements = selectedNode
-    ? selectedNode.movementLinks.map((id) => getMovementById(id)?.name ?? id)
-    : [];
-
   const cityCrossroads = useMemo(() => {
     const records = new Map<
       string,
@@ -403,10 +410,6 @@ export const GlobalDiffusionSection: React.FC<GlobalDiffusionSectionProps> = ({
   const selectedCrossroadEntities = selectedCrossroad
     ? selectedCrossroad.entityIds.map((id) => getGlobalEntityById(id)).filter(Boolean)
     : [];
-  const selectedCrossroadMovements = selectedCrossroad
-    ? selectedCrossroad.movementIds.map((id) => getMovementById(id)?.name ?? id)
-    : [];
-
   useEffect(() => {
     if (!selectedCrossroadKey) return;
     if (cityCrossroads.some((crossroad) => crossroad.key === selectedCrossroadKey)) return;
@@ -459,6 +462,10 @@ export const GlobalDiffusionSection: React.FC<GlobalDiffusionSectionProps> = ({
     .map((ref) =>
       ref.scope === 'atlas' ? getPersonById(ref.id)?.name : getGlobalPersonById(ref.id)?.name,
     )
+    .filter(Boolean) ?? [];
+
+  const selectedRouteMovements = selectedRoute?.sourceMovementIds
+    .map((id) => getMovementById(id))
     .filter(Boolean) ?? [];
 
   const selectedEntities = selectedRoute?.destinationEntityIds
@@ -578,14 +585,27 @@ export const GlobalDiffusionSection: React.FC<GlobalDiffusionSectionProps> = ({
               <select
                 id="global-movement-filter"
                 value={movementFilter}
-                onChange={(event) => setMovementFilter(event.target.value)}
+                onChange={(event) =>
+                  setMovementFilter(event.target.value as MovementId | 'all')
+                }
                 className="border border-[var(--atlas-border-control)] bg-[var(--atlas-bg)] text-[var(--atlas-text)] px-2.5 py-2 text-[10px] font-mono"
               >
                 <option value="all">All</option>
                 {availableMovements.map((movement) => (
-                  <option key={movement} value={movement}>{movement.replaceAll('-', ' ')}</option>
+                  <option key={movement} value={movement}>
+                    {getMovementById(movement)?.name ?? movement.replaceAll('-', ' ')}
+                  </option>
                 ))}
               </select>
+              {movementFilter !== 'all' && (
+                <button
+                  type="button"
+                  onClick={() => onSelectMovement(movementFilter)}
+                  className="mt-1 block font-mono text-[8px] uppercase tracking-wider underline underline-offset-2 text-[var(--atlas-text-muted)] hover:text-[var(--atlas-text)]"
+                >
+                  Open movement →
+                </button>
+              )}
             </div>
 
             {fracture1933 && (
@@ -1069,13 +1089,15 @@ export const GlobalDiffusionSection: React.FC<GlobalDiffusionSectionProps> = ({
                   Movements in convergence
                 </div>
                 <div className="mt-2 flex flex-wrap gap-1.5">
-                  {selectedCrossroadMovements.map((movement) => (
-                    <span
-                      key={movement}
-                      className="px-2 py-1 border border-[var(--atlas-border-control)] bg-[var(--atlas-card)] font-mono text-[9px] uppercase"
+                  {selectedCrossroad.movementIds.map((movementId) => (
+                    <button
+                      key={movementId}
+                      type="button"
+                      onClick={() => onSelectMovement(movementId)}
+                      className="px-2 py-1 border border-[var(--atlas-border-control)] bg-[var(--atlas-card)] font-mono text-[9px] uppercase hover:border-[var(--atlas-text)]"
                     >
-                      {movement}
-                    </span>
+                      {getMovementById(movementId)?.name ?? movementId}
+                    </button>
                   ))}
                 </div>
               </div>
@@ -1155,8 +1177,21 @@ export const GlobalDiffusionSection: React.FC<GlobalDiffusionSectionProps> = ({
               <dl className="mt-6 space-y-4 text-xs">
                 <div>
                   <dt className="font-mono uppercase tracking-wider text-[var(--atlas-text-muted)]">Movements</dt>
-                  <dd className="mt-1 text-[var(--atlas-text)]">
-                    {selectedNodeMovements.join(' · ') || '—'}
+                  <dd className="mt-1 flex flex-wrap gap-1.5">
+                    {selectedNode.movementLinks.length > 0 ? (
+                      selectedNode.movementLinks.map((movementId) => (
+                        <button
+                          key={movementId}
+                          type="button"
+                          onClick={() => onSelectMovement(movementId)}
+                          className="px-2 py-1 border border-[var(--atlas-border-control)] bg-[var(--atlas-card)] font-mono text-[9px] uppercase hover:border-[var(--atlas-text)]"
+                        >
+                          {getMovementById(movementId)?.name ?? movementId}
+                        </button>
+                      ))
+                    ) : (
+                      <span className="text-[var(--atlas-text-muted)]">—</span>
+                    )}
                   </dd>
                 </div>
                 <div>
@@ -1271,6 +1306,21 @@ export const GlobalDiffusionSection: React.FC<GlobalDiffusionSectionProps> = ({
               )}
 
               <dl className="mt-6 space-y-4 text-xs">
+                <div>
+                  <dt className="font-mono uppercase tracking-wider text-[var(--atlas-text-muted)]">Movements</dt>
+                  <dd className="mt-1 flex flex-wrap gap-1.5">
+                    {selectedRouteMovements.map((movement) => (
+                      <button
+                        key={movement?.id}
+                        type="button"
+                        onClick={() => movement?.id && onSelectMovement(movement.id)}
+                        className="px-2 py-1 border border-[var(--atlas-border-control)] bg-[var(--atlas-card)] font-mono text-[9px] uppercase hover:border-[var(--atlas-text)]"
+                      >
+                        {movement?.name}
+                      </button>
+                    ))}
+                  </dd>
+                </div>
                 <div>
                   <dt className="font-mono uppercase tracking-wider text-[var(--atlas-text-muted)]">People</dt>
                   <dd className="mt-1 text-[var(--atlas-text)]">{selectedPeople.join(', ')}</dd>
