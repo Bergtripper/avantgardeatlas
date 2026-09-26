@@ -9,7 +9,9 @@ export const deperoRoveretoNewYorkRoute: DiffusionRoute = {
   endYear: 1930,
   personRefs: [{ scope: 'atlas', id: 'fortunato-depero' }],
   mechanisms: ['travel', 'migration', 'commercial-application', 'exhibition'],
+  primaryMechanism: 'commercial-application',
   sourceMovementIds: ['futurism'],
+  transmissionEntityIds: ['depero-futurist-house-new-york'],
   destinationEntityIds: ['depero-futurist-house-new-york'],
   media: ['advertising', 'graphic-design', 'publishing', 'typography', 'exhibition-design'],
   summary:
