@@ -1,17 +1,25 @@
 import { lazy, Suspense, useState, useEffect } from 'react';
-import { ArchivalObject, MovementId } from './types/atlas';
+import type { ArchivalObject, MovementId } from './types/atlas';
 import { ALL_MOVEMENTS, getMovementById } from './data/movements';
-import { DiffusionPersonRef, DiffusionPlaceRef } from './data/global';
+import type { DiffusionPersonRef, DiffusionPlaceRef } from './data/global';
 import type { GlobalAtlasContextFocus } from './components/GlobalDiffusionSection';
-import { Header, NavTab } from './components/Header';
+import { Header } from './components/Header';
+import type { NavTab } from './components/Header';
 import { HeroSection } from './components/HeroSection';
-import { TimelineSection } from './components/TimelineSection';
-import { NetworkSection } from './components/NetworkSection';
-import { MovementsIndexSection } from './components/MovementsIndexSection';
+
 import { Footer } from './components/Footer';
 import { AccessibilityTool } from './components/AccessibilityTool';
 import { parseAtlasRoute, pathForMovement, pathForTab } from './routing';
 
+const TimelineSection = lazy(() =>
+  import('./components/TimelineSection').then((module) => ({ default: module.TimelineSection }))
+);
+const NetworkSection = lazy(() =>
+  import('./components/NetworkSection').then((module) => ({ default: module.NetworkSection }))
+);
+const MovementsIndexSection = lazy(() =>
+  import('./components/MovementsIndexSection').then((module) => ({ default: module.MovementsIndexSection }))
+);
 const ObjectsRouteSection = lazy(() => import('./routes/ObjectsRouteSection'));
 const CompareSection = lazy(() =>
   import('./components/CompareSection').then((module) => ({ default: module.CompareSection }))
@@ -143,9 +151,44 @@ export default function App() {
       ? 'Maps / Global'
       : currentTab.charAt(0).toUpperCase() + currentTab.slice(1);
 
-    document.title = movement
+    const title = movement
       ? `${movement.name} — Avant-Garde Atlas`
       : `${sectionTitle} — Avant-Garde Atlas`;
+
+    const description = movement
+      ? `${movement.name}: historical context, visual principles, key works, people and connections in the Avant-Garde Atlas 1890—1940.`
+      : currentTab === 'global'
+      ? 'Explore documented global routes, people, institutions and transmission networks of the avant-garde from 1890 to 1940.'
+      : currentTab === 'geography'
+      ? 'Explore the European geography of avant-garde movements, cities and cultural connections from 1890 to 1940.'
+      : 'An interactive digital atlas of the artistic, architectural, graphic and design movements that shaped modernism between 1890 and 1940.';
+
+    document.title = title;
+
+    const upsertMeta = (selector: string, attribute: 'name' | 'property', key: string, content: string) => {
+      let element = document.head.querySelector<HTMLMetaElement>(selector);
+      if (!element) {
+        element = document.createElement('meta');
+        element.setAttribute(attribute, key);
+        document.head.appendChild(element);
+      }
+      element.content = content;
+    };
+
+    upsertMeta('meta[name="description"]', 'name', 'description', description);
+    upsertMeta('meta[property="og:title"]', 'property', 'og:title', title);
+    upsertMeta('meta[property="og:description"]', 'property', 'og:description', description);
+    upsertMeta('meta[name="twitter:title"]', 'name', 'twitter:title', title);
+    upsertMeta('meta[name="twitter:description"]', 'name', 'twitter:description', description);
+
+    const canonicalHref = new URL(window.location.pathname, window.location.origin).href;
+    let canonical = document.head.querySelector<HTMLLinkElement>('link[rel="canonical"]');
+    if (!canonical) {
+      canonical = document.createElement('link');
+      canonical.rel = 'canonical';
+      document.head.appendChild(canonical);
+    }
+    canonical.href = canonicalHref;
   }, [currentTab, selectedMovementId]);
 
   const handleSelectMovement = (id: MovementId) => {
