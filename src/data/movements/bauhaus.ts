@@ -79,6 +79,7 @@ export const bauhausMovement: Movement = {
   provenance: {
     historicalContext: {
       sourceIds: ['bauhaus-closure-1933'],
+      status: 'documented',
       note: 'This source supports the 1933 Berlin search/sealing and the school’s permanent closure in July 1933. It does not by itself support every earlier sentence in the historical-context paragraph.'
     }
   },
