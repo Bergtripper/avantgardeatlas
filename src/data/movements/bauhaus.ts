@@ -10,9 +10,9 @@ export const bauhausMovement: Movement = {
   countries: ['Germany'],
   cities: ['Weimar', 'Dessau', 'Berlin'],
   mottoOrKeywords: ['Art and Technology: A New Unity', 'Form Follows Function', 'Volksbedarf statt Luxusbedarf'],
-  summary: 'A revolutionary German school that transformed the relationship between fine art, architectural craft, graphic communication, and mass industrial manufacture.',
-  coreIdeas: 'The fundamental dissolution of the false barrier between craftsman and artist. The Bauhaus sought to strip everyday objects of ornamental decadence, creating standardized, beautiful, and accessible industrial products rooted in pure geometry and honest materiality.',
-  historicalContext: 'Founded in Weimar in 1919 amidst the ashes and inflation of the Weimar Republic by Walter Gropius. Relocated to Dessau in 1925 to erect its iconic glass-curtain campus, and finally shut down under direct National Socialist police pressure in Berlin in 1933.',
+  summary: 'A German school of art, design, and architecture active from 1919 to 1933 that repeatedly redefined the relationship between artistic education, craft workshops, architecture, and modern production.',
+  coreIdeas: 'The Bauhaus began from a program of reconnecting art, craft, and building, then evolved toward stronger engagement with technology, industry, standardization, and architecture. Its priorities changed substantially under Walter Gropius, Hannes Meyer, and Ludwig Mies van der Rohe rather than forming one fixed doctrine.',
+  historicalContext: 'Walter Gropius founded the Staatliches Bauhaus in Weimar in 1919. Political pressure forced the school to leave Weimar for Dessau in 1925; it later moved to Berlin under Mies van der Rohe and was forced to close in 1933 under National Socialist pressure.',
   visualPrinciples: [
     'Universal primary geometry: sphere, cube, pyramid, and planar surfaces',
     'Structural transparency and weightless curtain-wall suspension',
@@ -56,9 +56,9 @@ export const bauhausMovement: Movement = {
     materials: ['Tubular nickel-plated steel', 'Float glass', 'Reinforced concrete', 'Plywood', 'Chromed brass'],
     attitude: ['Functional', 'Radical', 'Pedagogical', 'Industrial', 'Egalitarian']
   },
-  architectureNotes: 'The Bauhaus Dessau complex (Walter Gropius, 1925–1926) eliminated load-bearing outer walls in favor of a continuous glass curtain-wall facade, revealing the reinforced concrete skeleton beneath.',
+  architectureNotes: 'Walter Gropius’s Dessau Bauhaus building (1925–1926) organized workshops, teaching spaces, administration, housing, and communal facilities into differentiated volumes, with the workshop wing marked by its extensive glazed curtain wall.',
   graphicDesignNotes: 'Pioneered by Herbert Bayer, László Moholy-Nagy, and Joost Schmidt, integrating photography with asymmetric grotesque type into typographic-photographic synthesis (Typofoto).',
-  industryRelationship: 'Direct industrial prototyping. Workshops actively licensed tubular furniture, textiles, and lighting fixtures to German manufacturers (e.g. Standard Möbel, Korting & Mathiesen).',
+  industryRelationship: 'Especially in Dessau, the workshops increasingly developed prototypes and model types intended for industrial and craft production, linking experimental teaching with the goal of producing well-designed, affordable objects for broader use.',
   keyPeople: [
     'walter-gropius',
     'hannes-meyer',
@@ -77,11 +77,26 @@ export const bauhausMovement: Movement = {
   influencesFrom: ['deutscher-werkbund', 'de-stijl', 'constructivism', 'vienna-secession'],
   influencesTo: ['new-typography', 'international-style', 'rationalism'],
   provenance: {
-    historicalContext: {
-      sourceIds: ['bauhaus-closure-1933'],
+    summary: {
+      sourceIds: ['bauhaus-archiv-history'],
       status: 'documented',
-      note: 'This source supports the 1933 Berlin search/sealing and the school’s permanent closure in July 1933. It does not by itself support every earlier sentence in the historical-context paragraph.'
-    }
+    },
+    coreIdeas: {
+      sourceIds: ['bauhaus-archiv-history', 'bauhaus-archiv-teaching'],
+      status: 'editorial-synthesis',
+    },
+    historicalContext: {
+      sourceIds: ['bauhaus-archiv-history', 'bauhaus-closure-1933'],
+      status: 'documented',
+    },
+    architectureNotes: {
+      sourceIds: ['bauhaus-archiv-history'],
+      status: 'documented',
+    },
+    industryRelationship: {
+      sourceIds: ['bauhaus-archiv-teaching'],
+      status: 'documented',
+    },
   },
   styleTheme: {
     accentColor: '#D82B2B',
