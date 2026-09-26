@@ -61,16 +61,28 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
   onExploreNetwork,
 }) => {
   const [languageIndex, setLanguageIndex] = useState(0);
+  const [cutTick, setCutTick] = useState(0);
 
   useEffect(() => {
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (reduceMotion) return;
 
-    const interval = window.setInterval(() => {
-      setLanguageIndex((current) => (current + 1) % HERO_LANGUAGES.length);
-    }, 3400);
+    let swapTimer: number | undefined;
+    let settleTimer: number | undefined;
 
-    return () => window.clearInterval(interval);
+    const interval = window.setInterval(() => {
+      setCutTick((current) => current + 1);
+      swapTimer = window.setTimeout(() => {
+        setLanguageIndex((current) => (current + 1) % HERO_LANGUAGES.length);
+      }, 135);
+      settleTimer = window.setTimeout(() => undefined, 360);
+    }, 3600);
+
+    return () => {
+      window.clearInterval(interval);
+      if (swapTimer) window.clearTimeout(swapTimer);
+      if (settleTimer) window.clearTimeout(settleTimer);
+    };
   }, []);
 
   const activeLanguage = HERO_LANGUAGES[languageIndex];
@@ -95,20 +107,24 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
 
       {/* Hero typographical statement */}
       <div className="my-auto py-12 max-w-6xl">
-        <div className="relative">
+        <div className="relative atlas-guillotine-zone">
           <div
             aria-hidden="true"
-            className="absolute -left-3 sm:-left-5 top-2 h-16 sm:h-24 w-1.5 bg-[#D82B2B] atlas-hero-accent"
+            className="absolute -left-3 sm:-left-5 top-2 h-16 sm:h-24 w-1.5 bg-[#D82B2B]"
           />
           <div
             aria-hidden="true"
-            className="absolute -left-3 sm:-left-5 top-[5.25rem] sm:top-[7.75rem] w-14 sm:w-20 h-px bg-[var(--atlas-text)] atlas-hero-accent-delay"
+            className="absolute -left-3 sm:-left-5 top-[5.25rem] sm:top-[7.75rem] w-14 sm:w-20 h-px bg-[var(--atlas-text)]"
           />
+          {cutTick > 0 && (
+            <span
+              key={cutTick}
+              aria-hidden="true"
+              className="atlas-guillotine-bar"
+            />
+          )}
 
-          <h1
-            key={`title-${activeLanguage.code}`}
-            className="atlas-language-swap text-6xl sm:text-8xl lg:text-9xl font-semibold tracking-tighter text-[var(--atlas-text)] leading-[0.88] select-none"
-          >
+          <h1 className="text-6xl sm:text-8xl lg:text-9xl font-semibold tracking-tighter text-[var(--atlas-text)] leading-[0.88] select-none">
             <span className="block">{activeLanguage.titleTop}</span>
             <span className="block">{activeLanguage.titleBottom}</span>
           </h1>
@@ -121,7 +137,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             </div>
             <h3
               key={`subtitle-${activeLanguage.code}`}
-              className="atlas-language-swap atlas-language-swap-delayed mt-3 text-lg sm:text-xl text-[var(--atlas-text-secondary)] max-w-xl font-light leading-relaxed"
+              className="atlas-hard-cut mt-3 text-lg sm:text-xl text-[var(--atlas-text-secondary)] max-w-xl font-light leading-relaxed"
             >
               {activeLanguage.subtitle}
             </h3>

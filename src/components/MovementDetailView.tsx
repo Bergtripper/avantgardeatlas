@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Movement, MovementId } from '../types/atlas';
 import { ArchivalVectorPlate } from './ArchivalVectorPlate';
 import { VisualDnaMatrix } from './VisualDnaMatrix';
@@ -29,6 +29,8 @@ export const MovementDetailView: React.FC<MovementDetailViewProps> = ({
   onExploreGlobalMovement,
 }) => {
   const [activeWorkIndex, setActiveWorkIndex] = useState<number>(0);
+  const [showOriginalName, setShowOriginalName] = useState(false);
+  const [nameCutTick, setNameCutTick] = useState(0);
 
   // Resolve canonical objects and people via normalized registry
   const keyWorks = getObjectsForMovement(movement.id);
@@ -68,6 +70,34 @@ export const MovementDetailView: React.FC<MovementDetailViewProps> = ({
       }),
     ].filter(Boolean) as string[]),
   );
+
+  useEffect(() => {
+    if (!movement.germanOrOriginalName || movement.germanOrOriginalName === movement.name) {
+      setShowOriginalName(false);
+      return;
+    }
+
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduceMotion) return;
+
+    let swapTimer: number | undefined;
+    const interval = window.setInterval(() => {
+      setNameCutTick((current) => current + 1);
+      swapTimer = window.setTimeout(() => {
+        setShowOriginalName((current) => !current);
+      }, 110);
+    }, 7600);
+
+    return () => {
+      window.clearInterval(interval);
+      if (swapTimer) window.clearTimeout(swapTimer);
+    };
+  }, [movement.id, movement.name, movement.germanOrOriginalName]);
+
+  const displayedMovementName =
+    showOriginalName && movement.germanOrOriginalName
+      ? movement.germanOrOriginalName
+      : movement.name;
 
   // Dynamic contextual classes based on styleTheme
   const getContextualContainerStyle = () => {
@@ -118,13 +148,25 @@ export const MovementDetailView: React.FC<MovementDetailViewProps> = ({
             <span className="text-[var(--atlas-text)] font-semibold">{movement.period}</span>
           </div>
 
-          <h1 className="text-6xl sm:text-8xl lg:text-9xl font-semibold tracking-tighter text-[var(--atlas-text)] leading-[0.88] mt-4 mb-6">
-            {movement.name}
-          </h1>
+          <div className="relative mt-4 mb-6 inline-block max-w-full atlas-entity-cut-zone">
+            {nameCutTick > 0 && (
+              <span
+                key={nameCutTick}
+                aria-hidden="true"
+                className="atlas-entity-cut-bar"
+              />
+            )}
+            <h1
+              key={`${movement.id}-${displayedMovementName}`}
+              className="atlas-hard-cut text-6xl sm:text-8xl lg:text-9xl font-semibold tracking-tighter text-[var(--atlas-text)] leading-[0.88]"
+            >
+              {displayedMovementName}
+            </h1>
+          </div>
 
-          {movement.germanOrOriginalName && (
-            <div className="font-mono text-sm text-[var(--atlas-text-muted)] tracking-wider mb-6">
-              ORIGINAL DESIGNATION: {movement.germanOrOriginalName}
+          {movement.germanOrOriginalName && movement.germanOrOriginalName !== movement.name && (
+            <div className="font-mono text-[10px] text-[var(--atlas-text-muted)] tracking-widest uppercase mb-6">
+              {showOriginalName ? 'Original designation' : 'Editorial designation'} // auto
             </div>
           )}
 
