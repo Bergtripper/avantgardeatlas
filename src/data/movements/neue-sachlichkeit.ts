@@ -10,9 +10,9 @@ export const neueSachlichkeitMovement: Movement = {
   countries: ['Germany'],
   cities: ['Berlin', 'Frankfurt', 'Munich', 'Karlsruhe'],
   mottoOrKeywords: ['The New Objectivity', 'Existenzminimum', 'Sachlichkeit'],
-  summary: 'A cool, sober, unsentimental German movement that countered postwar Expressionist emotionalism with documentary realism, factual social analysis, and functional civic architecture.',
-  coreIdeas: 'To look at the harsh socioeconomic realities of modern life without sentimental illusions. In painting, it forged ruthless, razor-sharp documentary portraits; in architecture, it designed standardized, light-filled municipal social housing (Siedlungen) configured around biological minimum requirements for human life (Existenzminimum).',
-  historicalContext: 'Named by Gustav Friedrich Hartlaub for his 1925 exhibition at the Kunsthalle Mannheim. It characterized the stabilized "Golden Twenties" of the Weimar Republic before the rise of totalitarian fascism.',
+  summary: 'A German interwar tendency associated with a renewed emphasis on realism, precise observation, and unsentimental description across painting and photography, alongside broader contemporary debates about functional modernity.',
+  coreIdeas: 'New Objectivity rejected the heightened subjectivity of Expressionism in favor of sharper observation and recognizably contemporary subjects. In photography and portraiture, this often meant systematic description; in architecture and housing discourse, related ideas of Sachlichkeit emphasized functional organization, economy, and standardization.',
+  historicalContext: 'Gustav Friedrich Hartlaub coined the term Neue Sachlichkeit in the mid-1920s for a new realist tendency in German art. The label became associated with artists including Otto Dix and George Grosz and was later also applied to photographers such as August Sander, whose work pursued systematic representations of Weimar society.',
   visualPrinciples: [
     'Unforgiving, crystalline objective clarity and sharp-focus depiction',
     'The eradication of decorative bourgeois pretense in architecture and daily life',
@@ -45,7 +45,7 @@ export const neueSachlichkeitMovement: Movement = {
       classification: 'Documentary Sans & Objective Grotesk',
       characteristics: [
         'Tabular statistical layouts and demographic charts',
-        'Unadorned grotesque lettering used for signage and municipal municipal records'
+        'Unadorned grotesque lettering used for signage and municipal records'
       ],
       specimen: 'DAS NEUE FRANKFURT 1926'
     },
@@ -68,6 +68,11 @@ export const neueSachlichkeitMovement: Movement = {
   ],
   influencesFrom: ['deutscher-werkbund', 'bauhaus', 'dada'],
   influencesTo: ['international-style', 'new-typography'],
+  provenance: {
+    summary: { sourceIds: ['moma-neue-sachlichkeit'], status: 'documented' },
+    coreIdeas: { sourceIds: ['moma-neue-sachlichkeit', 'moma-august-sander'], status: 'editorial-synthesis' },
+    historicalContext: { sourceIds: ['moma-neue-sachlichkeit', 'moma-august-sander'], status: 'documented' },
+  },
   styleTheme: {
     accentColor: '#64748B',
     secondaryColor: '#CA8A04',
