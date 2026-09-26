@@ -23,6 +23,7 @@ import {
   getGlobalPersonById,
   getGlobalSourceById
 } from '../src/data/global';
+import { ALL_SOURCES } from '../src/data/sources';
 
 const errors: string[] = [];
 const warnings: string[] = [];
@@ -51,6 +52,7 @@ checkUnique('Global entity', ALL_GLOBAL_ENTITIES.map((entity) => entity.id));
 checkUnique('Global historical event', ALL_GLOBAL_HISTORICAL_EVENTS.map((event) => event.id));
 checkUnique('Diffusion route', ALL_DIFFUSION_ROUTES.map((route) => route.id));
 checkUnique('Global source', ALL_GLOBAL_SOURCES.map((source) => source.id));
+checkUnique('Unified source registry', ALL_SOURCES.map((source) => source.id));
 
 for (const movement of ALL_MOVEMENTS) {
   requireText(`Movement ${movement.id} name`, movement.name);
@@ -193,6 +195,12 @@ for (const source of ALL_GLOBAL_SOURCES) {
     new URL(source.url);
   } catch {
     errors.push(`Global source ${source.id}: invalid URL "${source.url}"`);
+  }
+}
+
+for (const source of ALL_SOURCES) {
+  if (source.usages.length === 0) {
+    warnings.push(`Source ${source.id}: registered but not linked to any provenance-bearing record`);
   }
 }
 
@@ -354,7 +362,7 @@ for (const movementId of movementIds) {
 }
 
 console.log(
-  `Validated ${ALL_MOVEMENTS.length} movements, ${ALL_PEOPLE.length} people, ${ALL_OBJECTS.length} objects, ${ALL_PLACES.length} places, ${ALL_CONNECTIONS.length} connections, ${ALL_STORIES.length} stories, ${ALL_GLOBAL_HUBS.length} global hubs, ${ALL_GLOBAL_ENTITIES.length} global entities, ${ALL_GLOBAL_HISTORICAL_EVENTS.length} historical events and ${ALL_DIFFUSION_ROUTES.length} diffusion routes.`
+  `Validated ${ALL_MOVEMENTS.length} movements, ${ALL_PEOPLE.length} people, ${ALL_OBJECTS.length} objects, ${ALL_PLACES.length} places, ${ALL_CONNECTIONS.length} connections, ${ALL_STORIES.length} stories, ${ALL_GLOBAL_HUBS.length} global hubs, ${ALL_GLOBAL_ENTITIES.length} global entities, ${ALL_GLOBAL_HISTORICAL_EVENTS.length} historical events and ${ALL_DIFFUSION_ROUTES.length} diffusion routes, with ${ALL_SOURCES.length} sources in the unified provenance register.`
 );
 
 if (warnings.length) {
