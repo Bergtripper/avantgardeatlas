@@ -11,6 +11,7 @@ import {
 } from '../data/global';
 import { getPlaceById } from '../data/places';
 import { ClaimSources } from './ClaimSources';
+import { useAccessibility } from '../context/AccessibilityContext';
 
 interface MovementDetailViewProps {
   movement: Movement;
@@ -32,6 +33,7 @@ export const MovementDetailView: React.FC<MovementDetailViewProps> = ({
   const [activeWorkIndex, setActiveWorkIndex] = useState<number>(0);
   const [showOriginalName, setShowOriginalName] = useState(false);
   const [nameCutTick, setNameCutTick] = useState(0);
+  const { settings } = useAccessibility();
 
   // Resolve canonical objects and people via normalized registry
   const keyWorks = getObjectsForMovement(movement.id);
@@ -78,8 +80,8 @@ export const MovementDetailView: React.FC<MovementDetailViewProps> = ({
       return;
     }
 
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (reduceMotion) return;
+    const systemReduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (systemReduceMotion || settings.reduceMotion || settings.pauseDynamicType) return;
 
     let swapTimer: number | undefined;
     const interval = window.setInterval(() => {
@@ -93,7 +95,13 @@ export const MovementDetailView: React.FC<MovementDetailViewProps> = ({
       window.clearInterval(interval);
       if (swapTimer) window.clearTimeout(swapTimer);
     };
-  }, [movement.id, movement.name, movement.germanOrOriginalName]);
+  }, [
+    movement.id,
+    movement.name,
+    movement.germanOrOriginalName,
+    settings.reduceMotion,
+    settings.pauseDynamicType,
+  ]);
 
   const displayedMovementName =
     showOriginalName && movement.germanOrOriginalName
