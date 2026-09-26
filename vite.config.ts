@@ -11,4 +11,25 @@ export default defineConfig({
       '@': path.resolve(__dirname, '.'),
     },
   },
+  build: {
+    target: 'es2022',
+    cssCodeSplit: true,
+    sourcemap: false,
+    chunkSizeWarningLimit: 650,
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules/react') || id.includes('node_modules/react-dom')) {
+            return 'react-vendor';
+          }
+          if (id.includes('node_modules/d3-geo') || id.includes('node_modules/topojson-client') || id.includes('node_modules/world-atlas')) {
+            return 'map-vendor';
+          }
+          if (id.includes('node_modules/motion')) {
+            return 'motion-vendor';
+          }
+        },
+      },
+    },
+  },
 });
