@@ -16,5 +16,7 @@ export const deStijlLeidenWeimarRoute: DiffusionRoute = {
     'By the early 1920s De Stijl had become an international review through which Theo van Doesburg circulated texts and reproductions while participating in the Weimar avant-garde network.',
   transformationNote:
     'The journal connected De Stijl to a broader Constructivist and Dadaist discourse rather than simply exporting a fixed Dutch style.',
+  evidenceStatus: 'editorial-synthesis',
+  transformationEvidenceStatus: 'interpretive',
   sourceIds: ['moma-de-stijl-magazine', 'moma-van-doesburg'],
 };

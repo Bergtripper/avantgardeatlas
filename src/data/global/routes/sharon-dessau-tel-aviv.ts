@@ -15,5 +15,7 @@ export const sharonDessauTelAvivRoute: DiffusionRoute = {
     'After studying at the Bauhaus in Dessau, Arieh Sharon returned to Tel Aviv and applied functionalist principles to housing and urban architecture during the city’s rapid 1930s growth.',
   transformationNote:
     'The result was not a direct copy of Bauhaus architecture: modernist principles were adapted to local climate, urban density and social housing requirements.',
+  evidenceStatus: 'editorial-synthesis',
+  transformationEvidenceStatus: 'interpretive',
   sourceIds: ['bauhaus-palestine-sharon', 'unesco-tel-aviv-white-city'],
 };

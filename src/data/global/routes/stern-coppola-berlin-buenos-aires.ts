@@ -19,5 +19,7 @@ export const sternCoppolaBerlinBuenosAiresRoute: DiffusionRoute = {
     'After Bauhaus-linked training and European work, Grete Stern and Horacio Coppola arrived in Buenos Aires in 1935 and exhibited at the offices of the magazine Sur, reinforcing a modern photographic culture in Argentina.',
   transformationNote:
     'This was a circular exchange: Coppola had already developed modernist photography in Buenos Aires before studying in Europe, then returned with Stern to extend rather than originate the local modern movement.',
+  evidenceStatus: 'editorial-synthesis',
+  transformationEvidenceStatus: 'interpretive',
   sourceIds: ['bauhaus-after-1933', 'moma-stern-coppola'],
 };

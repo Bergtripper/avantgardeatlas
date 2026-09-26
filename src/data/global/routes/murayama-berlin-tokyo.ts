@@ -16,5 +16,7 @@ export const murayamaBerlinTokyoRoute: DiffusionRoute = {
     'After direct exposure to Berlin’s avant-garde, Murayama returned to Japan and helped transform Dadaist and Constructivist strategies into the experimental practices associated with MAVO.',
   transformationNote:
     'Not a simple import: European avant-garde techniques were reworked through Japanese urban culture, performance and commercial print.',
+  evidenceStatus: 'editorial-synthesis',
+  transformationEvidenceStatus: 'interpretive',
   sourceIds: ['kanagawa-murayama-2011', 'princeton-mavo'],
 };

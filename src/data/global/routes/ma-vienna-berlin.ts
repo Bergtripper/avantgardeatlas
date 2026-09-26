@@ -16,5 +16,7 @@ export const maViennaBerlinRoute: DiffusionRoute = {
     'From Vienna, MA operated inside a dense international network that included Berlin-based artists and publications, transmitting Constructivist, Dada, Futurist and De Stijl material through texts and reproductions.',
   transformationNote:
     'MA’s exile context reshaped the journal from a primarily Hungarian activist publication into a broader international avant-garde forum.',
+  evidenceStatus: 'editorial-synthesis',
+  transformationEvidenceStatus: 'interpretive',
   sourceIds: ['moma-ma-magazine', 'kassak-ma-network'],
 };

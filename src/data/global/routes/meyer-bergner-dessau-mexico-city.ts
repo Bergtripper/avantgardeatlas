@@ -18,5 +18,7 @@ export const meyerBergnerDessauMexicoCityRoute: DiffusionRoute = {
     'Hannes Meyer and Lena Bergner reached Mexico in 1939 after the Bauhaus and Soviet phases of their careers. The route represents the transfer of Bauhaus-linked methods through political displacement, not a literal nonstop journey from Dessau.',
   transformationNote:
     'Mexico became the setting for later architectural, educational and visual-communication work, including Bergner’s graphic practice and projects developed with Meyer. The 1939 route marks the beginning of that exile context within the Atlas period.',
+  evidenceStatus: 'editorial-synthesis',
+  transformationEvidenceStatus: 'interpretive',
   sourceIds: ['bauhaus-bergner-mexico'],
 };

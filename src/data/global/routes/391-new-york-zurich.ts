@@ -16,5 +16,7 @@ export const route391NewYorkZurich: DiffusionRoute = {
     '391 moved from New York to Zurich, reconnecting the magazine with the European Dada network before its final Paris phase.',
   transformationNote:
     'The same periodical linked Dada milieus that had developed in parallel, reinforcing the movement’s transatlantic rather than single-origin character.',
+  evidenceStatus: 'editorial-synthesis',
+  transformationEvidenceStatus: 'interpretive',
   sourceIds: ['iowa-391', 'iowa-picabia-391'],
 };

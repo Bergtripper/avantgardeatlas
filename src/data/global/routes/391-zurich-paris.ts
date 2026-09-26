@@ -17,5 +17,7 @@ export const route391ZurichParis: DiffusionRoute = {
     'After its Zurich issue, 391 continued in Paris, where Picabia’s magazine became part of the emerging Paris Dada environment and continued until 1924.',
   transformationNote:
     'The Paris phase shows how a mobile publication could accumulate meanings from several Dada centers and carry them into a new local constellation.',
+  evidenceStatus: 'editorial-synthesis',
+  transformationEvidenceStatus: 'interpretive',
   sourceIds: ['iowa-391', 'iowa-picabia-391'],
 };
