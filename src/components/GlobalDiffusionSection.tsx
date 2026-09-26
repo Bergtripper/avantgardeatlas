@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { getMovementById } from '../data/movements';
+import { MovementId } from '../types/atlas';
 import { getPersonById } from '../data/people';
 import { getPlaceById } from '../data/places';
 import {
@@ -45,7 +46,16 @@ type RouteSemanticId =
   | 'commercial'
   | 'reinterpretation';
 
-type GlobalViewMode = 'map' | 'routes' | 'nodes';
+type GlobalViewMode = 'map' | 'routes' | 'nodes' | 'crossroads';
+
+interface CityCrossroad {
+  key: string;
+  placeRef: DiffusionPlaceRef;
+  place: NonNullable<ReturnType<typeof resolvePlace>>;
+  movementIds: MovementId[];
+  routeIds: string[];
+  entityIds: string[];
+}
 
 interface RouteSemantic {
   id: RouteSemanticId;
@@ -201,6 +211,7 @@ export const GlobalDiffusionSection: React.FC = () => {
 
   const [selectedRouteId, setSelectedRouteId] = useState(ALL_DIFFUSION_ROUTES[0]?.id ?? '');
   const [selectedNodeId, setSelectedNodeId] = useState('');
+  const [selectedCrossroadKey, setSelectedCrossroadKey] = useState('');
   const [yearFilter, setYearFilter] = useState(maxRouteYear);
   const [semanticFilter, setSemanticFilter] = useState<RouteSemanticId | 'all'>('all');
   const [mediumFilter, setMediumFilter] = useState<DiffusionMedium | 'all'>('all');
@@ -224,6 +235,17 @@ export const GlobalDiffusionSection: React.FC = () => {
     [yearFilter, mediumFilter, movementFilter],
   );
 
+  const convergenceEntities = useMemo(
+    () =>
+      ALL_GLOBAL_ENTITIES.filter((entity) => {
+        if (entity.startYear > yearFilter) return false;
+        if (mediumFilter !== 'all' && !entity.media.includes(mediumFilter)) return false;
+        if (movementFilter !== 'all' && !entity.movementLinks.includes(movementFilter as never)) return false;
+        return true;
+      }),
+    [yearFilter, mediumFilter, movementFilter],
+  );
+
   const filteredRoutes = useMemo(
     () =>
       ALL_DIFFUSION_ROUTES.filter((route) => {
@@ -241,20 +263,28 @@ export const GlobalDiffusionSection: React.FC = () => {
 
   const selectRoute = (routeId: string) => {
     setSelectedNodeId('');
+    setSelectedCrossroadKey('');
     setSelectedRouteId(routeId);
     setViewMode('map');
   };
 
   const selectNode = (nodeId: string) => {
+    setSelectedCrossroadKey('');
     setSelectedNodeId(nodeId);
     setViewMode('map');
   };
 
+  const selectCrossroad = (crossroadKey: string) => {
+    setSelectedNodeId('');
+    setSelectedCrossroadKey(crossroadKey);
+    setViewMode('map');
+  };
+
   useEffect(() => {
-    if (selectedNodeId) return;
+    if (selectedNodeId || selectedCrossroadKey) return;
     if (filteredRoutes.some((route) => route.id === selectedRouteId)) return;
     setSelectedRouteId(filteredRoutes[0]?.id ?? '');
-  }, [filteredRoutes, selectedRouteId, selectedNodeId]);
+  }, [filteredRoutes, selectedRouteId, selectedNodeId, selectedCrossroadKey]);
 
   const selectedRoute =
     filteredRoutes.find((route) => route.id === selectedRouteId) ?? filteredRoutes[0];
@@ -281,6 +311,98 @@ export const GlobalDiffusionSection: React.FC = () => {
     ? selectedNode.movementLinks.map((id) => getMovementById(id)?.name ?? id)
     : [];
 
+  const cityCrossroads = useMemo(() => {
+    const records = new Map<
+      string,
+      {
+        placeRef: DiffusionPlaceRef;
+        place: NonNullable<ReturnType<typeof resolvePlace>>;
+        movementIds: Set<MovementId>;
+        routeIds: Set<string>;
+        entityIds: Set<string>;
+      }
+    >();
+
+    const ensure = (placeRef: DiffusionPlaceRef) => {
+      const place = resolvePlace(placeRef);
+      if (!place) return null;
+      const key = `${placeRef.scope}:${placeRef.id}`;
+      if (!records.has(key)) {
+        records.set(key, {
+          placeRef,
+          place,
+          movementIds: new Set<MovementId>(),
+          routeIds: new Set<string>(),
+          entityIds: new Set<string>(),
+        });
+      }
+      return records.get(key)!;
+    };
+
+    filteredRoutes.forEach((route) => {
+      [route.origin, route.destination].forEach((placeRef) => {
+        const record = ensure(placeRef);
+        if (!record) return;
+        route.sourceMovementIds.forEach((movementId) => record.movementIds.add(movementId));
+        record.routeIds.add(route.id);
+      });
+    });
+
+    convergenceEntities.forEach((entity) => {
+      const placeRef = entity.placeRef ??
+        (entity.hubId ? ({ scope: 'global', id: entity.hubId } as DiffusionPlaceRef) : null);
+      if (!placeRef) return;
+      const record = ensure(placeRef);
+      if (!record) return;
+      entity.movementLinks.forEach((movementId) => record.movementIds.add(movementId));
+      record.entityIds.add(entity.id);
+    });
+
+    return Array.from(records.entries())
+      .map(([key, record]): CityCrossroad => ({
+        key,
+        placeRef: record.placeRef,
+        place: record.place,
+        movementIds: Array.from(record.movementIds),
+        routeIds: Array.from(record.routeIds),
+        entityIds: Array.from(record.entityIds),
+      }))
+      .filter(
+        (crossroad) =>
+          crossroad.movementIds.length >= 2 &&
+          crossroad.routeIds.length + crossroad.entityIds.length >= 2,
+      )
+      .sort((a, b) => {
+        const movementDelta = b.movementIds.length - a.movementIds.length;
+        if (movementDelta !== 0) return movementDelta;
+        const evidenceDelta =
+          b.routeIds.length + b.entityIds.length - (a.routeIds.length + a.entityIds.length);
+        if (evidenceDelta !== 0) return evidenceDelta;
+        return a.place.name.localeCompare(b.place.name);
+      });
+  }, [filteredRoutes, convergenceEntities]);
+
+  const selectedCrossroad = selectedCrossroadKey
+    ? cityCrossroads.find((crossroad) => crossroad.key === selectedCrossroadKey)
+    : undefined;
+  const selectedCrossroadRoutes = selectedCrossroad
+    ? selectedCrossroad.routeIds
+        .map((id) => ALL_DIFFUSION_ROUTES.find((route) => route.id === id))
+        .filter(Boolean) as DiffusionRoute[]
+    : [];
+  const selectedCrossroadEntities = selectedCrossroad
+    ? selectedCrossroad.entityIds.map((id) => getGlobalEntityById(id)).filter(Boolean)
+    : [];
+  const selectedCrossroadMovements = selectedCrossroad
+    ? selectedCrossroad.movementIds.map((id) => getMovementById(id)?.name ?? id)
+    : [];
+
+  useEffect(() => {
+    if (!selectedCrossroadKey) return;
+    if (cityCrossroads.some((crossroad) => crossroad.key === selectedCrossroadKey)) return;
+    setSelectedCrossroadKey('');
+  }, [cityCrossroads, selectedCrossroadKey]);
+
   const atlasRoutePlaces = useMemo(() => {
     const seen = new Map<string, ReturnType<typeof resolvePlace>>();
 
@@ -293,9 +415,13 @@ export const GlobalDiffusionSection: React.FC = () => {
     if (selectedNode?.placeRef?.scope === 'atlas' && !seen.has(selectedNode.placeRef.id)) {
       seen.set(selectedNode.placeRef.id, resolvePlace(selectedNode.placeRef));
     }
+    cityCrossroads.forEach((crossroad) => {
+      if (crossroad.placeRef.scope !== 'atlas' || seen.has(crossroad.placeRef.id)) return;
+      seen.set(crossroad.placeRef.id, crossroad.place);
+    });
 
     return Array.from(seen.values()).filter(Boolean) as NonNullable<ReturnType<typeof resolvePlace>>[];
-  }, [filteredRoutes, selectedNode]);
+  }, [filteredRoutes, selectedNode, cityCrossroads]);
 
   const visibleGlobalHubIds = useMemo(() => {
     const ids = new Set<string>();
@@ -306,8 +432,11 @@ export const GlobalDiffusionSection: React.FC = () => {
     });
     if (selectedNode?.placeRef?.scope === 'global') ids.add(selectedNode.placeRef.id);
     if (selectedNode?.hubId) ids.add(selectedNode.hubId);
+    cityCrossroads.forEach((crossroad) => {
+      if (crossroad.placeRef.scope === 'global') ids.add(crossroad.placeRef.id);
+    });
     return ids;
-  }, [filteredRoutes, selectedNode]);
+  }, [filteredRoutes, selectedNode, cityCrossroads]);
 
   const selectedSemantic = selectedRoute
     ? semanticForRoute(selectedRoute)
@@ -500,7 +629,7 @@ export const GlobalDiffusionSection: React.FC = () => {
 
           <div className="border-t border-[var(--atlas-border)] flex items-center justify-between gap-3 px-3 md:px-4">
             <div className="flex">
-              {(['map', 'routes', 'nodes'] as GlobalViewMode[]).map((mode) => (
+              {(['map', 'routes', 'nodes', 'crossroads'] as GlobalViewMode[]).map((mode) => (
                 <button
                   key={mode}
                   type="button"
@@ -602,6 +731,64 @@ export const GlobalDiffusionSection: React.FC = () => {
           </div>
         )}
 
+        {viewMode === 'crossroads' && (
+          <div className="mb-8 border border-[var(--atlas-border)] bg-[var(--atlas-surface)]">
+            <div className="px-4 py-3 border-b border-[var(--atlas-border)] flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <div className="font-mono text-[9px] uppercase tracking-widest text-[var(--atlas-text-muted)]">
+                  Crossroads // city convergence
+                </div>
+                <p className="mt-1 text-[11px] text-[var(--atlas-text-secondary)]">
+                  Cities where the current filtered network documents at least two distinct movements through routes or local nodes.
+                </p>
+              </div>
+              <span className="font-mono text-[8px] uppercase tracking-wider text-[var(--atlas-text-quiet)]">
+                {cityCrossroads.length} visible
+              </span>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-px bg-[var(--atlas-border)]">
+              {cityCrossroads.map((crossroad) => (
+                <button
+                  key={crossroad.key}
+                  type="button"
+                  onClick={() => selectCrossroad(crossroad.key)}
+                  className="bg-[var(--atlas-card)] p-4 text-left hover:bg-[var(--atlas-surface-alt)] transition-colors"
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <div className="font-mono text-[8px] uppercase tracking-widest text-[var(--atlas-text-muted)]">
+                        {crossroad.place.country}
+                      </div>
+                      <h3 className="mt-1 text-lg font-semibold text-[var(--atlas-text)]">
+                        {crossroad.place.name}
+                      </h3>
+                    </div>
+                    <span className="font-mono text-xl font-semibold text-[#D82B2B]">
+                      {crossroad.movementIds.length}
+                    </span>
+                  </div>
+                  <div className="mt-3 flex flex-wrap gap-1.5">
+                    {crossroad.movementIds.map((movementId) => (
+                      <span
+                        key={movementId}
+                        className="px-2 py-1 border border-[var(--atlas-border-control)] font-mono text-[8px] uppercase tracking-wide"
+                      >
+                        {getMovementById(movementId)?.name ?? movementId}
+                      </span>
+                    ))}
+                  </div>
+                  <div className="mt-4 font-mono text-[8px] uppercase tracking-wider text-[var(--atlas-text-muted)]">
+                    {crossroad.routeIds.length} routes · {crossroad.entityIds.length} nodes
+                  </div>
+                  <div className="mt-2 font-mono text-[8px] uppercase tracking-wider text-[var(--atlas-text-muted)]">
+                    View on map →
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
         <div className={`${viewMode === 'map' ? 'grid' : 'hidden'} grid-cols-1 lg:grid-cols-12 gap-8 items-start`}>
           <div className="lg:col-span-8 border border-[var(--atlas-border)] bg-[var(--atlas-surface)] overflow-hidden">
             <div className="px-4 py-3 border-b border-[var(--atlas-border)] flex flex-wrap items-center justify-between gap-2">
@@ -686,7 +873,7 @@ export const GlobalDiffusionSection: React.FC = () => {
               />
 
               {filteredRoutes.map((route) => {
-                const active = !selectedNode && route.id === selectedRoute?.id;
+                const active = !selectedNode && !selectedCrossroad && route.id === selectedRoute?.id;
                 const semantic = semanticForRoute(route);
                 const markerId =
                   semantic.marker === 'diamond'
@@ -731,16 +918,48 @@ export const GlobalDiffusionSection: React.FC = () => {
 
               {atlasRoutePlaces.map((place) => {
                 const point = projectGlobalCoordinate(place.longitude, place.latitude);
+                const crossroad = cityCrossroads.find(
+                  (item) => item.placeRef.scope === 'atlas' && item.placeRef.id === place.id,
+                );
+                const activeCrossroad = selectedCrossroad?.key === crossroad?.key;
+                const activeNode = selectedNodePlace?.id === place.id;
                 return (
-                  <g key={`atlas-${place.id}`} transform={`translate(${point.x}, ${point.y})`}>
+                  <g
+                    key={`atlas-${place.id}`}
+                    transform={`translate(${point.x}, ${point.y})`}
+                    role={crossroad ? 'button' : undefined}
+                    tabIndex={crossroad ? 0 : undefined}
+                    className={crossroad ? 'cursor-pointer' : undefined}
+                    aria-label={
+                      crossroad
+                        ? `${place.name}: ${crossroad.movementIds.length} movement crossroad`
+                        : undefined
+                    }
+                    onClick={() => crossroad && selectCrossroad(crossroad.key)}
+                    onKeyDown={(event) => {
+                      if (!crossroad || (event.key !== 'Enter' && event.key !== ' ')) return;
+                      event.preventDefault();
+                      selectCrossroad(crossroad.key);
+                    }}
+                  >
+                    {crossroad && (
+                      <circle
+                        r={10 + Math.min(6, crossroad.movementIds.length * 1.5)}
+                        fill="none"
+                        stroke={activeCrossroad ? '#D82B2B' : 'var(--geo-city-active)'}
+                        strokeWidth={activeCrossroad ? 2 : 1}
+                        strokeDasharray="2 2"
+                        opacity={activeCrossroad ? 1 : 0.55}
+                      />
+                    )}
                     <circle
-                      r={selectedNodePlace?.id === place.id ? 6 : 4.5}
-                      fill={selectedNodePlace?.id === place.id ? '#D82B2B' : 'var(--geo-city-active)'}
+                      r={activeCrossroad || activeNode ? 6 : 4.5}
+                      fill={activeCrossroad || activeNode ? '#D82B2B' : 'var(--geo-city-active)'}
                     />
                     <circle
-                      r={selectedNodePlace?.id === place.id ? 12 : 9}
+                      r={activeCrossroad || activeNode ? 12 : 9}
                       fill="none"
-                      stroke={selectedNodePlace?.id === place.id ? '#D82B2B' : 'var(--geo-city-active)'}
+                      stroke={activeCrossroad || activeNode ? '#D82B2B' : 'var(--geo-city-active)'}
                       strokeWidth="0.8"
                       opacity="0.45"
                     />
@@ -759,12 +978,44 @@ export const GlobalDiffusionSection: React.FC = () => {
 
               {ALL_GLOBAL_HUBS.filter((hub) => visibleGlobalHubIds.has(hub.id)).map((hub) => {
                 const point = projectGlobalCoordinate(hub.longitude, hub.latitude);
-                const active = selectedNode
+                const crossroad = cityCrossroads.find(
+                  (item) => item.placeRef.scope === 'global' && item.placeRef.id === hub.id,
+                );
+                const activeCrossroad = selectedCrossroad?.key === crossroad?.key;
+                const active = activeCrossroad || (selectedNode
                   ? selectedNodePlace?.id === hub.id
-                  : selectedDestination?.id === hub.id || selectedOrigin?.id === hub.id;
+                  : !selectedCrossroad &&
+                    (selectedDestination?.id === hub.id || selectedOrigin?.id === hub.id));
 
                 return (
-                  <g key={hub.id} transform={`translate(${point.x}, ${point.y})`}>
+                  <g
+                    key={hub.id}
+                    transform={`translate(${point.x}, ${point.y})`}
+                    role={crossroad ? 'button' : undefined}
+                    tabIndex={crossroad ? 0 : undefined}
+                    className={crossroad ? 'cursor-pointer' : undefined}
+                    aria-label={
+                      crossroad
+                        ? `${hub.name}: ${crossroad.movementIds.length} movement crossroad`
+                        : undefined
+                    }
+                    onClick={() => crossroad && selectCrossroad(crossroad.key)}
+                    onKeyDown={(event) => {
+                      if (!crossroad || (event.key !== 'Enter' && event.key !== ' ')) return;
+                      event.preventDefault();
+                      selectCrossroad(crossroad.key);
+                    }}
+                  >
+                    {crossroad && (
+                      <circle
+                        r={12 + Math.min(7, crossroad.movementIds.length * 1.5)}
+                        fill="none"
+                        stroke={activeCrossroad ? '#D82B2B' : 'var(--geo-city-active)'}
+                        strokeWidth={activeCrossroad ? 2 : 1}
+                        strokeDasharray="2 2"
+                        opacity={activeCrossroad ? 1 : 0.55}
+                      />
+                    )}
                     <rect
                       x="-5"
                       y="-5"
@@ -789,7 +1040,91 @@ export const GlobalDiffusionSection: React.FC = () => {
             </svg>
           </div>
 
-          {selectedNode ? (
+          {selectedCrossroad ? (
+            <aside className="lg:col-span-4 lg:sticky lg:top-28 border border-[var(--atlas-border)] bg-[var(--atlas-surface)] p-6">
+              <div className="font-mono text-[10px] uppercase tracking-widest text-[#D82B2B] mb-2">
+                Selected Crossroad // {selectedCrossroad.movementIds.length} movements
+              </div>
+              <h3 className="text-2xl font-semibold tracking-tight text-[var(--atlas-text)]">
+                {selectedCrossroad.place.name}
+              </h3>
+              <div className="mt-1 font-mono text-[9px] uppercase tracking-wider text-[var(--atlas-text-muted)]">
+                {selectedCrossroad.place.country} · current filtered network
+              </div>
+
+              <p className="mt-5 text-sm leading-relaxed text-[var(--atlas-text-body)]">
+                This city is a convergence point in the current Atlas view: multiple documented movement networks meet here through routes, publications, exhibitions, institutions or applied-design nodes.
+              </p>
+
+              <div className="mt-5">
+                <div className="font-mono text-[9px] uppercase tracking-wider text-[var(--atlas-text-muted)]">
+                  Movements in convergence
+                </div>
+                <div className="mt-2 flex flex-wrap gap-1.5">
+                  {selectedCrossroadMovements.map((movement) => (
+                    <span
+                      key={movement}
+                      className="px-2 py-1 border border-[var(--atlas-border-control)] bg-[var(--atlas-card)] font-mono text-[9px] uppercase"
+                    >
+                      {movement}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              <div className="mt-6">
+                <div className="font-mono text-[9px] uppercase tracking-wider text-[var(--atlas-text-muted)] mb-2">
+                  Connected routes // {selectedCrossroadRoutes.length}
+                </div>
+                <div className="space-y-1.5">
+                  {selectedCrossroadRoutes.map((route) => (
+                    <button
+                      key={route.id}
+                      type="button"
+                      onClick={() => selectRoute(route.id)}
+                      className="block w-full text-left border border-[var(--atlas-border-control)] bg-[var(--atlas-card)] px-2.5 py-2 hover:border-[var(--atlas-text)]"
+                    >
+                      <span className="block font-mono text-[8px] uppercase tracking-wider text-[var(--atlas-text-muted)]">
+                        {route.startYear} // {semanticForRoute(route).label}
+                      </span>
+                      <span className="block mt-1 text-[11px] text-[var(--atlas-text)]">
+                        {route.title}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {selectedCrossroadEntities.length > 0 && (
+                <div className="mt-6">
+                  <div className="font-mono text-[9px] uppercase tracking-wider text-[var(--atlas-text-muted)] mb-2">
+                    Local nodes // {selectedCrossroadEntities.length}
+                  </div>
+                  <div className="space-y-1.5">
+                    {selectedCrossroadEntities.map((entity) => (
+                      <button
+                        key={entity?.id}
+                        type="button"
+                        onClick={() => entity?.id && selectNode(entity.id)}
+                        className="block w-full text-left border border-[var(--atlas-border-control)] bg-[var(--atlas-card)] px-2.5 py-2 hover:border-[var(--atlas-text)]"
+                      >
+                        <span className="block font-mono text-[8px] uppercase tracking-wider text-[var(--atlas-text-muted)]">
+                          {entity?.kind} // {entity?.startYear}
+                        </span>
+                        <span className="block mt-1 text-[11px] text-[var(--atlas-text)]">
+                          {entity?.name}
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              <div className="mt-6 pt-4 border-t border-[var(--atlas-border)] text-[10px] leading-relaxed text-[var(--atlas-text-muted)]">
+                Crossroads are derived from the currently visible Atlas records. They indicate documented convergence in the dataset, not automatic proof of direct influence between every movement shown.
+              </div>
+            </aside>
+          ) : selectedNode ? (
             <aside className="lg:col-span-4 lg:sticky lg:top-28 border border-[var(--atlas-border)] bg-[var(--atlas-surface)] p-6">
               <div className="font-mono text-[10px] uppercase tracking-widest text-[var(--atlas-text-muted)] mb-2">
                 Selected Node // {selectedNode.kind} // {selectedNode.startYear}
