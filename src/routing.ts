@@ -9,6 +9,7 @@ const TAB_TO_PATH: Record<NavTab, string> = {
   compare: 'compare',
   people: 'people',
   stories: 'stories',
+  sources: 'sources',
   geography: 'maps/europe',
   global: 'maps/global',
 };
@@ -26,6 +27,7 @@ const PATH_TO_TAB: Record<string, NavTab> = {
   compare: 'compare',
   people: 'people',
   stories: 'stories',
+  sources: 'sources',
 };
 
 const normalizedBase = () => {

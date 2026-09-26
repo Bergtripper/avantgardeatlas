@@ -21,6 +21,9 @@ const PeopleSection = lazy(() =>
 const StoriesSection = lazy(() =>
   import('./components/StoriesSection').then((module) => ({ default: module.StoriesSection }))
 );
+const SourcesSection = lazy(() =>
+  import('./components/SourcesSection').then((module) => ({ default: module.SourcesSection }))
+);
 const GeographySection = lazy(() =>
   import('./components/GeographySection').then((module) => ({ default: module.GeographySection }))
 );
@@ -402,6 +405,8 @@ export default function App() {
                 onExploreGlobalStory={handleExploreGlobalStory}
               />
             )}
+
+            {currentTab === 'sources' && <SourcesSection />}
 
             {currentTab === 'geography' && (
               <GeographySection

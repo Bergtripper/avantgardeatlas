@@ -8,6 +8,7 @@ export type NavTab =
   | 'compare'
   | 'people'
   | 'stories'
+  | 'sources'
   | 'geography'
   | 'global';
 
@@ -30,6 +31,7 @@ const PRIMARY_NAV_ITEMS: Array<{ id: NavTab; label: string }> = [
   { id: 'compare', label: 'Compare' },
   { id: 'people', label: 'People' },
   { id: 'stories', label: 'Stories' },
+  { id: 'sources', label: 'Sources' },
 ];
 
 const MAP_ITEMS: Array<{ id: NavTab; label: string; description: string }> = [
