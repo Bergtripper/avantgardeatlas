@@ -76,6 +76,12 @@ export const bauhausMovement: Movement = {
   ],
   influencesFrom: ['deutscher-werkbund', 'de-stijl', 'constructivism', 'vienna-secession'],
   influencesTo: ['new-typography', 'international-style', 'rationalism'],
+  provenance: {
+    historicalContext: {
+      sourceIds: ['bauhaus-closure-1933'],
+      note: 'This source supports the 1933 Berlin search/sealing and the school’s permanent closure in July 1933. It does not by itself support every earlier sentence in the historical-context paragraph.'
+    }
+  },
   styleTheme: {
     accentColor: '#D82B2B',
     secondaryColor: '#1D4ED8',
