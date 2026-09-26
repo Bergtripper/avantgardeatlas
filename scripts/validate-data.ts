@@ -401,6 +401,77 @@ for (const route of ALL_DIFFUSION_ROUTES) {
   }
 }
 
+
+/* Editorial coverage audit: provenance may be partial by design, but the
+   validator should make coverage gaps visible without blocking publication. */
+const movementEditorialClaimKeys = [
+  'summary',
+  'coreIdeas',
+  'historicalContext',
+  'architectureNotes',
+  'graphicDesignNotes',
+  'industryRelationship',
+] as const;
+
+const movementCoveredClaims = ALL_MOVEMENTS.reduce(
+  (total, movement) =>
+    total +
+    movementEditorialClaimKeys.filter((claimKey) => Boolean(movement.provenance?.[claimKey])).length,
+  0,
+);
+const movementTotalClaims = ALL_MOVEMENTS.length * movementEditorialClaimKeys.length;
+const movementsWithoutProvenance = ALL_MOVEMENTS
+  .filter((movement) => Object.keys(movement.provenance ?? {}).length === 0)
+  .map((movement) => movement.id);
+
+warnings.push(
+  `Editorial provenance coverage — movements: ${movementCoveredClaims}/${movementTotalClaims} claim fields (${Math.round((movementCoveredClaims / movementTotalClaims) * 100)}%).` +
+    (movementsWithoutProvenance.length
+      ? ` No claim-level provenance yet: ${movementsWithoutProvenance.join(', ')}.`
+      : ''),
+);
+
+const objectEditorialClaimKeys = ['description', 'significance'] as const;
+const objectCoveredClaims = ALL_OBJECTS.reduce(
+  (total, object) =>
+    total +
+    objectEditorialClaimKeys.filter((claimKey) => Boolean(object.provenance?.[claimKey])).length,
+  0,
+);
+const objectTotalClaims = ALL_OBJECTS.length * objectEditorialClaimKeys.length;
+const objectsWithoutEditorialProvenance = ALL_OBJECTS
+  .filter((object) => !object.provenance?.description && !object.provenance?.significance)
+  .map((object) => object.id);
+
+warnings.push(
+  `Editorial provenance coverage — objects: ${objectCoveredClaims}/${objectTotalClaims} core claim fields (${Math.round((objectCoveredClaims / objectTotalClaims) * 100)}%).` +
+    (objectsWithoutEditorialProvenance.length
+      ? ` Objects still unsourced at claim level: ${objectsWithoutEditorialProvenance.length}.`
+      : ''),
+);
+
+const storySteps = ALL_STORIES.flatMap((story) => story.steps);
+const sourcedStorySteps = storySteps.filter((step) => Boolean(step.provenance?.text)).length;
+warnings.push(
+  `Editorial provenance coverage — story steps: ${sourcedStorySteps}/${storySteps.length} narrative text claims (${storySteps.length ? Math.round((sourcedStorySteps / storySteps.length) * 100) : 100}%).`,
+);
+
+const incompletePeople = ALL_PEOPLE.filter(
+  (person) =>
+    !person.years.trim() ||
+    !person.birthCity.trim() ||
+    !person.biography.trim() ||
+    person.primaryMovements.length === 0 ||
+    person.keyDisciplines.length === 0,
+);
+if (incompletePeople.length) {
+  warnings.push(
+    `People editorial completeness: ${incompletePeople.length} record(s) need biography/date/location/movement/discipline review: ${incompletePeople
+      .map((person) => person.id)
+      .join(', ')}.`,
+  );
+}
+
 const movementIds = new Set(ALL_MOVEMENTS.map((m) => m.id));
 for (const movementId of movementIds) {
   const movement = getMovementById(movementId);

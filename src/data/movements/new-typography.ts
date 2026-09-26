@@ -10,9 +10,9 @@ export const newTypographyMovement: Movement = {
   countries: ['Germany', 'Switzerland'],
   cities: ['Munich', 'Berlin', 'Frankfurt', 'Basel'],
   mottoOrKeywords: ['Asymmetric Balance', 'Elementary Typography', 'Grotesk Clarity'],
-  summary: 'A radical reform of graphic design spearheaded by Jan Tschichold, purging decorative serif flourishes and central-axis symmetry in favor of asymmetric functional clarity.',
-  coreIdeas: 'Typography must not decorate; it must communicate with ruthless efficiency. The traditional symmetrical page layout is declared archaic; dynamic asymmetric equilibrium, standardized DIN paper formats, grotesque sans-serif type, and photography are declared the true visual language of the machine age.',
-  historicalContext: 'Synthesized in Jan Tschichold’s 1925 special issue of "Typographische Mitteilungen" and codified in his seminal 1928 book "Die neue Typographie". Widely adopted by commercial advertising studios across Central Europe.',
+  summary: 'A modernist reform of graphic and information design that replaced conventional symmetrical page arrangements with asymmetric composition, standardized forms, sans-serif type, photography, and functional hierarchy.',
+  coreIdeas: 'Typography was treated primarily as a system for organizing and communicating information. Designers favored asymmetric balance, standardized paper formats, sans-serif type, photography, rules, and active white space to make hierarchy and reading order explicit.',
+  historicalContext: 'Jan Tschichold helped synthesize these ideas through his 1925 special issue of "Typographische Mitteilungen" and codified them in the 1928 book "Die neue Typographie". The approach drew on experiments associated with Soviet Constructivism, the Bauhaus, and other Central European avant-garde networks.',
   visualPrinciples: [
     'Strict asymmetric balance replacing bilateral center-axis symmetry',
     'Grotesk (sans-serif) typefaces chosen as the quintessential contemporary script',
@@ -54,7 +54,7 @@ export const newTypographyMovement: Movement = {
     attitude: ['Systematic', 'Precise', 'Objective', 'Functional', 'Progressive']
   },
   architectureNotes: 'Closely aligned with the "Neues Bauen" architectural movement; Tschichold designed publications for Gropius, Mies, and the Werkbund.',
-  graphicDesignNotes: 'The foundational text for modern visual communication, directly leading to Swiss Style and mid-century corporate identity programs.',
+  graphicDesignNotes: 'The movement established a widely influential vocabulary of asymmetric page construction, sans-serif type, photography, rules, and standardized formats for modern graphic communication.',
   industryRelationship: 'Aimed directly at commercial print shops, newspaper publishers, advertising agencies, and industrial trade catalogs.',
   keyPeople: [
     'jan-tschichold',
@@ -68,6 +68,24 @@ export const newTypographyMovement: Movement = {
   ],
   influencesFrom: ['bauhaus', 'constructivism', 'dada', 'de-stijl'],
   influencesTo: ['international-style'],
+  provenance: {
+    summary: {
+      sourceIds: ['moma-new-typography'],
+      status: 'editorial-synthesis',
+    },
+    coreIdeas: {
+      sourceIds: ['moma-new-typography'],
+      status: 'editorial-synthesis',
+    },
+    historicalContext: {
+      sourceIds: ['moma-new-typography'],
+      status: 'documented',
+    },
+    graphicDesignNotes: {
+      sourceIds: ['moma-new-typography'],
+      status: 'documented',
+    },
+  },
   styleTheme: {
     accentColor: '#E11D48',
     secondaryColor: '#0A0A0A',

@@ -11,6 +11,16 @@ export const casaDelFascioObject: ArchivalObject = {
   location: 'Como, Italy',
   dimensions: '33.2 × 33.2 m base, 16.6 m height (1:2 ratio)',
   description: 'A pure geometric prism based on classical harmonic proportions, featuring four distinct facades of marble and glass frames opening to a central glass atrium.',
-  significance: 'Demonstrated how modernist structural frames could achieve the profound classical weight and lyrical serenity of ancient Mediterranean architecture.',
+  significance: 'A central work of Italian Rationalism whose Cartesian grid, differentiated facades, compact volume, and proportional control became an influential reference in accounts of Terragni’s architecture.',
+  provenance: {
+    description: {
+      sourceIds: ['treccani-giuseppe-terragni'],
+      status: 'editorial-synthesis',
+    },
+    significance: {
+      sourceIds: ['treccani-giuseppe-terragni'],
+      status: 'documented',
+    },
+  },
   graphicType: 'bauhaus-building'
 };

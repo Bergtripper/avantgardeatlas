@@ -26,6 +26,9 @@ import { momaTzaraParis } from './moma-tzara-paris';
 import { momaVanDoesburg } from './moma-van-doesburg';
 import { princetonMavo } from './princeton-mavo';
 import { unescoTelAvivWhiteCity } from './unesco-tel-aviv-white-city';
+import { vamArtNouveauInternationalStyle } from './vam-art-nouveau-international-style';
+import { momaNewTypography } from './moma-new-typography';
+import { treccaniGiuseppeTerragni } from './treccani-giuseppe-terragni';
 
 export {
   bauhausAfter1933,
@@ -56,6 +59,9 @@ export {
   momaVanDoesburg,
   princetonMavo,
   unescoTelAvivWhiteCity,
+  vamArtNouveauInternationalStyle,
+  momaNewTypography,
+  treccaniGiuseppeTerragni,
 };
 
 export const ALL_GLOBAL_SOURCES = [
@@ -87,6 +93,9 @@ export const ALL_GLOBAL_SOURCES = [
   bauhausBergnerMexico,
   martDeperoNewYork,
   momaDepero,
+  vamArtNouveauInternationalStyle,
+  momaNewTypography,
+  treccaniGiuseppeTerragni,
 ];
 
 export const globalSourcesRegistry = Object.fromEntries(

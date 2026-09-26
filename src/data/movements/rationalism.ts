@@ -10,9 +10,9 @@ export const rationalismMovement: Movement = {
   countries: ['Italy'],
   cities: ['Como', 'Milan', 'Rome'],
   mottoOrKeywords: ['Gruppo 7', 'Mediterranean Light', 'Structural Purity'],
-  summary: 'The Italian branch of modern architecture that synthesized European functionalist rigor with ancient Mediterranean proportions, classical harmony, and local marble craft.',
-  coreIdeas: 'To modernize Italian architecture without renouncing its deep classical Latin heritage. Led by Gruppo 7 and Giuseppe Terragni, Rationalism proved that modern reinforced concrete and pure geometric grids could achieve the timeless poetic balance of classical Roman and Renaissance monuments.',
-  historicalContext: 'Founded in Milan in 1926 by seven young architects (Gruppo 7). Navigated a precarious political compromise with the Fascist regime, which ultimately favored reactionary monumental neoclassicism by the late 1930s.',
+  summary: 'An Italian modernist current that combined functionalist construction and geometric clarity with debates about proportion, Mediterranean identity, classical continuity, and the political culture of Fascist Italy.',
+  coreIdeas: 'Italian Rationalist architects sought a modern architecture grounded in contemporary construction while negotiating questions of national tradition, proportion, abstraction, and monumentality. Gruppo 7 and figures such as Giuseppe Terragni developed distinct positions within that broader debate.',
+  historicalContext: 'Gruppo 7 formed in Milan in 1926 and became one of the principal reference points for Italian Rationalism. Its architects worked within Fascist Italy, where modernist and monumental-classical approaches competed for institutional commissions and political legitimacy throughout the 1930s.',
   visualPrinciples: [
     'Rigorous proportional grids inspired by classical harmonic ratios and the Golden Section',
     'Pristine surfaces of white local Botticino marble, glass blocks, and framed voids',
@@ -51,7 +51,7 @@ export const rationalismMovement: Movement = {
     materials: ['Reinforced concrete', 'Botticino marble', 'Glass block pavers', 'Anodized aluminum', 'Travertine'],
     attitude: ['Disciplined', 'Lyrical', 'Proportional', 'Classical-Modernist', 'Rigorous']
   },
-  architectureNotes: 'The Casa del Fascio in Como (Giuseppe Terragni, 1932–1936) is an undisputed masterpiece of 20th-century architecture: a pure prism of white marble, glass bricks, and transparent spatial bays.',
+  architectureNotes: 'Giuseppe Terragni’s Casa del Fascio in Como (1932–1936) became a major reference point for Italian Rationalism through its compact volume, visible structural grid, differentiated facades, extensive glazing, and carefully controlled proportional relationships.',
   graphicDesignNotes: 'The architectural magazine "Casabella", edited by Edoardo Persico and Giuseppe Pagano, set European benchmarks for typographic minimalism.',
   industryRelationship: 'Celebrated the modern Italian steel and glass industry while honoring traditional stone masonry and marble quarrying.',
   keyPeople: [
@@ -67,6 +67,25 @@ export const rationalismMovement: Movement = {
   ],
   influencesFrom: ['futurism', 'bauhaus', 'purism'],
   influencesTo: ['international-style'],
+  provenance: {
+    summary: {
+      sourceIds: ['treccani-giuseppe-terragni'],
+      status: 'editorial-synthesis',
+      note: 'The source directly supports Terragni and the Casa del Fascio; the broader movement framing is an editorial synthesis.',
+    },
+    coreIdeas: {
+      sourceIds: ['treccani-giuseppe-terragni'],
+      status: 'editorial-synthesis',
+    },
+    historicalContext: {
+      sourceIds: ['treccani-giuseppe-terragni'],
+      status: 'editorial-synthesis',
+    },
+    architectureNotes: {
+      sourceIds: ['treccani-giuseppe-terragni'],
+      status: 'documented',
+    },
+  },
   styleTheme: {
     accentColor: '#0284C7',
     secondaryColor: '#334155',
