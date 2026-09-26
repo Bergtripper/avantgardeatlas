@@ -10,9 +10,9 @@ export const futurismMovement: Movement = {
   countries: ['Italy'],
   cities: ['Milan', 'Turin', 'Rome'],
   mottoOrKeywords: ['The Beauty of Speed', 'Parole in Libertà', 'Dynamic Sensation'],
-  summary: 'An explosive Italian movement glorifying velocity, machinery, electricity, danger, industrial cities, and the violent destruction of obsolete historical tradition.',
-  coreIdeas: 'To capture the sensory delirium of modern mechanical life. Objects never exist in isolation; they are continuously penetrated by their environment, vibrating with "lines of force" that depict speed, sound, and mechanical acceleration.',
-  historicalContext: 'Inaugurated on the front page of Le Figaro in Paris on February 20, 1909, by poet Filippo Tommaso Marinetti. It shocked bourgeois Europe through explosive manifestos, provocative theatrical performances (serate futuriste), and militaristic nationalism.',
+  summary: 'An Italian avant-garde movement launched around Marinetti’s 1909 manifesto that embraced speed, machines, urban modernity, technological change, and a deliberately confrontational break with inherited cultural forms.',
+  coreIdeas: 'Futurist artists sought visual and verbal equivalents for movement, simultaneity, noise, speed, and the changing experience of the modern city. Fragmented forms, repeated contours, diagonals, typographic experimentation, and “lines of force” were used to suggest dynamism rather than static description.',
+  historicalContext: 'Futurism was catalyzed by Filippo Tommaso Marinetti’s manifesto published in Le Figaro in 1909. It expanded through painting, sculpture, poetry, performance, typography, architecture, and design, combining enthusiasm for modernization with rhetoric that often celebrated violence, war, and militant nationalism.',
   visualPrinciples: [
     'Lines of force (linee di forza) demonstrating directional momentum and velocity',
     'Simultaneous interpenetration of interior and exterior planes',
@@ -56,7 +56,7 @@ export const futurismMovement: Movement = {
   },
   architectureNotes: 'Antonio Sant\'Elia’s visionary drawings for the "Città Nuova" (1914) featured multi-level transport arteries, exposed external elevator shafts, and stepped hydro-electric power plants.',
   graphicDesignNotes: 'Fortunato Depero created the groundbreaking bolted book "Depero Futurista" (1927), bound with two industrial metal bolts, establishing typography as physical machine architecture.',
-  industryRelationship: 'Obsessed with industrial machines, airplanes, locomotives, and automobiles (famously declaring a roaring racing car more beautiful than the Victory of Samothrace).',
+  industryRelationship: 'Futurist imagery and writing repeatedly engaged automobiles, locomotives, aircraft, electric light, factories, advertising, and other symbols of technological modernization, often treating them as emblems of a transformed social and sensory environment.',
   keyPeople: [
     'filippo-marinetti',
     'umberto-boccioni',
@@ -71,6 +71,12 @@ export const futurismMovement: Movement = {
   ],
   influencesFrom: ['cubism'],
   influencesTo: ['cubo-futurism', 'dada', 'constructivism', 'rationalism'],
+  provenance: {
+    summary: { sourceIds: ['moma-futurism'], status: 'documented' },
+    coreIdeas: { sourceIds: ['moma-futurism'], status: 'editorial-synthesis' },
+    historicalContext: { sourceIds: ['moma-futurism'], status: 'documented' },
+    industryRelationship: { sourceIds: ['moma-futurism'], status: 'editorial-synthesis' },
+  },
   styleTheme: {
     accentColor: '#EA580C',
     secondaryColor: '#0284C7',
