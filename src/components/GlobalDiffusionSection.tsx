@@ -668,7 +668,7 @@ export const GlobalDiffusionSection: React.FC<GlobalDiffusionSectionProps> = ({
         </div>
 
 
-        <div className="sticky top-0 z-40 mb-8 border-y border-[var(--atlas-border)] bg-[var(--atlas-bg)]/95 backdrop-blur">
+        <div className="sticky top-[104px] xl:top-16 z-30 mb-8 border-y border-[var(--atlas-border)] bg-[var(--atlas-bg)]/95 backdrop-blur">
           <div className="px-3 py-2 md:px-4 flex flex-wrap items-end gap-3">
             <div className="min-w-[220px] flex-1">
               <label
@@ -1024,7 +1024,7 @@ export const GlobalDiffusionSection: React.FC<GlobalDiffusionSectionProps> = ({
         )}
 
         <div className={`${viewMode === 'map' ? 'grid' : 'hidden'} grid-cols-1 lg:grid-cols-12 gap-8 items-start`}>
-          <div className="lg:col-span-8 border border-[var(--atlas-border)] bg-[var(--atlas-surface)] overflow-hidden">
+          <div className="lg:col-span-8 border border-[var(--atlas-border)] bg-[var(--atlas-surface)] overflow-hidden min-w-0">
             <div className="px-4 py-3 border-b border-[var(--atlas-border)] flex flex-wrap items-center justify-between gap-2">
               <span className="font-mono text-[10px] uppercase tracking-widest text-[var(--atlas-text-muted)]">
                 {minRouteYear}—{maxRouteYear} // Transmission Network // Active Year {selectedYear}
@@ -1078,7 +1078,7 @@ export const GlobalDiffusionSection: React.FC<GlobalDiffusionSectionProps> = ({
 
             <svg
               viewBox={`0 0 ${GLOBAL_MAP.width} ${GLOBAL_MAP.height}`}
-              className="w-full h-auto min-h-[320px] bg-[var(--geo-water)]"
+              className="w-full h-auto min-h-[260px] sm:min-h-[320px] bg-[var(--geo-water)] touch-manipulation"
               role="img"
               aria-labelledby="global-map-title global-map-desc"
             >
