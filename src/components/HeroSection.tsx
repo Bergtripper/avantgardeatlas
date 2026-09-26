@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useAccessibility } from '../context/AccessibilityContext';
 
 interface HeroSectionProps {
   onExploreTimeline: () => void;
@@ -62,10 +63,11 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
 }) => {
   const [languageIndex, setLanguageIndex] = useState(0);
   const [cutTick, setCutTick] = useState(0);
+  const { settings } = useAccessibility();
 
   useEffect(() => {
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (reduceMotion) return;
+    const systemReduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (systemReduceMotion || settings.reduceMotion || settings.pauseDynamicType) return;
 
     let swapTimer: number | undefined;
     let settleTimer: number | undefined;
@@ -83,7 +85,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
       if (swapTimer) window.clearTimeout(swapTimer);
       if (settleTimer) window.clearTimeout(settleTimer);
     };
-  }, []);
+  }, [settings.reduceMotion, settings.pauseDynamicType]);
 
   const activeLanguage = HERO_LANGUAGES[languageIndex];
 
