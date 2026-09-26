@@ -10,9 +10,9 @@ export const werkbundMovement: Movement = {
   countries: ['Germany'],
   cities: ['Munich', 'Berlin', 'Cologne', 'Stuttgart'],
   mottoOrKeywords: ['Vom Sofa-Kissen zum Städtebau', 'Typisierung', 'Quality and Industrial Honor'],
-  summary: 'An influential state-sponsored association of artists, architects, artisans, and industrialists striving to integrate traditional German craftsmanship with mass industrial factory methods.',
-  coreIdeas: 'To elevate the quality of German industrial production on the world market. The movement debated the fundamental conflict between individual artistic expression (Henry van de Velde) and standardized machine typification / mass production (Hermann Muthesius).',
-  historicalContext: 'Established in Munich in 1907 by Hermann Muthesius, Peter Behrens, and others. Produced landmark exhibitions including the 1914 Cologne Exhibition and the 1927 Weissenhofsiedlung in Stuttgart.',
+  summary: 'A German association founded in 1907 that brought designers, architects, manufacturers, and craft firms into a shared debate about product quality, modern form, industry, and the cultural consequences of standardization.',
+  coreIdeas: 'The Werkbund aimed to improve the quality and cultural standing of modern production by connecting artistic design with craft and industry. A major internal debate concerned the balance between individual artistic authorship and standardized types suitable for wider industrial production.',
+  historicalContext: 'The Deutscher Werkbund was founded in Munich in October 1907 by twelve artists and twelve firms. Its membership connected architects and designers with manufacturers and publishers, and its exhibitions—including Cologne in 1914 and the later Weissenhofsiedlung in Stuttgart—became important forums for debates about modern production and design.',
   visualPrinciples: [
     'Elimination of historicist imitation and cheap decorative veneer',
     'Clarity of industrial construction and truth to materials',
@@ -51,9 +51,9 @@ export const werkbundMovement: Movement = {
     materials: ['Structural cast iron', 'Large-span glass panes', 'Industrial brickwork', 'High-grade hardwood'],
     attitude: ['Dignified', 'Systematic', 'High-Quality', 'Standardized', 'Influential']
   },
-  architectureNotes: 'Peter Behrens designed the AEG Turbine Factory in Berlin (1909), widely hailed as the first monument of modern industrial architecture, framing a steel and glass cathedral of labor.',
-  graphicDesignNotes: 'Behrens established the world\'s first unified corporate identity for AEG, designing everything from the company logo, product catalogs, and advertisements to the electric tea kettles and the factory itself.',
-  industryRelationship: 'The very purpose of the Werkbund was to unite avant-garde designers directly with corporate industrial leaders and factory owners.',
+  architectureNotes: 'Peter Behrens’s work for AEG, including the Berlin Turbine Factory, became an important example of the Werkbund-era attempt to give industrial production a coherent architectural and visual form.',
+  graphicDesignNotes: 'Behrens’s work for AEG coordinated architecture, products, advertising, printed matter, and visual identity, providing an influential early model for integrated industrial design and corporate communication.',
+  industryRelationship: 'The association explicitly linked designers and architects with firms, workshops, and manufacturers, making the relationship between artistic form, production quality, industrial scale, and standardization central to its program.',
   keyPeople: [
     'hermann-muthesius',
     'peter-behrens',
@@ -65,6 +65,14 @@ export const werkbundMovement: Movement = {
   ],
   influencesFrom: ['vienna-secession', 'art-nouveau'],
   influencesTo: ['bauhaus', 'international-style', 'neue-sachlichkeit'],
+  provenance: {
+    summary: { sourceIds: ['werkbundarchiv-chronology'], status: 'documented' },
+    coreIdeas: { sourceIds: ['werkbundarchiv-chronology'], status: 'editorial-synthesis' },
+    historicalContext: { sourceIds: ['werkbundarchiv-chronology'], status: 'documented' },
+    architectureNotes: { sourceIds: ['werkbundarchiv-chronology'], status: 'editorial-synthesis' },
+    graphicDesignNotes: { sourceIds: ['werkbundarchiv-chronology'], status: 'editorial-synthesis' },
+    industryRelationship: { sourceIds: ['werkbundarchiv-chronology'], status: 'documented' },
+  },
   styleTheme: {
     accentColor: '#1E3A8A',
     secondaryColor: '#475569',

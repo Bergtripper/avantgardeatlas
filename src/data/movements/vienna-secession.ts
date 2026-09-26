@@ -10,9 +10,9 @@ export const viennaSecessionMovement: Movement = {
   countries: ['Austria-Hungary'],
   cities: ['Vienna'],
   mottoOrKeywords: ['To Every Age Its Art, To Art Its Freedom', 'Gesamtkunstwerk', 'Sacred Spring (Ver Sacrum)'],
-  summary: 'A revolutionary breakaway movement of Viennese artists and architects rejecting conservative academic historicism in pursuit of a unified total work of art (Gesamtkunstwerk).',
-  coreIdeas: 'To liberate creative art from imperial academic stagnation. The Secession embraced geometric stylization, exquisite graphic square motifs, organic linear tension, and the complete aesthetic integration of architecture, furniture, metalwork, and typography.',
-  historicalContext: 'Formed in Vienna in 1897 by Gustav Klimt, Josef Hoffmann, Koloman Moser, and Joseph Maria Olbrich. Built their own radical white exhibition pavilion topped by a golden laurel dome.',
+  summary: 'A Viennese artists’ association founded in 1897 by figures who broke with the conservative Künstlerhaus and sought new exhibition formats and a more modern artistic culture across painting, architecture, graphic design, and the applied arts.',
+  coreIdeas: 'The Secession promoted artistic autonomy, new exhibition practices, and closer dialogue between fine and applied arts. Its members did not share one fixed formal style, but their work often explored geometric order, linear ornament, integrated interiors, and modern approaches to publishing and display.',
+  historicalContext: 'The Vienna Secession was founded in 1897 by a group around Gustav Klimt after a split from the Künstlerhaus. Gustav Klimt became its first president; Josef Hoffmann, Joseph Maria Olbrich, Kolo Moser, and Carl Moll were among the founding members. Olbrich designed the association’s exhibition building, completed in 1898, while the magazine Ver Sacrum became another central platform.',
   visualPrinciples: [
     'The Golden Laurel dome atop pure cubic white architecture',
     'The "Quadratstil" (square style) pioneered by Josef Hoffmann and Koloman Moser',
@@ -53,7 +53,7 @@ export const viennaSecessionMovement: Movement = {
     materials: ['Gilded bronze leaf', 'White polished stucco', 'Bentwood', 'Hand-hammered silver', 'Marble veneers'],
     attitude: ['Sacred', 'Aesthetic', 'Holistic', 'Refined', 'Emancipatory']
   },
-  architectureNotes: 'The Secession Building by Joseph Maria Olbrich (1898) stood as a temple to the new art, featuring pure white cubic masses crowned with a filigree dome of 2,500 gilded laurel leaves.',
+  architectureNotes: 'Joseph Maria Olbrich’s Secession building of 1898 served as the association’s dedicated exhibition venue and as a built statement of its commitment to contemporary art, combining a compact white mass with the distinctive gilded laurel dome.',
   graphicDesignNotes: 'The magazine "Ver Sacrum" (Sacred Spring) redefined publishing through square paper formats, innovative woodcuts, and unified typographic borders.',
   industryRelationship: 'Gave birth to the Wiener Werkstätte (Vienna Workshops, 1903), producing handcrafted luxury furnishings and silver goods for an enlightened cultural elite.',
   keyPeople: [
@@ -69,6 +69,12 @@ export const viennaSecessionMovement: Movement = {
   ],
   influencesFrom: ['art-nouveau'],
   influencesTo: ['deutscher-werkbund', 'bauhaus'],
+  provenance: {
+    summary: { sourceIds: ['vienna-secession-history'], status: 'documented' },
+    coreIdeas: { sourceIds: ['vienna-secession-history'], status: 'editorial-synthesis' },
+    historicalContext: { sourceIds: ['vienna-secession-history'], status: 'documented' },
+    architectureNotes: { sourceIds: ['vienna-secession-history'], status: 'documented' },
+  },
   styleTheme: {
     accentColor: '#CA8A04',
     secondaryColor: '#18181B',

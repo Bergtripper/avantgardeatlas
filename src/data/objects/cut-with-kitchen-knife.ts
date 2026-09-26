@@ -11,6 +11,10 @@ export const cutWithKitchenKnifeObject: ArchivalObject = {
   location: 'Nationalgalerie, Berlin, Germany',
   dimensions: '114 × 90 cm',
   description: 'A satirical panoramic collage dissecting Weimar political leaders, industrial machinery, female athletes, and revolutionary slogans.',
-  significance: 'One of the defining masterpieces of Berlin Dada, weaponizing the scissors to expose social chaos and female liberation in postwar Europe.',
+  significance: 'A major Berlin Dada photomontage that uses mass-media fragments, political figures, machines, and gendered imagery to turn the contemporary press into a dense field of satire and critique.',
+  provenance: {
+    description: { sourceIds: ['moma-dada-term'], status: 'editorial-synthesis' },
+    significance: { sourceIds: ['moma-dada-term'], status: 'editorial-synthesis' },
+  },
   graphicType: 'schwitters-merz'
 };

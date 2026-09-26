@@ -10,7 +10,11 @@ export const secessionBuildingObject: ArchivalObject = {
   medium: 'White plaster, gilded wrought iron laurel leaves, limestone',
   location: 'Vienna, Austria',
   dimensions: 'Exhibition pavilion with 9 m dome',
-  description: 'A pure white cubic temple crowned by a shimmering sphere of 2,500 gilded wrought-iron laurel leaves, dedicated to freedom of artistic expression.',
-  significance: 'The definitive architectural monument of the Viennese revolt against imperial academic classicism.',
+  description: 'A compact white exhibition pavilion organized around clear geometric masses and crowned by its distinctive gilded laurel dome, designed as the new association’s own venue for contemporary art.',
+  significance: 'The purpose-built home of the Vienna Secession and a central architectural statement of the association’s break with the conservative Künstlerhaus and its commitment to new exhibition practices.',
+  provenance: {
+    description: { sourceIds: ['vienna-secession-history'], status: 'documented' },
+    significance: { sourceIds: ['vienna-secession-history'], status: 'documented' },
+  },
   graphicType: 'secession-building'
 };

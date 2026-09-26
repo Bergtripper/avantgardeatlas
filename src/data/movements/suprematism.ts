@@ -10,9 +10,9 @@ export const suprematismMovement: Movement = {
   countries: ['Russia'],
   cities: ['St. Petersburg', 'Moscow', 'Vitebsk'],
   mottoOrKeywords: ['The Supremacy of Pure Feeling', 'Zero of Form', 'Cosmic Weightlessness'],
-  summary: 'An audacious Russian movement that abandoned representation entirely to declare the supremacy of pure artistic feeling over utilitarian reproduction.',
-  coreIdeas: 'The emancipation of art from the burden of representing church, state, or natural objects. By reducing painting to elemental geometric bodies—the square, the cross, the circle—floating in infinite white cosmic space, Suprematism reached the absolute zero of pictorial form.',
-  historicalContext: 'Invented by Kazimir Malevich in 1913–1915, dramatically unveiled at the "Last Futurist Exhibition of Paintings 0.10" in Petrograd in December 1915, where the Black Square was hung in the high corner traditionally reserved for sacred Russian Orthodox icons.',
+  summary: 'A mode of abstract painting formulated by Kazimir Malevich in 1915 that rejected representational reference in favor of geometric forms, color, and what he described as the supremacy of pure feeling or perception.',
+  coreIdeas: 'Suprematism sought a non-objective visual language independent of depiction. Basic geometric forms—especially squares, rectangles, circles, and crosses—were arranged against open fields to emphasize relations of color, weight, movement, and perception rather than recognizable subjects.',
+  historicalContext: 'Malevich coined the term Suprematism in 1915 and presented the new abstract vocabulary publicly in Petrograd that year. The movement developed through painting, drawing, print, design, and later three-dimensional studies before its ideas were taken in different directions by artists including El Lissitzky and Nikolai Suetin.',
   visualPrinciples: [
     'The Black Square as the embryo of all artistic possibilities',
     'Floating non-objective geometric bodies dispersed in unmeasured white space',
@@ -55,7 +55,7 @@ export const suprematismMovement: Movement = {
   },
   architectureNotes: 'Malevich’s "Architectons" (1923–1928)—pure white plaster compositions of intersecting rectilinear solids—served as visionary prototypes for future vertical cities and space stations.',
   graphicDesignNotes: 'El Lissitzky translated Malevich’s mystical Suprematism into spatial communication, architectural exhibitions, and his famous "PROUN" (Projects for the Affirmation of the New) series.',
-  industryRelationship: 'Intrinsically anti-utilitarian in its initial phase, but later applied by Malevich, Lissitzky, and Suetin to Suprematist porcelain services produced at the State Porcelain Factory.',
+  industryRelationship: 'Although Suprematism began as a theory of non-objective painting, its geometric vocabulary later migrated into print, exhibition design, architectural studies, and applied objects, including porcelain associated with the State Porcelain Factory.',
   keyPeople: [
     'kazimir-malevich',
     'el-lissitzky',
@@ -70,6 +70,12 @@ export const suprematismMovement: Movement = {
   ],
   influencesFrom: ['cubo-futurism'],
   influencesTo: ['constructivism', 'de-stijl', 'bauhaus'],
+  provenance: {
+    summary: { sourceIds: ['moma-suprematism'], status: 'documented' },
+    coreIdeas: { sourceIds: ['moma-suprematism'], status: 'editorial-synthesis' },
+    historicalContext: { sourceIds: ['moma-suprematism'], status: 'documented' },
+    industryRelationship: { sourceIds: ['moma-suprematism'], status: 'editorial-synthesis' },
+  },
   styleTheme: {
     accentColor: '#111827',
     secondaryColor: '#E11D48',

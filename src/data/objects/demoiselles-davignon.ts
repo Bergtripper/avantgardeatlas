@@ -10,7 +10,11 @@ export const demoisellesDavignonObject: ArchivalObject = {
   medium: 'Oil on canvas',
   location: 'MoMA, New York',
   dimensions: '243.9 × 233.7 cm',
-  description: 'Five female figures in an Avignon brothel rendered with jagged, planar angularity, incorporating African mask motifs and shattering perspective.',
-  significance: 'The foundational fissure of 20th-century art, ending five centuries of Renaissance single-point linear perspective.',
+  description: 'Five nude figures are compressed into a shallow field of angular, fractured planes, creating a deliberately unstable relationship between figure, space, and viewer.',
+  significance: 'A pivotal early work in Picasso’s development toward Cubism, widely discussed for its dramatic break with conventional composition and stable pictorial perspective.',
+  provenance: {
+    description: { sourceIds: ['moma-cubism'], status: 'documented' },
+    significance: { sourceIds: ['moma-cubism'], status: 'documented' },
+  },
   graphicType: 'malevich-square'
 };
