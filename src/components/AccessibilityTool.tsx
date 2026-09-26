@@ -52,7 +52,7 @@ export const AccessibilityTool: React.FC = () => {
     <>
       <aside
         aria-label="Accessibility and reading tools"
-        className={`fixed top-1/2 z-50 -translate-y-1/2 ${
+        className={`fixed top-28 xl:top-20 z-50 ${
           dockRight ? 'right-0' : 'left-0'
         }`}
       >
