@@ -640,7 +640,6 @@ html.a11y-highlight-links .atlas-shell :where(a, button:not([disabled])) {
   .atlas-a11y-tab {
     top: auto;
     bottom: 1rem;
-    transform: none;
   }
 }
 
