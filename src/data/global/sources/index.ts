@@ -19,6 +19,7 @@ import { momaDadaOverview } from './moma-dada-overview';
 import { momaDepero } from './moma-depero';
 import { momaHerbertBayer } from './moma-herbert-bayer';
 import { momaManRayStudio } from './moma-man-ray-studio';
+import { momaModernArchitecture1932 } from './moma-modern-architecture-1932';
 import { momaSternCoppola } from './moma-stern-coppola';
 import { momaTorresGarcia } from './moma-torres-garcia';
 import { momaTzaraParis } from './moma-tzara-paris';
@@ -48,6 +49,7 @@ export {
   momaHerbertBayer,
   momaMaMagazine,
   momaManRayStudio,
+  momaModernArchitecture1932,
   momaSternCoppola,
   momaTorresGarcia,
   momaTzaraParis,
@@ -78,6 +80,7 @@ export const ALL_GLOBAL_SOURCES = [
   momaDadaOverview,
   momaMagazinesIntersection,
   momaManRayStudio,
+  momaModernArchitecture1932,
   momaTzaraParis,
   metNewYorkDada,
   momaSternCoppola,
