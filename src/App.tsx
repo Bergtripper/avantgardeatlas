@@ -46,6 +46,7 @@ export default function App() {
   const [selectedMovementId, setSelectedMovementId] = useState<MovementId | null>(
     initialMovement ? initialRoute.movementId : null
   );
+  const [globalMovementFocus, setGlobalMovementFocus] = useState<MovementId | null>(null);
   const [lastOverviewTab, setLastOverviewTab] = useState<NavTab>(
     initialMovement ? 'movements' : initialRoute.tab
   );
@@ -78,6 +79,7 @@ export default function App() {
         setSelectedMovementId(null);
         setCurrentTab(route.tab);
         setLastOverviewTab(route.tab);
+        if (route.tab !== 'global') setGlobalMovementFocus(null);
       }
 
       window.scrollTo({ top: 0, behavior: 'auto' });
@@ -120,6 +122,7 @@ export default function App() {
 
   const handleSelectMovement = (id: MovementId) => {
     setLastOverviewTab(currentTab);
+    if (currentTab === 'global') setGlobalMovementFocus(id);
     setSelectedMovementId(id);
     window.history.pushState({}, '', pathForMovement(id));
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -134,9 +137,19 @@ export default function App() {
 
   const handleSelectTab = (tab: NavTab) => {
     setSelectedMovementId(null);
+    setGlobalMovementFocus(null);
     setCurrentTab(tab);
     setLastOverviewTab(tab);
     window.history.pushState({}, '', pathForTab(tab));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleExploreGlobalMovement = (id: MovementId) => {
+    setSelectedMovementId(null);
+    setCurrentTab('global');
+    setLastOverviewTab('global');
+    setGlobalMovementFocus(id);
+    window.history.pushState({}, '', pathForTab('global'));
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -172,6 +185,8 @@ export default function App() {
             onBack={handleBackToOverview}
             onSelectMovement={handleSelectMovement}
             allMovements={ALL_MOVEMENTS}
+            selectedYear={selectedYear}
+            onExploreGlobalMovement={handleExploreGlobalMovement}
           />
         ) : (
           /* Multi-dimensional Atlas Sections */
@@ -251,6 +266,8 @@ export default function App() {
               <GlobalDiffusionSection
                 selectedYear={selectedYear}
                 onSelectYear={setSelectedYear}
+                onSelectMovement={handleSelectMovement}
+                focusedMovementId={globalMovementFocus}
               />
             )}
           </>
