@@ -10,9 +10,9 @@ export const artNouveauMovement: Movement = {
   countries: ['Belgium', 'France', 'Germany', 'United Kingdom', 'Austria'],
   cities: ['Brussels', 'Paris', 'Munich', 'Glasgow', 'Vienna'],
   mottoOrKeywords: ['The Whiplash Line', 'Gesamtkunstwerk', 'Organic Synthesis'],
-  summary: 'The transitional international style bridging historicist revivalism and modernism through sinuous organic lines, whiplash curves, and decorative integration of iron and glass.',
-  coreIdeas: 'To abolish the historicist imitation of Greek, Gothic, and Renaissance styles. Nature is not realistically copied but stylized into sinuous "whiplash" arabesques, celebrating plant stems, insect wings, and flowing hair integrated into modern cast-iron architecture and graphic posters.',
-  historicalContext: 'Emerged in Brussels with Victor Horta\'s Hôtel Tassel (1893) and quickly swept across Paris (Hector Guimard\'s Metro entrances), Munich (Jugendstil), and Glasgow (Charles Rennie Mackintosh).',
+  summary: 'An international reform style that sought a modern visual language through organic line, integrated decoration, and a closer relationship between architecture, interiors, graphic art, and the applied arts.',
+  coreIdeas: 'Art Nouveau designers challenged routine historicist imitation and treated nature as a source for stylized line, rhythm, and ornament. Across architecture, interiors, furniture, and graphics, plant forms and flowing curves were used to connect structure, surface, and decoration.',
+  historicalContext: 'The style developed through several European centers in the 1890s, with Brussels playing an early role through Victor Horta and Henry van de Velde. Related regional forms emerged in Paris, Munich, Glasgow, Vienna, and elsewhere under different names and local traditions.',
   visualPrinciples: [
     'The dynamic, asymmetrical "whiplash" curve (coup de fouet)',
     'Total decorative integration: wallpaper, chandeliers, door handles, and structural iron',
@@ -52,9 +52,9 @@ export const artNouveauMovement: Movement = {
     materials: ['Wrought and cast iron', 'Curved plate glass', 'Carved mahogany', 'Iridescent Tiffany glass', 'Ceramics'],
     attitude: ['Sensuous', 'Organic', 'Transitional', 'Ornamental', 'Atmospheric']
   },
-  architectureNotes: 'Victor Horta exposed structural rivets and slender curved iron columns inside the stairwell of the Hôtel Tassel, treating metal with the grace of living plant vines.',
+  architectureNotes: 'In buildings such as the Hôtel Tassel, Victor Horta coordinated ironwork, stained glass, mosaics, wall decoration, and fittings into a unified interior vocabulary based on organic line.',
   graphicDesignNotes: 'The golden age of the color lithographic poster, led by Alphonse Mucha, Eugène Grasset, and Aubrey Beardsley.',
-  industryRelationship: 'Celebrated traditional craftsmanship and precious materials, making high Art Nouveau difficult to mass-produce, ultimately prompting the Werkbund and Bauhaus revolt.',
+  industryRelationship: 'Art Nouveau moved between workshop craft, luxury production, new industrial materials, and commercial print culture. Its mixed relationship with serial production became one of the questions later reform movements addressed more systematically.',
   keyPeople: [
     'victor-horta',
     'hector-guimard',
@@ -67,6 +67,24 @@ export const artNouveauMovement: Movement = {
   ],
   influencesFrom: [],
   influencesTo: ['vienna-secession', 'deutscher-werkbund', 'cubism'],
+  provenance: {
+    summary: {
+      sourceIds: ['vam-art-nouveau-international-style'],
+      status: 'editorial-synthesis',
+    },
+    coreIdeas: {
+      sourceIds: ['vam-art-nouveau-international-style'],
+      status: 'editorial-synthesis',
+    },
+    historicalContext: {
+      sourceIds: ['vam-art-nouveau-international-style'],
+      status: 'documented',
+    },
+    architectureNotes: {
+      sourceIds: ['vam-art-nouveau-international-style'],
+      status: 'documented',
+    },
+  },
   styleTheme: {
     accentColor: '#0F766E',
     secondaryColor: '#B45309',
