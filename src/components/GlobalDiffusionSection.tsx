@@ -731,8 +731,9 @@ export const GlobalDiffusionSection: React.FC = () => {
                 );
               })}
             </svg>
+          </div>
 
-            {selectedRoute ? (
+          {selectedRoute ? (
             <aside className="lg:col-span-4 lg:sticky lg:top-28 border border-[var(--atlas-border)] bg-[var(--atlas-surface)] p-6">
               <div className="font-mono text-[10px] uppercase tracking-widest text-[var(--atlas-text-muted)] mb-2">
                 Selected Transmission // {selectedRoute.startYear}
