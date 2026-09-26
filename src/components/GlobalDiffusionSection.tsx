@@ -3,6 +3,7 @@ import { getPersonById } from '../data/people';
 import { getPlaceById } from '../data/places';
 import {
   ALL_DIFFUSION_ROUTES,
+  ALL_GLOBAL_ENTITIES,
   ALL_GLOBAL_HISTORICAL_EVENTS,
   ALL_GLOBAL_HUBS,
   DiffusionMechanism,
@@ -114,6 +115,13 @@ const semanticForMechanisms = (mechanisms: DiffusionMechanism[]): RouteSemantic 
   return ROUTE_SEMANTICS.reinterpretation;
 };
 
+const semanticForRoute = (route: DiffusionRoute): RouteSemantic => {
+  if (route.primaryMechanism) {
+    return semanticForMechanisms([route.primaryMechanism]);
+  }
+  return semanticForRoute(route);
+};
+
 const SEMANTIC_LEGEND: RouteSemantic[] = [
   ROUTE_SEMANTICS.circulation,
   ROUTE_SEMANTICS.displacement,
@@ -172,11 +180,26 @@ export const GlobalDiffusionSection: React.FC = () => {
       Array.from(new Set(ALL_DIFFUSION_ROUTES.flatMap((route) => route.media))).sort() as DiffusionMedium[],
     [],
   );
+  const visibleTransmissionNodes = useMemo(
+    () =>
+      ALL_GLOBAL_ENTITIES.filter((entity) => {
+        if (!['exhibition', 'institution'].includes(entity.kind)) return false;
+        if (entity.startYear > yearFilter) return false;
+        if (mediumFilter !== 'all' && !entity.media.includes(mediumFilter)) return false;
+        return (
+          entity.kind === 'exhibition' ||
+          entity.media.includes('advertising') ||
+          entity.media.includes('exhibition-design')
+        );
+      }),
+    [yearFilter, mediumFilter],
+  );
+
   const availableSemantics = useMemo(
     () =>
       SEMANTIC_LEGEND.filter((semantic) =>
         ALL_DIFFUSION_ROUTES.some(
-          (route) => semanticForMechanisms(route.mechanisms).id === semantic.id,
+          (route) => semanticForRoute(route).id === semantic.id,
         ),
       ),
     [],
@@ -191,7 +214,7 @@ export const GlobalDiffusionSection: React.FC = () => {
     () =>
       ALL_DIFFUSION_ROUTES.filter((route) => {
         const routeYear = route.startYear;
-        const semantic = semanticForMechanisms(route.mechanisms);
+        const semantic = semanticForRoute(route);
         const matchesYear = routeYear <= yearFilter;
         const matchesSemantic = semanticFilter === 'all' || semantic.id === semanticFilter;
         const matchesMedium = mediumFilter === 'all' || route.media.includes(mediumFilter);
@@ -457,6 +480,42 @@ export const GlobalDiffusionSection: React.FC = () => {
           )}
         </div>
 
+        <div className="mb-8 border border-[var(--atlas-border)] bg-[var(--atlas-surface)]">
+          <div className="px-4 py-3 border-b border-[var(--atlas-border)] flex flex-wrap items-center justify-between gap-2">
+            <div className="font-mono text-[9px] uppercase tracking-widest text-[var(--atlas-text-muted)]">
+              Exhibition + applied design nodes
+            </div>
+            <div className="font-mono text-[9px] uppercase tracking-wider text-[var(--atlas-text-quiet)]">
+              {visibleTransmissionNodes.length} visible
+            </div>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-[var(--atlas-border)]">
+            {visibleTransmissionNodes.map((entity) => {
+              const place = entity.placeRef
+                ? resolvePlace(entity.placeRef)
+                : entity.hubId
+                ? getGlobalHubById(entity.hubId)
+                : null;
+              return (
+                <div key={entity.id} className="bg-[var(--atlas-card)] p-4 min-w-0">
+                  <div className="font-mono text-[8px] uppercase tracking-widest text-[var(--atlas-text-muted)]">
+                    {entity.kind} // {entity.startYear}
+                  </div>
+                  <div className="mt-1 text-sm font-semibold text-[var(--atlas-text)]">
+                    {entity.name}
+                  </div>
+                  <div className="mt-1 font-mono text-[9px] uppercase tracking-wide text-[var(--atlas-text-quiet)]">
+                    {place?.name ?? '—'}
+                  </div>
+                  <p className="mt-2 text-[11px] leading-relaxed text-[var(--atlas-text-secondary)]">
+                    {entity.summary}
+                  </p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           <div className="lg:col-span-8 border border-[var(--atlas-border)] bg-[var(--atlas-surface)] overflow-hidden">
             <div className="px-4 py-3 border-b border-[var(--atlas-border)] flex flex-wrap items-center justify-between gap-2">
@@ -542,7 +601,7 @@ export const GlobalDiffusionSection: React.FC = () => {
 
               {filteredRoutes.map((route) => {
                 const active = route.id === selectedRoute?.id;
-                const semantic = semanticForMechanisms(route.mechanisms);
+                const semantic = semanticForRoute(route);
                 const markerId =
                   semantic.marker === 'diamond'
                     ? 'global-diamond'
@@ -655,7 +714,7 @@ export const GlobalDiffusionSection: React.FC = () => {
                       {route.title.split(':')[0]}
                     </span>
                     <span className="block mt-1 font-mono text-[9px] uppercase tracking-wide opacity-65">
-                      {semanticForMechanisms(route.mechanisms).label}
+                      {semanticForRoute(route).label}
                     </span>
                     {route.historicalContextIds?.includes('political-fracture-1933') && (
                       <span className="block mt-2 font-mono text-[8px] uppercase tracking-wider text-[#D82B2B]">
@@ -747,14 +806,14 @@ export const GlobalDiffusionSection: React.FC = () => {
                 </div>
                 {selectedTransmissionEntities.length > 0 && (
                   <div>
-                    <dt className="font-mono uppercase tracking-wider text-[var(--atlas-text-muted)]">Publication carriers</dt>
+                    <dt className="font-mono uppercase tracking-wider text-[var(--atlas-text-muted)]">Transmission carriers</dt>
                     <dd className="mt-1 flex flex-wrap gap-1.5">
                       {selectedTransmissionEntities.map((entity) => (
                         <span
                           key={entity?.id}
                           className="px-2 py-1 border border-[var(--atlas-border-control)] bg-[var(--atlas-card)] font-mono text-[10px]"
                         >
-                          {entity?.name}
+                          {entity?.kind ? `${entity.kind} · ` : ''}{entity?.name}
                         </span>
                       ))}
                     </dd>
