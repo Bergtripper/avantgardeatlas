@@ -10,9 +10,9 @@ export const cuboFuturismMovement: Movement = {
   countries: ['Russia'],
   cities: ['Moscow', 'St. Petersburg'],
   mottoOrKeywords: ['A Slap in the Face of Public Taste', 'Zaum (Transrational Language)', 'Rayonism'],
-  summary: 'The explosive Russian synthesis of French Cubist spatial fragmentation and Italian Futurist kinetic energy, inaugurating the golden age of the Russian avant-garde.',
-  coreIdeas: 'To discard Pushkin, Tolstoy, and academic art "from the steamship of Modernity." Russian Cubo-Futurists dismantled poetic grammar through "zaum" (transrational sound poetry) and depicted peasant laborers and locomotives through tubular, metallic, faceted planar bodies.',
-  historicalContext: 'Formally announced in the December 1912 manifesto "A Slap in the Face of Public Taste" by David Burliuk, Vladimir Mayakovsky, and Velimir Khlebnikov. Directly incubated Suprematism and Constructivism.',
+  summary: 'A Russian avant-garde tendency of the early 1910s that combined Cubist fragmentation with Futurist strategies for representing movement, while also developing distinct experiments in poetry, artists’ books, performance, and painting.',
+  coreIdeas: 'Cubo-Futurist artists and poets tested how fractured form, repetition, typographic disruption, and transrational language could convey simultaneity and modern experience. Their work often moved between painting, poetry, handmade books, and theatrical collaboration.',
+  historicalContext: 'The term Cubo-Futurism is used for a cluster of Russian avant-garde experiments that became prominent around 1912–1914. Malevich’s Knife Grinder is a representative example of the way Cubist prismatic form and Futurist devices for suggesting movement were combined before his turn toward Suprematism.',
   visualPrinciples: [
     'Tubular metallic painting of figures (reminiscent of Fernand Léger)',
     'Combination of Cyrillic typography with faceted pictorial compositions',
@@ -67,6 +67,11 @@ export const cuboFuturismMovement: Movement = {
   ],
   influencesFrom: ['cubism', 'futurism'],
   influencesTo: ['suprematism', 'constructivism'],
+  provenance: {
+    summary: { sourceIds: ['moma-cubo-futurism-knife-grinder'], status: 'editorial-synthesis' },
+    coreIdeas: { sourceIds: ['moma-cubo-futurism-knife-grinder'], status: 'editorial-synthesis' },
+    historicalContext: { sourceIds: ['moma-cubo-futurism-knife-grinder'], status: 'documented' },
+  },
   styleTheme: {
     accentColor: '#1D4ED8',
     secondaryColor: '#B45309',
