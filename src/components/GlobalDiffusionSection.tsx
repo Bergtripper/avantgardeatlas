@@ -521,10 +521,10 @@ export const GlobalDiffusionSection: React.FC<GlobalDiffusionSectionProps> = ({
                 <input
                   id="global-year-filter"
                   type="range"
-                  min={minRouteYear}
-                  max={maxRouteYear}
+                  min={ATLAS_START_YEAR}
+                  max={ATLAS_END_YEAR}
                   value={selectedYear}
-                  onChange={(event) => setYearFilter(Number(event.target.value))}
+                  onChange={(event) => onSelectYear(Number(event.target.value))}
                   className="w-full mt-2 accent-[#D82B2B]"
                 />
                 {fracture1933 && (
