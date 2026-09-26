@@ -18,5 +18,7 @@ export const deperoRoveretoNewYorkRoute: DiffusionRoute = {
     'Fortunato Depero and Rosetta moved to New York in late 1928. Depero opened an American branch of his Futurist art house and worked across exhibitions, advertising, magazines and applied design until 1930.',
   transformationNote:
     'The New York period translated Futurist visual language into a commercial metropolitan environment of advertising, publishing, display and branding rather than simply exporting Italian easel painting.',
+  evidenceStatus: 'editorial-synthesis',
+  transformationEvidenceStatus: 'interpretive',
   sourceIds: ['mart-depero-new-york', 'moma-depero'],
 };

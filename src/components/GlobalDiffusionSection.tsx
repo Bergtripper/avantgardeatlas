@@ -5,6 +5,7 @@ import { getPersonById } from '../data/people';
 import { getPlaceById } from '../data/places';
 import { ALL_OBJECTS } from '../data/objects';
 import { ALL_STORIES } from '../data/stories';
+import { EvidenceBadge } from './EvidenceBadge';
 import {
   ALL_DIFFUSION_ROUTES,
   ALL_GLOBAL_ENTITIES,
@@ -1486,6 +1487,11 @@ export const GlobalDiffusionSection: React.FC<GlobalDiffusionSectionProps> = ({
               <h3 className="text-2xl font-semibold tracking-tight text-[var(--atlas-text)]">
                 {selectedRoute.title}
               </h3>
+              {selectedRoute.evidenceStatus && (
+                <div className="mt-2">
+                  <EvidenceBadge status={selectedRoute.evidenceStatus} />
+                </div>
+              )}
               <div className="mt-2 inline-flex items-center gap-2 border border-[var(--atlas-border-control)] bg-[var(--atlas-card)] px-2.5 py-1.5">
                 <span className="font-mono text-[9px] uppercase tracking-wider text-[var(--atlas-text-muted)]">
                   Primary mode
@@ -1542,8 +1548,13 @@ export const GlobalDiffusionSection: React.FC<GlobalDiffusionSectionProps> = ({
               </p>
 
               <div className="mt-5 border-l-2 border-[#D82B2B] pl-4">
-                <div className="font-mono text-[9px] uppercase tracking-wider text-[var(--atlas-text-muted)]">
-                  Transformation
+                <div className="flex flex-wrap items-center gap-2">
+                  <div className="font-mono text-[9px] uppercase tracking-wider text-[var(--atlas-text-muted)]">
+                    Transformation
+                  </div>
+                  {selectedRoute.transformationEvidenceStatus && (
+                    <EvidenceBadge status={selectedRoute.transformationEvidenceStatus} compact />
+                  )}
                 </div>
                 <p className="mt-1 text-xs leading-relaxed text-[var(--atlas-text-secondary)]">
                   {selectedRoute.transformationNote}

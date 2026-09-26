@@ -1,4 +1,4 @@
-import { MovementId } from '../../types/atlas';
+import { EvidenceStatus, MovementId } from '../../types/atlas';
 
 export type DiffusionMechanism =
   | 'travel'
@@ -106,6 +106,8 @@ export interface DiffusionRoute {
   media: DiffusionMedium[];
   summary: string;
   transformationNote: string;
+  evidenceStatus?: EvidenceStatus;
+  transformationEvidenceStatus?: EvidenceStatus;
   sourceIds: string[];
 }
 
