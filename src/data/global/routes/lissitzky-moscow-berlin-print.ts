@@ -16,5 +16,7 @@ export const lissitzkyMoscowBerlinPrintRoute: DiffusionRoute = {
     'El Lissitzky’s Berlin period turned print into a major transmission channel between Soviet and Western European avant-garde circles. The trilingual magazine Veshch/Gegenstand/Objet made Constructivist ideas legible across linguistic and national boundaries.',
   transformationNote:
     'The magazine did more than reproduce Russian material: it reformulated Constructivist ideas for an international readership through multilingual editing, typography and graphic design.',
+  evidenceStatus: 'editorial-synthesis',
+  transformationEvidenceStatus: 'interpretive',
   sourceIds: ['moma-magazines-intersection'],
 };
