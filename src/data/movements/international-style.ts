@@ -10,9 +10,9 @@ export const internationalStyleMovement: Movement = {
   countries: ['Germany', 'France', 'Switzerland', 'United States'],
   cities: ['Stuttgart', 'Paris', 'Berlin', 'New York', 'Chicago'],
   mottoOrKeywords: ['Architecture as Volume', 'Regularity rather than Symmetry', 'Avoidance of Applied Decoration'],
-  summary: 'The universal institutionalization of modernist architectural principles: lightweight skeletons, ribbon windows, flat roofs, and serene undecorated surfaces.',
-  coreIdeas: 'Formulated in 1932 by Henry-Russell Hitchcock and Philip Johnson at the seminal MoMA exhibition. Architecture is conceived not as heavy structural mass, but as slender enclosed volumes defined by lightweight structural frames and glass curtains.',
-  historicalContext: 'Crystallized at the Weissenhofsiedlung exhibition in Stuttgart in 1927, championed globally by Le Corbusier, Mies van der Rohe, Walter Gropius, and CIAM, and transplanted to America before World War II.',
+  summary: 'An interwar architectural category used to describe a transnational modernist vocabulary of rectilinear volumes, structural frames, glass, reinforced concrete, regularity, and minimal applied ornament.',
+  coreIdeas: 'Henry-Russell Hitchcock and Philip Johnson used the term International Style in connection with MoMA’s 1932 architecture exhibition to identify formal tendencies shared by several European modern architects, especially an emphasis on volume, regularity, and avoidance of applied decoration.',
+  historicalContext: 'The label consolidated in the United States around MoMA’s 1932 Modern Architecture exhibition and the accompanying work of Hitchcock and Johnson. It described tendencies that had developed during the 1920s in European modern architecture and were subsequently circulated through exhibitions, publications, migration, and professional networks.',
   visualPrinciples: [
     'Volume rather than mass: thin surface membranes stretched over skeleton frames',
     'Regularity rather than bilateral symmetry: standardized structural bay rhythms',
@@ -30,7 +30,7 @@ export const internationalStyleMovement: Movement = {
       rules: [
         'Repetitive column grids defining flexible interior space',
         'Unbroken horizontal lines running along facade perimeters',
-        'Cantilevered cantilever terraces floating above open terrain'
+        'Cantilevered terraces extending beyond structural frames'
       ]
     },
     colour: {
@@ -54,7 +54,7 @@ export const internationalStyleMovement: Movement = {
     materials: ['Reinforced concrete', 'Structural rolled steel', 'Plate glass', 'Travertine marble', 'Chromed bronze'],
     attitude: ['Rational', 'Universal', 'Rigorous', 'Architectonic', 'Cosmopolitan']
   },
-  architectureNotes: 'Villa Savoye in Poissy by Le Corbusier (1929) and the Barcelona Pavilion by Mies van der Rohe (1929) defined the canonical vocabulary of modern world architecture.',
+  architectureNotes: 'Projects such as Le Corbusier and Pierre Jeanneret’s Villa Savoye and Mies van der Rohe’s Barcelona Pavilion became central examples in later accounts of interwar modern architecture and the International Style.',
   graphicDesignNotes: 'Direct ancestor to the Swiss International Typographic Style of the 1950s (Max Bill, Josef Müller-Brockmann, Emil Ruder).',
   industryRelationship: 'Deep commitment to industrialized prefabrication, standardized steel profiles, and mass civic housing blocks.',
   keyPeople: [
@@ -70,6 +70,24 @@ export const internationalStyleMovement: Movement = {
   ],
   influencesFrom: ['bauhaus', 'de-stijl', 'purism', 'constructivism'],
   influencesTo: ['rationalism'],
+  provenance: {
+    summary: {
+      sourceIds: ['moma-international-style-term'],
+      status: 'documented',
+    },
+    coreIdeas: {
+      sourceIds: ['moma-international-style-term', 'moma-modern-architecture-1932'],
+      status: 'documented',
+    },
+    historicalContext: {
+      sourceIds: ['moma-modern-architecture-1932', 'moma-international-style-term'],
+      status: 'editorial-synthesis',
+    },
+    architectureNotes: {
+      sourceIds: ['moma-international-style-term'],
+      status: 'editorial-synthesis',
+    },
+  },
   styleTheme: {
     accentColor: '#334155',
     secondaryColor: '#0F172A',

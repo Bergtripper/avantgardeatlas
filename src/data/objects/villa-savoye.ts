@@ -10,7 +10,17 @@ export const villaSavoyeObject: ArchivalObject = {
   medium: 'Reinforced concrete, smooth white stucco, horizontal steel ribbon glazing',
   location: 'Poissy, France',
   dimensions: 'Three-level suburban residence',
-  description: 'A pristine white machine-for-living hovering on slender reinforced-concrete pilotis above a verdant lawn, organized around an internal architectural promenade.',
-  significance: 'The definitive three-dimensional codification of Le Corbusier\'s Five Points of Modern Architecture.',
+  description: 'A white rectilinear house raised on reinforced-concrete pilotis and organized around a ramped architectural promenade, with free plan, free facade, ribbon windows, and roof terrace.',
+  significance: 'A major built demonstration of Le Corbusier’s Five Points of Architecture and one of the works displayed in connection with MoMA’s 1932 presentation of modern architecture.',
+  provenance: {
+    description: {
+      sourceIds: ['moma-international-style-term'],
+      status: 'documented',
+    },
+    significance: {
+      sourceIds: ['moma-modern-architecture-1932', 'moma-international-style-term'],
+      status: 'documented',
+    },
+  },
   graphicType: 'corbusier-villa'
 };

@@ -11,6 +11,16 @@ export const redBlueChairObject: ArchivalObject = {
   location: 'Utrecht, Netherlands',
   dimensions: '88 × 66 × 83 cm',
   description: 'Constructed from standardized square-section beech laths and two sheets of plywood. Parts do not interlock with traditional dovetails; they overlap and extend into space.',
-  significance: 'A three-dimensional translation of Mondrian’s paintings. Space flows continuously through the chair without being trapped within a closed volume.',
+  significance: 'A key De Stijl design in which independent linear members and planar surfaces turn furniture into an abstract spatial composition rather than a conventionally enclosed mass.',
+  provenance: {
+    description: {
+      sourceIds: ['moma-de-stijl-term'],
+      status: 'editorial-synthesis',
+    },
+    significance: {
+      sourceIds: ['moma-de-stijl-term'],
+      status: 'documented',
+    },
+  },
   graphicType: 'rietveld-chair'
 };

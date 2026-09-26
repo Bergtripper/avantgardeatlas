@@ -10,9 +10,9 @@ export const deStijlMovement: Movement = {
   countries: ['Netherlands'],
   cities: ['Leiden', 'Utrecht', 'Amsterdam'],
   mottoOrKeywords: ['The New Plastic Art', 'Universal Equilibrium', 'Pure Orthogonality'],
-  summary: 'A Dutch collective advocating pure abstraction through the reduction of form to straight horizontal and vertical axes, and color to primary hues plus black and white.',
-  coreIdeas: 'To transcend individual subjectivity in favor of universal harmony. Nature is stripped of decorative illusion, distilled into pure planar relationships of line, area, and primary color, symbolizing cosmic and spiritual equilibrium in modern life.',
-  historicalContext: 'Formed in neutral wartime Holland in 1917 by painter/critic Theo van Doesburg and painter Piet Mondrian, alongside architect Gerrit Rietveld and painter Bart van der Leck.',
+  summary: 'A Dutch avant-garde network centered on the journal De Stijl, pursuing abstract relationships of line, plane, proportion, and color across painting, furniture, architecture, and graphic design.',
+  coreIdeas: 'De Stijl artists and designers pursued abstraction as a means of organizing visual and spatial relationships beyond naturalistic representation. In Mondrian’s Neo-Plasticism this vocabulary was reduced especially to verticals, horizontals, rectangular planes, primary colors, and neutrals.',
+  historicalContext: 'The journal De Stijl was founded in the Netherlands in 1917 by Theo van Doesburg and became the focus of a shifting group of artists, architects, and designers including Piet Mondrian, Gerrit Rietveld, Bart van der Leck, Vilmos Huszár, and J. J. P. Oud.',
   visualPrinciples: [
     'Strict orthogonal geometry: only straight 90-degree horizontal and vertical vectors',
     'Complete rejection of diagonal lines (until Van Doesburg’s controversial Elementarism break in 1924)',
@@ -41,7 +41,7 @@ export const deStijlMovement: Movement = {
         { name: 'Pure White', hex: '#FFFFFF', role: 'Luminous Void' },
         { name: 'Charcoal Black', hex: '#111827', role: 'Orthogonal Structural Grid' }
       ],
-      philosophy: 'Only primary colors exist in nature\'s foundational spectrum; mixed secondary colors represent decay and subjective sentimentalism.'
+      philosophy: 'Primary colors and neutrals became a recurring means of separating and balancing planes, although individual De Stijl participants did not apply a single fixed color doctrine in identical ways.'
     },
     typography: {
       classification: 'Constructed Monospaced Block Letters',
@@ -72,6 +72,24 @@ export const deStijlMovement: Movement = {
   ],
   influencesFrom: ['cubism'],
   influencesTo: ['bauhaus', 'international-style', 'new-typography'],
+  provenance: {
+    summary: {
+      sourceIds: ['moma-de-stijl-term', 'moma-de-stijl-magazine'],
+      status: 'editorial-synthesis',
+    },
+    coreIdeas: {
+      sourceIds: ['moma-de-stijl-term'],
+      status: 'editorial-synthesis',
+    },
+    historicalContext: {
+      sourceIds: ['moma-de-stijl-term', 'moma-van-doesburg'],
+      status: 'documented',
+    },
+    graphicDesignNotes: {
+      sourceIds: ['moma-de-stijl-magazine'],
+      status: 'documented',
+    },
+  },
   styleTheme: {
     accentColor: '#2563EB',
     secondaryColor: '#DC2626',

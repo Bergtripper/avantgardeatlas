@@ -10,9 +10,9 @@ export const constructivismMovement: Movement = {
   countries: ['Soviet Russia'],
   cities: ['Moscow', 'Petrograd', 'Vitebsk'],
   mottoOrKeywords: ['Art into Production', 'Tectonic Truth', 'The Engineer-Artist'],
-  summary: 'A fierce Russian avant-garde movement that rejected easel painting as bourgeois self-indulgence, demanding that artists become technical constructors serving the collective socialist society.',
-  coreIdeas: 'Art is not decorative embellishment; it is structural construction (Tektonika, Faktura, Konstruktsiya). The artist is an engineer shaping new everyday realities through factories, typography, posters, worker clubs, and monumental civic architecture.',
-  historicalContext: 'Emerged from the crucible of the 1917 Bolshevik October Revolution and the Russian Civil War. Thrived at the VKhUTEMAS state art and technical workshops until Stalinist Socialist Realism brutally suppressed avant-garde formal experiments in 1932–1934.',
+  summary: 'A Russian avant-garde movement that emerged around the Revolution and redirected artistic practice toward construction, production, communication, and socially oriented design.',
+  coreIdeas: 'Constructivist practice emphasized construction, material, and organization over autonomous pictorial expression. The artist was increasingly framed as a constructor working across objects, typography, exhibition design, architecture, and other forms of social production.',
+  historicalContext: 'Constructivism developed within the Russian avant-garde in the years around and after the October Revolution of 1917. During the 1920s it intersected with state art education, publishing, exhibition design, theater, photography, and architecture before the institutional space for avant-garde experimentation narrowed sharply in the early 1930s.',
   visualPrinciples: [
     'Violent diagonal dynamism and structural engineering cantilevers',
     'Photomontage: cutting camera reality and juxtaposing scale for political agitprop',
@@ -54,7 +54,7 @@ export const constructivismMovement: Movement = {
     materials: ['Rolled steel girders', 'Industrial plate glass', 'Raw timber', 'Linen overalls', 'Rotary ink'],
     attitude: ['Agitational', 'Engineered', 'Collectivist', 'Utilitarian', 'Radical']
   },
-  architectureNotes: 'Tatlin\'s unbuilt Monument to the Third International (1920) proposed a 400-meter leaning iron spiral framework enclosing rotating glass geometric volumes.',
+  architectureNotes: 'Tatlin’s unbuilt Monument to the Third International (1920) became one of the movement’s emblematic projects: an immense inclined spiral structure conceived as both monument and apparatus for revolutionary institutions.',
   graphicDesignNotes: 'Alexander Rodchenko and El Lissitzky reinvented 20th-century graphic design through diagonal photo-collages, bold exclamation rules, and agitational magazine layouts (LEF, USSR in Construction).',
   industryRelationship: 'Direct integration into socialist factory production, textile mills, mass printing houses, and municipal civic planning.',
   keyPeople: [
@@ -72,6 +72,25 @@ export const constructivismMovement: Movement = {
   ],
   influencesFrom: ['suprematism', 'cubo-futurism'],
   influencesTo: ['bauhaus', 'new-typography', 'international-style'],
+  provenance: {
+    summary: {
+      sourceIds: ['moma-constructivism'],
+      status: 'editorial-synthesis',
+    },
+    coreIdeas: {
+      sourceIds: ['moma-constructivism'],
+      status: 'editorial-synthesis',
+    },
+    historicalContext: {
+      sourceIds: ['moma-constructivism'],
+      status: 'editorial-synthesis',
+      note: 'MoMA directly supports the movement’s post-1917 emergence and utilitarian social orientation; the later institutional contraction is a concise editorial synthesis.',
+    },
+    architectureNotes: {
+      sourceIds: ['moma-constructivism'],
+      status: 'documented',
+    },
+  },
   styleTheme: {
     accentColor: '#DC2626',
     secondaryColor: '#111827',

@@ -29,6 +29,9 @@ import { unescoTelAvivWhiteCity } from './unesco-tel-aviv-white-city';
 import { vamArtNouveauInternationalStyle } from './vam-art-nouveau-international-style';
 import { momaNewTypography } from './moma-new-typography';
 import { treccaniGiuseppeTerragni } from './treccani-giuseppe-terragni';
+import { momaConstructivism } from './moma-constructivism';
+import { momaDeStijlTerm } from './moma-de-stijl-term';
+import { momaInternationalStyleTerm } from './moma-international-style-term';
 
 export {
   bauhausAfter1933,
@@ -62,6 +65,9 @@ export {
   vamArtNouveauInternationalStyle,
   momaNewTypography,
   treccaniGiuseppeTerragni,
+  momaConstructivism,
+  momaDeStijlTerm,
+  momaInternationalStyleTerm,
 };
 
 export const ALL_GLOBAL_SOURCES = [
@@ -96,6 +102,9 @@ export const ALL_GLOBAL_SOURCES = [
   vamArtNouveauInternationalStyle,
   momaNewTypography,
   treccaniGiuseppeTerragni,
+  momaConstructivism,
+  momaDeStijlTerm,
+  momaInternationalStyleTerm,
 ];
 
 export const globalSourcesRegistry = Object.fromEntries(

@@ -10,7 +10,17 @@ export const tatlinTowerObject: ArchivalObject = {
   medium: 'Wood, steel wire, cardboard, glass models',
   location: 'Petrograd / Moscow, Soviet Russia',
   dimensions: 'Planned 400 m height (model 5 m)',
-  description: 'A colossal leaning twin-helix iron tower canted at 23.5 degrees (the Earth\'s axis of tilt), enclosing four rotating geometric glass volumes for governmental legislature.',
-  significance: 'The ultimate symbol of revolutionary dynamism. Tatlin superseded the static French Eiffel Tower with an active, functional machine-city.',
+  description: 'An unbuilt monumental spiral project conceived as a dynamic steel-and-glass structure containing rotating geometric volumes for the institutions of the Third International.',
+  significance: 'One of the best-known architectural propositions associated with early Soviet Constructivism, combining monumentality, engineering imagery, movement, and institutional function.',
+  provenance: {
+    description: {
+      sourceIds: ['moma-constructivism'],
+      status: 'editorial-synthesis',
+    },
+    significance: {
+      sourceIds: ['moma-constructivism'],
+      status: 'documented',
+    },
+  },
   graphicType: 'tatlin-tower'
 };
