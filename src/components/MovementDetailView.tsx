@@ -3,19 +3,30 @@ import { Movement, MovementId } from '../types/atlas';
 import { ArchivalVectorPlate } from './ArchivalVectorPlate';
 import { VisualDnaMatrix } from './VisualDnaMatrix';
 import { getObjectsForMovement, getPeopleForMovement, getRelatedMovements } from '../data';
+import {
+  ALL_DIFFUSION_ROUTES,
+  ALL_GLOBAL_ENTITIES,
+  DiffusionPlaceRef,
+  getGlobalHubById,
+} from '../data/global';
+import { getPlaceById } from '../data/places';
 
 interface MovementDetailViewProps {
   movement: Movement;
   onBack: () => void;
   onSelectMovement: (id: MovementId) => void;
   allMovements: Movement[];
+  selectedYear: number;
+  onExploreGlobalMovement: (id: MovementId) => void;
 }
 
 export const MovementDetailView: React.FC<MovementDetailViewProps> = ({
   movement,
   onBack,
   onSelectMovement,
-  allMovements: _allMovements
+  allMovements: _allMovements,
+  selectedYear,
+  onExploreGlobalMovement,
 }) => {
   const [activeWorkIndex, setActiveWorkIndex] = useState<number>(0);
 
@@ -26,6 +37,37 @@ export const MovementDetailView: React.FC<MovementDetailViewProps> = ({
 
   // Resolve related movements via registry
   const { incoming: influencesFrom, outgoing: influencesTo } = getRelatedMovements(movement.id);
+
+  const resolveGlobalPlaceName = (ref: DiffusionPlaceRef) => {
+    const place = ref.scope === 'atlas' ? getPlaceById(ref.id) : getGlobalHubById(ref.id);
+    return place?.name ?? ref.id;
+  };
+
+  const globalRoutes = ALL_DIFFUSION_ROUTES.filter(
+    (route) =>
+      route.startYear <= selectedYear &&
+      route.sourceMovementIds.includes(movement.id),
+  );
+
+  const globalEntities = ALL_GLOBAL_ENTITIES.filter(
+    (entity) =>
+      entity.startYear <= selectedYear &&
+      entity.movementLinks.includes(movement.id),
+  );
+
+  const globalPlaceNames = Array.from(
+    new Set([
+      ...globalRoutes.flatMap((route) => [
+        resolveGlobalPlaceName(route.origin),
+        resolveGlobalPlaceName(route.destination),
+      ]),
+      ...globalEntities.map((entity) => {
+        if (entity.placeRef) return resolveGlobalPlaceName(entity.placeRef);
+        if (entity.hubId) return getGlobalHubById(entity.hubId)?.name ?? entity.hubId;
+        return null;
+      }),
+    ].filter(Boolean) as string[]),
+  );
 
   // Dynamic contextual classes based on styleTheme
   const getContextualContainerStyle = () => {
@@ -366,6 +408,119 @@ export const MovementDetailView: React.FC<MovementDetailViewProps> = ({
               )}
             </div>
           </div>
+        </section>
+
+        {/* 11 / GLOBAL TRANSMISSION */}
+        <section className="py-16 border-b border-[var(--atlas-border)]">
+          <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-5 mb-8">
+            <div>
+              <span className="font-mono text-xs uppercase tracking-widest text-[var(--atlas-text-quiet)] block mb-2">
+                11 / GLOBAL TRANSMISSION
+              </span>
+              <h2 className="text-3xl font-semibold tracking-tight text-[var(--atlas-text)]">
+                Movement in the Global Network
+              </h2>
+              <p className="mt-3 max-w-3xl text-sm leading-relaxed text-[var(--atlas-text-secondary)]">
+                Documented routes and local nodes linked to {movement.name} in the Atlas up to the shared Active Year {selectedYear}.
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => onExploreGlobalMovement(movement.id)}
+              className="self-start lg:self-auto px-4 py-2.5 border border-[var(--atlas-text)] bg-[var(--atlas-text)] text-[var(--atlas-bg)] font-mono text-[10px] uppercase tracking-wider hover:opacity-85"
+            >
+              Open in Global Map →
+            </button>
+          </div>
+
+          <div className="grid grid-cols-3 gap-px bg-[var(--atlas-border)] border border-[var(--atlas-border)] mb-8">
+            <div className="bg-[var(--atlas-card)] p-4">
+              <div className="font-mono text-[9px] uppercase tracking-wider text-[var(--atlas-text-muted)]">Routes</div>
+              <div className="mt-1 text-2xl font-semibold text-[var(--atlas-text)]">{globalRoutes.length}</div>
+            </div>
+            <div className="bg-[var(--atlas-card)] p-4">
+              <div className="font-mono text-[9px] uppercase tracking-wider text-[var(--atlas-text-muted)]">Nodes</div>
+              <div className="mt-1 text-2xl font-semibold text-[var(--atlas-text)]">{globalEntities.length}</div>
+            </div>
+            <div className="bg-[var(--atlas-card)] p-4">
+              <div className="font-mono text-[9px] uppercase tracking-wider text-[var(--atlas-text-muted)]">Cities</div>
+              <div className="mt-1 text-2xl font-semibold text-[var(--atlas-text)]">{globalPlaceNames.length}</div>
+            </div>
+          </div>
+
+          {globalRoutes.length > 0 || globalEntities.length > 0 ? (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <div>
+                <div className="font-mono text-[10px] uppercase tracking-widest text-[var(--atlas-text-muted)] mb-3">
+                  Transmission routes
+                </div>
+                <div className="space-y-2">
+                  {globalRoutes.map((route) => (
+                    <div
+                      key={route.id}
+                      className="border border-[var(--atlas-border)] bg-[var(--atlas-surface)] p-4"
+                    >
+                      <div className="font-mono text-[8px] uppercase tracking-wider text-[var(--atlas-text-muted)]">
+                        {route.startYear}
+                        {route.endYear && route.endYear !== route.startYear ? `—${route.endYear}` : ''}
+                        {' // '}
+                        {route.mechanisms.map((item) => item.replaceAll('-', ' ')).join(' · ')}
+                      </div>
+                      <div className="mt-1 text-sm font-semibold text-[var(--atlas-text)]">
+                        {resolveGlobalPlaceName(route.origin)} → {resolveGlobalPlaceName(route.destination)}
+                      </div>
+                      <div className="mt-1 text-[11px] text-[var(--atlas-text-secondary)]">
+                        {route.title}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <div className="font-mono text-[10px] uppercase tracking-widest text-[var(--atlas-text-muted)] mb-3">
+                  Local nodes
+                </div>
+                <div className="space-y-2">
+                  {globalEntities.map((entity) => (
+                    <div
+                      key={entity.id}
+                      className="border border-[var(--atlas-border)] bg-[var(--atlas-surface)] p-4"
+                    >
+                      <div className="font-mono text-[8px] uppercase tracking-wider text-[var(--atlas-text-muted)]">
+                        {entity.kind} // {entity.startYear}
+                      </div>
+                      <div className="mt-1 text-sm font-semibold text-[var(--atlas-text)]">
+                        {entity.name}
+                      </div>
+                      <div className="mt-1 text-[11px] text-[var(--atlas-text-secondary)]">
+                        {entity.placeRef
+                          ? resolveGlobalPlaceName(entity.placeRef)
+                          : entity.hubId
+                          ? getGlobalHubById(entity.hubId)?.name ?? entity.hubId
+                          : '—'}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="border border-[var(--atlas-border)] bg-[var(--atlas-surface)] p-6 text-sm text-[var(--atlas-text-secondary)]">
+              No Global Map records for {movement.name} are visible up to Active Year {selectedYear}. Change the Active Year to inspect later transmissions.
+            </div>
+          )}
+
+          {globalPlaceNames.length > 0 && (
+            <div className="mt-6 pt-4 border-t border-[var(--atlas-border)]">
+              <div className="font-mono text-[9px] uppercase tracking-wider text-[var(--atlas-text-muted)] mb-2">
+                Places in this network
+              </div>
+              <div className="text-xs text-[var(--atlas-text-secondary)]">
+                {globalPlaceNames.join(' · ')}
+              </div>
+            </div>
+          )}
         </section>
 
         {/* Back navigation footer */}
