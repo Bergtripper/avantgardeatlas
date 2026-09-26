@@ -1,9 +1,10 @@
 import { lazy, Suspense, useState, useEffect } from 'react';
-import { ArchivalObject, MovementId } from './types/atlas';
+import type { ArchivalObject, MovementId } from './types/atlas';
 import { ALL_MOVEMENTS, getMovementById } from './data/movements';
-import { DiffusionPersonRef, DiffusionPlaceRef } from './data/global';
+import type { DiffusionPersonRef, DiffusionPlaceRef } from './data/global';
 import type { GlobalAtlasContextFocus } from './components/GlobalDiffusionSection';
-import { Header, NavTab } from './components/Header';
+import { Header } from './components/Header';
+import type { NavTab } from './components/Header';
 import { HeroSection } from './components/HeroSection';
 
 import { Footer } from './components/Footer';
