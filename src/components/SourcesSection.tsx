@@ -273,6 +273,38 @@ export const SourcesSection: React.FC = () => {
           })}
         </div>
 
+        <div className="mt-8 border border-[var(--atlas-border)] bg-[var(--atlas-surface)] p-5">
+          <div className="font-mono text-[9px] uppercase tracking-widest text-[var(--atlas-text-muted)]">
+            Evidence taxonomy // causality review
+          </div>
+          <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-px bg-[var(--atlas-border)] border border-[var(--atlas-border)]">
+            <div className="bg-[var(--atlas-card)] p-4">
+              <div className="font-mono text-[9px] uppercase tracking-wider text-[var(--atlas-text)]">
+                Documented
+              </div>
+              <p className="mt-2 text-xs leading-relaxed text-[var(--atlas-text-secondary)]">
+                The cited source directly supports the factual claim being shown.
+              </p>
+            </div>
+            <div className="bg-[var(--atlas-card)] p-4">
+              <div className="font-mono text-[9px] uppercase tracking-wider text-[var(--atlas-text-secondary)]">
+                Editorial synthesis
+              </div>
+              <p className="mt-2 text-xs leading-relaxed text-[var(--atlas-text-secondary)]">
+                The Atlas combines multiple documented records into a concise editorial statement.
+              </p>
+            </div>
+            <div className="bg-[var(--atlas-card)] p-4">
+              <div className="font-mono text-[9px] uppercase tracking-wider text-[#D82B2B]">
+                Interpretive
+              </div>
+              <p className="mt-2 text-xs leading-relaxed text-[var(--atlas-text-secondary)]">
+                An analytical reading or relationship proposed by the Atlas rather than a claim stated directly by a source.
+              </p>
+            </div>
+          </div>
+        </div>
+
         <div className="mt-8 border border-[var(--atlas-border)] bg-[var(--atlas-surface-alt)] p-5">
           <div className="font-mono text-[9px] uppercase tracking-widest text-[#D82B2B]">
             Provenance policy // Phase E
