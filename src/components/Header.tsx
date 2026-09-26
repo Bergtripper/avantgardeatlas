@@ -69,13 +69,34 @@ export const Header: React.FC<HeaderProps> = ({
       <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-3">
         <button
           onClick={() => selectTab('timeline')}
-          className="text-left group cursor-pointer focus:outline-hidden shrink-0"
+          className="relative text-left group cursor-pointer focus:outline-hidden shrink-0 px-2.5 py-2"
           aria-label="Open Avant-Garde Atlas timeline home"
         >
-          <span className="text-sm sm:text-lg font-semibold tracking-tight text-[var(--atlas-text)]">
+          <span
+            aria-hidden="true"
+            className="absolute left-0 top-0 h-px w-full origin-left scale-x-[0.32] bg-[var(--atlas-text)] transition-transform duration-300 ease-out group-hover:scale-x-100 group-focus-visible:scale-x-100"
+          />
+          <span
+            aria-hidden="true"
+            className="absolute right-0 top-0 h-full w-px origin-top scale-y-[0.42] bg-[var(--atlas-text)] transition-transform duration-300 delay-75 ease-out group-hover:scale-y-100 group-focus-visible:scale-y-100"
+          />
+          <span
+            aria-hidden="true"
+            className="absolute bottom-0 right-0 h-px w-full origin-right scale-x-[0.18] bg-[var(--atlas-text)] transition-transform duration-300 delay-100 ease-out group-hover:scale-x-100 group-focus-visible:scale-x-100"
+          />
+          <span
+            aria-hidden="true"
+            className="absolute bottom-0 left-0 h-full w-px origin-bottom scale-y-[0.55] bg-[var(--atlas-text)] transition-transform duration-300 delay-150 ease-out group-hover:scale-y-100 group-focus-visible:scale-y-100"
+          />
+          <span
+            aria-hidden="true"
+            className="absolute -left-1 top-1/2 size-2 -translate-y-1/2 bg-[#D82B2B] transition-transform duration-300 ease-out group-hover:translate-x-[calc(100%+0.5rem)] group-hover:rotate-45 group-focus-visible:translate-x-[calc(100%+0.5rem)] group-focus-visible:rotate-45"
+          />
+
+          <span className="relative z-10 text-sm sm:text-lg font-semibold tracking-tight text-[var(--atlas-text)]">
             AVANT-GARDE ATLAS
           </span>
-          <span className="hidden 2xl:inline font-mono text-xs text-[var(--atlas-text-muted)] ml-3 tracking-widest">
+          <span className="relative z-10 hidden 2xl:inline font-mono text-xs text-[var(--atlas-text-muted)] ml-3 tracking-widest">
             1890—1940
           </span>
         </button>
