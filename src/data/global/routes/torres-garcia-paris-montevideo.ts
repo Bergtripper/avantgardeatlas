@@ -15,5 +15,7 @@ export const torresGarciaParisMontevideoRoute: DiffusionRoute = {
     'After decades abroad and participation in European abstraction networks, Torres-García returned to Uruguay in 1934 and developed Universalismo Constructivo in Montevideo.',
   transformationNote:
     'The route culminates in an explicitly South American reformulation of constructive abstraction rather than a peripheral copy of European modernism.',
+  evidenceStatus: 'editorial-synthesis',
+  transformationEvidenceStatus: 'interpretive',
   sourceIds: ['moma-torres-garcia'],
 };
