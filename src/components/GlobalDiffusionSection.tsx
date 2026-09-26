@@ -686,7 +686,7 @@ export const GlobalDiffusionSection: React.FC = () => {
               />
 
               {filteredRoutes.map((route) => {
-                const active = route.id === selectedRoute?.id;
+                const active = !selectedNode && route.id === selectedRoute?.id;
                 const semantic = semanticForRoute(route);
                 const markerId =
                   semantic.marker === 'diamond'
@@ -759,10 +759,9 @@ export const GlobalDiffusionSection: React.FC = () => {
 
               {ALL_GLOBAL_HUBS.filter((hub) => visibleGlobalHubIds.has(hub.id)).map((hub) => {
                 const point = projectGlobalCoordinate(hub.longitude, hub.latitude);
-                const active =
-                  selectedDestination?.id === hub.id ||
-                  selectedOrigin?.id === hub.id ||
-                  selectedNodePlace?.id === hub.id;
+                const active = selectedNode
+                  ? selectedNodePlace?.id === hub.id
+                  : selectedDestination?.id === hub.id || selectedOrigin?.id === hub.id;
 
                 return (
                   <g key={hub.id} transform={`translate(${point.x}, ${point.y})`}>
