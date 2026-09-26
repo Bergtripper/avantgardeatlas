@@ -9,13 +9,24 @@ const TAB_TO_PATH: Record<NavTab, string> = {
   compare: 'compare',
   people: 'people',
   stories: 'stories',
-  geography: 'geography',
-  global: 'global'
+  geography: 'maps/europe',
+  global: 'maps/global',
 };
 
-const PATH_TO_TAB: Record<string, NavTab> = Object.fromEntries(
-  Object.entries(TAB_TO_PATH).map(([tab, path]) => [path, tab as NavTab])
-) as Record<string, NavTab>;
+const LEGACY_PATH_TO_TAB: Record<string, NavTab> = {
+  geography: 'geography',
+  global: 'global',
+};
+
+const PATH_TO_TAB: Record<string, NavTab> = {
+  timeline: 'timeline',
+  network: 'network',
+  movements: 'movements',
+  objects: 'archive',
+  compare: 'compare',
+  people: 'people',
+  stories: 'stories',
+};
 
 const normalizedBase = () => {
   const base = import.meta.env.BASE_URL || '/';
@@ -41,8 +52,22 @@ export const parseAtlasRoute = (pathname = window.location.pathname): AtlasRoute
   if (segments[0] === 'movements' && segments[1]) {
     return {
       tab: 'movements',
-      movementId: decodeURIComponent(segments[1]) as MovementId
+      movementId: decodeURIComponent(segments[1]) as MovementId,
     };
+  }
+
+  if (segments[0] === 'maps') {
+    if (segments[1] === 'global') {
+      return { tab: 'global', movementId: null };
+    }
+    if (segments[1] === 'europe' || !segments[1]) {
+      return { tab: 'geography', movementId: null };
+    }
+  }
+
+  const legacyTab = LEGACY_PATH_TO_TAB[segments[0] ?? ''];
+  if (legacyTab) {
+    return { tab: legacyTab, movementId: null };
   }
 
   const tab = PATH_TO_TAB[segments[0] ?? ''] ?? 'timeline';
