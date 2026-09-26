@@ -1,7 +1,7 @@
 import { lazy, Suspense, useState, useEffect } from 'react';
 import { ArchivalObject, MovementId } from './types/atlas';
 import { ALL_MOVEMENTS, getMovementById } from './data/movements';
-import { DiffusionPersonRef } from './data/global';
+import { DiffusionPersonRef, DiffusionPlaceRef } from './data/global';
 import type { GlobalAtlasContextFocus } from './components/GlobalDiffusionSection';
 import { Header, NavTab } from './components/Header';
 import { HeroSection } from './components/HeroSection';
@@ -55,6 +55,8 @@ export default function App() {
   const [focusedStoryId, setFocusedStoryId] = useState<string | null>(null);
   const [focusedStoryStepIndex, setFocusedStoryStepIndex] = useState<number | null>(null);
   const [globalAtlasContext, setGlobalAtlasContext] = useState<GlobalAtlasContextFocus | null>(null);
+  const [globalPlaceFocus, setGlobalPlaceFocus] = useState<DiffusionPlaceRef | null>(null);
+  const [europeCityFocus, setEuropeCityFocus] = useState<string | null>(null);
   const [lastOverviewTab, setLastOverviewTab] = useState<NavTab>(
     initialMovement ? 'movements' : initialRoute.tab
   );
@@ -97,7 +99,11 @@ export default function App() {
           setFocusedStoryId(null);
           setFocusedStoryStepIndex(null);
         }
-        if (route.tab !== 'global') setGlobalAtlasContext(null);
+        if (route.tab !== 'global') {
+          setGlobalAtlasContext(null);
+          setGlobalPlaceFocus(null);
+        }
+        if (route.tab !== 'geography') setEuropeCityFocus(null);
       }
 
       window.scrollTo({ top: 0, behavior: 'auto' });
@@ -162,6 +168,8 @@ export default function App() {
     setFocusedStoryId(null);
     setFocusedStoryStepIndex(null);
     setGlobalAtlasContext(null);
+    setGlobalPlaceFocus(null);
+    setEuropeCityFocus(null);
     setCurrentTab(tab);
     setLastOverviewTab(tab);
     window.history.pushState({}, '', pathForTab(tab));
@@ -252,6 +260,29 @@ export default function App() {
     setFocusedStoryId(storyId);
     setFocusedStoryStepIndex(stepIndex);
     window.history.pushState({}, '', pathForTab('stories'));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleExploreGlobalCity = (cityId: string) => {
+    setSelectedMovementId(null);
+    setCurrentTab('global');
+    setLastOverviewTab('global');
+    setGlobalMovementFocus(null);
+    setGlobalPersonFocus(null);
+    setGlobalAtlasContext(null);
+    setEuropeCityFocus(cityId);
+    setGlobalPlaceFocus({ scope: 'atlas', id: cityId });
+    window.history.pushState({}, '', pathForTab('global'));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleSelectEuropeCityFromGlobal = (cityId: string) => {
+    setSelectedMovementId(null);
+    setCurrentTab('geography');
+    setLastOverviewTab('geography');
+    setEuropeCityFocus(cityId);
+    setGlobalPlaceFocus({ scope: 'atlas', id: cityId });
+    window.history.pushState({}, '', pathForTab('geography'));
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -377,6 +408,8 @@ export default function App() {
                 onSelectMovement={handleSelectMovement}
                 selectedYear={selectedYear}
                 onSelectYear={setSelectedYear}
+                focusedCityId={europeCityFocus}
+                onExploreGlobalCity={handleExploreGlobalCity}
               />
             )}
 
@@ -388,11 +421,14 @@ export default function App() {
                 onSelectPerson={handleSelectPersonFromGlobal}
                 onSelectObject={handleSelectObjectFromGlobal}
                 onSelectStory={handleSelectStoryFromGlobal}
+                onSelectEuropeCity={handleSelectEuropeCityFromGlobal}
                 focusedMovementId={globalMovementFocus}
                 focusedPersonRef={globalPersonFocus}
                 focusedAtlasContext={globalAtlasContext}
+                focusedPlaceRef={globalPlaceFocus}
                 onClearPersonFocus={() => setGlobalPersonFocus(null)}
                 onClearAtlasContext={() => setGlobalAtlasContext(null)}
+                onClearPlaceFocus={() => setGlobalPlaceFocus(null)}
               />
             )}
           </>

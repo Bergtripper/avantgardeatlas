@@ -16,6 +16,8 @@ interface GeographySectionProps {
   onSelectMovement: (id: MovementId) => void;
   selectedYear: number;
   onSelectYear: (year: number) => void;
+  focusedCityId?: string | null;
+  onExploreGlobalCity: (cityId: string) => void;
 }
 
 interface MapViewBox {
@@ -39,9 +41,11 @@ export const GeographySection: React.FC<GeographySectionProps> = ({
   onSelectMovement,
   selectedYear,
   onSelectYear,
+  focusedCityId = null,
+  onExploreGlobalCity,
 }) => {
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
-  const [activeCityId, setActiveCityId] = useState<string>('dessau');
+  const [activeCityId, setActiveCityId] = useState<string>(focusedCityId ?? 'dessau');
   const [hoveredCityId, setHoveredCityId] = useState<string | null>(null);
   const [viewBox, setViewBox] = useState<MapViewBox>(INITIAL_VIEWBOX);
   const [isPanning, setIsPanning] = useState(false);
@@ -52,6 +56,13 @@ export const GeographySection: React.FC<GeographySectionProps> = ({
     clientY: number;
     viewBox: MapViewBox;
   } | null>(null);
+
+  React.useEffect(() => {
+    if (!focusedCityId) return;
+    if (ALL_PLACES.some((city) => city.id === focusedCityId)) {
+      setActiveCityId(focusedCityId);
+    }
+  }, [focusedCityId]);
 
   const activeCities = ALL_PLACES.filter(
     (city) => selectedYear >= city.activeEras.start && selectedYear <= city.activeEras.end,
@@ -550,6 +561,27 @@ export const GeographySection: React.FC<GeographySectionProps> = ({
                       </button>
                     ))}
                   </div>
+                </div>
+
+                <div className="mt-6 pt-4 border-t border-[var(--atlas-border-soft)]">
+                  <span className="font-mono text-[10px] text-[var(--atlas-text-quiet)] uppercase block mb-2">
+                    Scale transition
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => onExploreGlobalCity(selectedCity.id)}
+                    className="w-full text-left border border-[#D82B2B] px-3 py-3 text-[#D82B2B] hover:bg-[#D82B2B] hover:text-white transition-colors"
+                  >
+                    <span className="block font-mono text-[9px] uppercase tracking-wider">
+                      Europe → Global
+                    </span>
+                    <span className="block mt-1 text-sm font-semibold">
+                      Follow transmissions through {selectedCity.name} →
+                    </span>
+                    <span className="block mt-1 font-mono text-[9px] opacity-70">
+                      ACTIVE YEAR {selectedYear}
+                    </span>
+                  </button>
                 </div>
               </div>
             </div>

@@ -177,15 +177,21 @@ interface GlobalDiffusionSectionProps {
   onSelectPerson: (ref: DiffusionPersonRef) => void;
   onSelectObject: (objectId: string) => void;
   onSelectStory: (storyId: string, stepIndex: number) => void;
+  onSelectEuropeCity: (cityId: string) => void;
   focusedMovementId?: MovementId | null;
   focusedPersonRef?: DiffusionPersonRef | null;
   focusedAtlasContext?: GlobalAtlasContextFocus | null;
+  focusedPlaceRef?: DiffusionPlaceRef | null;
   onClearPersonFocus?: () => void;
   onClearAtlasContext?: () => void;
+  onClearPlaceFocus?: () => void;
 }
 
 const ATLAS_START_YEAR = 1890;
 const ATLAS_END_YEAR = 1940;
+
+const samePlaceRef = (a: DiffusionPlaceRef, b: DiffusionPlaceRef) =>
+  a.scope === b.scope && a.id === b.id;
 
 const personRefKey = (ref: DiffusionPersonRef) => `${ref.scope}:${ref.id}`;
 
@@ -196,11 +202,14 @@ export const GlobalDiffusionSection: React.FC<GlobalDiffusionSectionProps> = ({
   onSelectPerson,
   onSelectObject,
   onSelectStory,
+  onSelectEuropeCity,
   focusedMovementId = null,
   focusedPersonRef = null,
   focusedAtlasContext = null,
+  focusedPlaceRef = null,
   onClearPersonFocus,
   onClearAtlasContext,
+  onClearPlaceFocus,
 }) => {
   const minRouteYear = Math.min(...ALL_DIFFUSION_ROUTES.map((route) => route.startYear));
   const maxRouteYear = Math.max(...ALL_DIFFUSION_ROUTES.map((route) => route.endYear ?? route.startYear));
@@ -272,13 +281,19 @@ export const GlobalDiffusionSection: React.FC<GlobalDiffusionSectionProps> = ({
         if (entity.startYear > selectedYear) return false;
         if (mediumFilter !== 'all' && !entity.media.includes(mediumFilter)) return false;
         if (movementFilter !== 'all' && !entity.movementLinks.includes(movementFilter)) return false;
+        if (focusedPlaceRef) {
+          const entityPlaceRef =
+            entity.placeRef ??
+            (entity.hubId ? ({ scope: 'global', id: entity.hubId } as DiffusionPlaceRef) : null);
+          if (!entityPlaceRef || !samePlaceRef(entityPlaceRef, focusedPlaceRef)) return false;
+        }
         return (
           entity.kind === 'exhibition' ||
           entity.media.includes('advertising') ||
           entity.media.includes('exhibition-design')
         );
       }),
-    [selectedYear, mediumFilter, movementFilter],
+    [selectedYear, mediumFilter, movementFilter, focusedPlaceRef],
   );
 
   const convergenceEntities = useMemo(
@@ -287,9 +302,15 @@ export const GlobalDiffusionSection: React.FC<GlobalDiffusionSectionProps> = ({
         if (entity.startYear > selectedYear) return false;
         if (mediumFilter !== 'all' && !entity.media.includes(mediumFilter)) return false;
         if (movementFilter !== 'all' && !entity.movementLinks.includes(movementFilter)) return false;
+        if (focusedPlaceRef) {
+          const entityPlaceRef =
+            entity.placeRef ??
+            (entity.hubId ? ({ scope: 'global', id: entity.hubId } as DiffusionPlaceRef) : null);
+          if (!entityPlaceRef || !samePlaceRef(entityPlaceRef, focusedPlaceRef)) return false;
+        }
         return true;
       }),
-    [selectedYear, mediumFilter, movementFilter],
+    [selectedYear, mediumFilter, movementFilter, focusedPlaceRef],
   );
 
   const filteredRoutes = useMemo(
@@ -313,13 +334,18 @@ export const GlobalDiffusionSection: React.FC<GlobalDiffusionSectionProps> = ({
           route.sourceMovementIds.some((movementId) =>
             focusedAtlasContext.movementIds.includes(movementId),
           );
+        const matchesPlace =
+          !focusedPlaceRef ||
+          samePlaceRef(route.origin, focusedPlaceRef) ||
+          samePlaceRef(route.destination, focusedPlaceRef);
         return (
           matchesYear &&
           matchesSemantic &&
           matchesMedium &&
           matchesMovement &&
           matchesPerson &&
-          matchesAtlasContext
+          matchesAtlasContext &&
+          matchesPlace
         );
       }),
     [
@@ -329,6 +355,7 @@ export const GlobalDiffusionSection: React.FC<GlobalDiffusionSectionProps> = ({
       movementFilter,
       focusedPersonRef,
       focusedAtlasContext,
+      focusedPlaceRef,
     ],
   );
 
@@ -544,6 +571,7 @@ export const GlobalDiffusionSection: React.FC<GlobalDiffusionSectionProps> = ({
     setMovementFilter('all');
     onClearPersonFocus?.();
     onClearAtlasContext?.();
+    onClearPlaceFocus?.();
   };
 
   const hasActiveFilters =
@@ -551,7 +579,8 @@ export const GlobalDiffusionSection: React.FC<GlobalDiffusionSectionProps> = ({
     mediumFilter !== 'all' ||
     movementFilter !== 'all' ||
     Boolean(focusedPersonRef) ||
-    Boolean(focusedAtlasContext);
+    Boolean(focusedAtlasContext) ||
+    Boolean(focusedPlaceRef);
 
   const renderRelatedAtlasMaterial = (movementIds: MovementId[]) => {
     const relatedObjects = ALL_OBJECTS
@@ -688,6 +717,22 @@ export const GlobalDiffusionSection: React.FC<GlobalDiffusionSectionProps> = ({
                   onClick={() => onClearAtlasContext?.()}
                   className="font-mono text-[10px] leading-none"
                   aria-label="Clear Atlas material context"
+                >
+                  ×
+                </button>
+              </div>
+            )}
+
+            {focusedPlaceRef && (
+              <div className="flex items-center gap-2 border border-[#D82B2B] px-2.5 py-2 text-[#D82B2B]">
+                <span className="font-mono text-[8px] uppercase tracking-wider">
+                  Place // {resolvePlace(focusedPlaceRef)?.name ?? focusedPlaceRef.id}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => onClearPlaceFocus?.()}
+                  className="font-mono text-[10px] leading-none"
+                  aria-label="Clear place focus"
                 >
                   ×
                 </button>
@@ -1310,6 +1355,19 @@ export const GlobalDiffusionSection: React.FC<GlobalDiffusionSectionProps> = ({
                 </div>
               )}
 
+              {selectedCrossroad.placeRef.scope === 'atlas' && (
+                <button
+                  type="button"
+                  onClick={() => onSelectEuropeCity(selectedCrossroad.placeRef.id)}
+                  className="mt-6 w-full text-left border border-[#D82B2B] px-3 py-3 text-[#D82B2B] hover:bg-[#D82B2B] hover:text-white transition-colors"
+                >
+                  <span className="block font-mono text-[9px] uppercase tracking-wider">Global → Europe</span>
+                  <span className="block mt-1 text-sm font-semibold">
+                    Open {selectedCrossroad.place.name} on Europe Map →
+                  </span>
+                </button>
+              )}
+
               {renderRelatedAtlasMaterial(selectedCrossroad.movementIds)}
 
               <div className="mt-6 pt-4 border-t border-[var(--atlas-border)] text-[10px] leading-relaxed text-[var(--atlas-text-muted)]">
@@ -1386,6 +1444,19 @@ export const GlobalDiffusionSection: React.FC<GlobalDiffusionSectionProps> = ({
                 </div>
               </dl>
 
+              {selectedNode.placeRef?.scope === 'atlas' && (
+                <button
+                  type="button"
+                  onClick={() => onSelectEuropeCity(selectedNode.placeRef!.id)}
+                  className="mt-6 w-full text-left border border-[#D82B2B] px-3 py-3 text-[#D82B2B] hover:bg-[#D82B2B] hover:text-white transition-colors"
+                >
+                  <span className="block font-mono text-[9px] uppercase tracking-wider">Global → Europe</span>
+                  <span className="block mt-1 text-sm font-semibold">
+                    Open {selectedNodePlace?.name ?? 'city'} on Europe Map →
+                  </span>
+                </button>
+              )}
+
               {renderRelatedAtlasMaterial(selectedNode.movementLinks)}
 
               <div className="mt-6 pt-4 border-t border-[var(--atlas-border)]">
@@ -1425,14 +1496,42 @@ export const GlobalDiffusionSection: React.FC<GlobalDiffusionSectionProps> = ({
               </div>
 
               <div className="mt-5 grid grid-cols-2 gap-px bg-[var(--atlas-border)] border border-[var(--atlas-border)]">
-                <div className="bg-[var(--atlas-card)] p-3">
-                  <div className="font-mono text-[9px] uppercase text-[var(--atlas-text-muted)]">Origin</div>
+                <button
+                  type="button"
+                  disabled={selectedRoute.origin.scope !== 'atlas'}
+                  onClick={() =>
+                    selectedRoute.origin.scope === 'atlas' &&
+                    onSelectEuropeCity(selectedRoute.origin.id)
+                  }
+                  className={`bg-[var(--atlas-card)] p-3 text-left ${
+                    selectedRoute.origin.scope === 'atlas'
+                      ? 'hover:bg-[var(--atlas-surface-alt)] cursor-pointer'
+                      : 'cursor-default'
+                  }`}
+                >
+                  <div className="font-mono text-[9px] uppercase text-[var(--atlas-text-muted)]">
+                    Origin {selectedRoute.origin.scope === 'atlas' ? '// Europe ↗' : ''}
+                  </div>
                   <div className="text-sm font-semibold mt-1">{selectedOrigin?.name}</div>
-                </div>
-                <div className="bg-[var(--atlas-card)] p-3">
-                  <div className="font-mono text-[9px] uppercase text-[var(--atlas-text-muted)]">Destination</div>
+                </button>
+                <button
+                  type="button"
+                  disabled={selectedRoute.destination.scope !== 'atlas'}
+                  onClick={() =>
+                    selectedRoute.destination.scope === 'atlas' &&
+                    onSelectEuropeCity(selectedRoute.destination.id)
+                  }
+                  className={`bg-[var(--atlas-card)] p-3 text-left ${
+                    selectedRoute.destination.scope === 'atlas'
+                      ? 'hover:bg-[var(--atlas-surface-alt)] cursor-pointer'
+                      : 'cursor-default'
+                  }`}
+                >
+                  <div className="font-mono text-[9px] uppercase text-[var(--atlas-text-muted)]">
+                    Destination {selectedRoute.destination.scope === 'atlas' ? '// Europe ↗' : ''}
+                  </div>
                   <div className="text-sm font-semibold mt-1">{selectedDestination?.name}</div>
-                </div>
+                </button>
               </div>
 
               <p className="mt-5 text-sm leading-relaxed text-[var(--atlas-text-body)]">
