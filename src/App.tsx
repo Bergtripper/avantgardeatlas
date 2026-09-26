@@ -1,6 +1,7 @@
 import { lazy, Suspense, useState, useEffect } from 'react';
 import { MovementId } from './types/atlas';
 import { ALL_MOVEMENTS, getMovementById } from './data/movements';
+import { DiffusionPersonRef } from './data/global';
 import { Header, NavTab } from './components/Header';
 import { HeroSection } from './components/HeroSection';
 import { TimelineSection } from './components/TimelineSection';
@@ -47,6 +48,8 @@ export default function App() {
     initialMovement ? initialRoute.movementId : null
   );
   const [globalMovementFocus, setGlobalMovementFocus] = useState<MovementId | null>(null);
+  const [globalPersonFocus, setGlobalPersonFocus] = useState<DiffusionPersonRef | null>(null);
+  const [peopleFocus, setPeopleFocus] = useState<DiffusionPersonRef | null>(null);
   const [lastOverviewTab, setLastOverviewTab] = useState<NavTab>(
     initialMovement ? 'movements' : initialRoute.tab
   );
@@ -79,7 +82,11 @@ export default function App() {
         setSelectedMovementId(null);
         setCurrentTab(route.tab);
         setLastOverviewTab(route.tab);
-        if (route.tab !== 'global') setGlobalMovementFocus(null);
+        if (route.tab !== 'global') {
+          setGlobalMovementFocus(null);
+          setGlobalPersonFocus(null);
+        }
+        if (route.tab !== 'people') setPeopleFocus(null);
       }
 
       window.scrollTo({ top: 0, behavior: 'auto' });
@@ -138,6 +145,8 @@ export default function App() {
   const handleSelectTab = (tab: NavTab) => {
     setSelectedMovementId(null);
     setGlobalMovementFocus(null);
+    setGlobalPersonFocus(null);
+    setPeopleFocus(null);
     setCurrentTab(tab);
     setLastOverviewTab(tab);
     window.history.pushState({}, '', pathForTab(tab));
@@ -149,6 +158,27 @@ export default function App() {
     setCurrentTab('global');
     setLastOverviewTab('global');
     setGlobalMovementFocus(id);
+    window.history.pushState({}, '', pathForTab('global'));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleSelectPersonFromGlobal = (ref: DiffusionPersonRef) => {
+    setSelectedMovementId(null);
+    setCurrentTab('people');
+    setLastOverviewTab('people');
+    setPeopleFocus(ref);
+    setGlobalPersonFocus(ref);
+    window.history.pushState({}, '', pathForTab('people'));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleExploreGlobalPerson = (ref: DiffusionPersonRef) => {
+    setSelectedMovementId(null);
+    setCurrentTab('global');
+    setLastOverviewTab('global');
+    setGlobalMovementFocus(null);
+    setGlobalPersonFocus(ref);
+    setPeopleFocus(ref);
     window.history.pushState({}, '', pathForTab('global'));
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -247,7 +277,12 @@ export default function App() {
             )}
 
             {currentTab === 'people' && (
-              <PeopleSection onSelectMovement={handleSelectMovement} />
+              <PeopleSection
+                onSelectMovement={handleSelectMovement}
+                selectedYear={selectedYear}
+                focusedPersonRef={peopleFocus}
+                onExploreGlobalPerson={handleExploreGlobalPerson}
+              />
             )}
 
             {currentTab === 'stories' && (
@@ -267,7 +302,10 @@ export default function App() {
                 selectedYear={selectedYear}
                 onSelectYear={setSelectedYear}
                 onSelectMovement={handleSelectMovement}
+                onSelectPerson={handleSelectPersonFromGlobal}
                 focusedMovementId={globalMovementFocus}
+                focusedPersonRef={globalPersonFocus}
+                onClearPersonFocus={() => setGlobalPersonFocus(null)}
               />
             )}
           </>

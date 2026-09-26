@@ -1,17 +1,38 @@
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { MovementId } from '../types/atlas';
 import { ALL_PEOPLE } from '../data/people';
+import {
+  ALL_DIFFUSION_ROUTES,
+  ALL_GLOBAL_PEOPLE,
+  DiffusionPersonRef,
+} from '../data/global';
 
 interface PeopleSectionProps {
   onSelectMovement: (id: MovementId) => void;
+  selectedYear: number;
+  focusedPersonRef?: DiffusionPersonRef | null;
+  onExploreGlobalPerson: (ref: DiffusionPersonRef) => void;
 }
 
-export const PeopleSection: React.FC<PeopleSectionProps> = ({ onSelectMovement }) => {
+const personRefKey = (ref: DiffusionPersonRef) => `${ref.scope}:${ref.id}`;
+
+export const PeopleSection: React.FC<PeopleSectionProps> = ({
+  onSelectMovement,
+  selectedYear,
+  focusedPersonRef = null,
+  onExploreGlobalPerson,
+}) => {
   const [selectedDiscipline, setSelectedDiscipline] = useState<string>('all');
   const [activeFigureId, setActiveFigureId] = useState<string | null>(null);
 
+  useEffect(() => {
+    if (focusedPersonRef?.scope === 'atlas') {
+      setActiveFigureId(focusedPersonRef.id);
+    }
+  }, [focusedPersonRef]);
+
   const allDisciplines = Array.from(
-    new Set(ALL_PEOPLE.flatMap((f) => f.keyDisciplines))
+    new Set(ALL_PEOPLE.flatMap((f) => f.keyDisciplines)),
   );
 
   const filteredFigures = ALL_PEOPLE.filter((f) => {
@@ -19,10 +40,38 @@ export const PeopleSection: React.FC<PeopleSectionProps> = ({ onSelectMovement }
     return f.keyDisciplines.includes(selectedDiscipline);
   });
 
+  const visibleGlobalRoutes = useMemo(
+    () => ALL_DIFFUSION_ROUTES.filter((route) => route.startYear <= selectedYear),
+    [selectedYear],
+  );
+
+  const routesForPerson = (ref: DiffusionPersonRef) =>
+    visibleGlobalRoutes.filter((route) =>
+      route.personRefs.some(
+        (personRef) =>
+          personRef.scope === ref.scope && personRef.id === ref.id,
+      ),
+    );
+
+  const globalNetworkPeople = ALL_GLOBAL_PEOPLE
+    .map((person) => {
+      const ref: DiffusionPersonRef = { scope: 'global', id: person.id };
+      return {
+        person,
+        ref,
+        routes: routesForPerson(ref),
+      };
+    })
+    .filter((item) => item.routes.length > 0);
+
+  const focusedPersonKey = focusedPersonRef ? personRefKey(focusedPersonRef) : null;
+
   return (
-    <section id="people-section" className="w-full py-16 px-4 sm:px-6 lg:px-12 border-b border-[var(--atlas-border)] bg-[var(--atlas-bg)]">
+    <section
+      id="people-section"
+      className="w-full py-16 px-4 sm:px-6 lg:px-12 border-b border-[var(--atlas-border)] bg-[var(--atlas-bg)]"
+    >
       <div className="max-w-7xl mx-auto">
-        {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between border-b border-[var(--atlas-text)] pb-6 mb-8 gap-4">
           <div>
             <div className="text-xs font-mono uppercase tracking-widest text-[var(--atlas-text-muted)]">
@@ -37,9 +86,10 @@ export const PeopleSection: React.FC<PeopleSectionProps> = ({ onSelectMovement }
           </div>
         </div>
 
-        {/* Discipline Filters */}
         <div className="flex items-center gap-1 overflow-x-auto pb-3 mb-8 border-b border-[var(--atlas-border)]">
-          <span className="font-mono text-xs text-[var(--atlas-text-quiet)] uppercase mr-3 shrink-0">Discipline Filter:</span>
+          <span className="font-mono text-xs text-[var(--atlas-text-quiet)] uppercase mr-3 shrink-0">
+            Discipline Filter:
+          </span>
           <button
             onClick={() => setSelectedDiscipline('all')}
             className={`px-3 py-1 text-xs font-mono tracking-wider cursor-pointer whitespace-nowrap transition-colors border ${
@@ -65,15 +115,21 @@ export const PeopleSection: React.FC<PeopleSectionProps> = ({ onSelectMovement }
           ))}
         </div>
 
-        {/* Figures Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredFigures.map((fig) => {
             const isExpanded = activeFigureId === fig.id;
+            const personRef: DiffusionPersonRef = { scope: 'atlas', id: fig.id };
+            const globalRoutes = routesForPerson(personRef);
+            const isFocused = focusedPersonKey === personRefKey(personRef);
 
             return (
               <div
                 key={fig.id}
-                className="border border-[var(--atlas-border)] bg-[var(--atlas-surface)] p-6 flex flex-col justify-between hover:border-[var(--atlas-text)] transition-colors"
+                className={`border bg-[var(--atlas-surface)] p-6 flex flex-col justify-between transition-colors ${
+                  isFocused
+                    ? 'border-[#D82B2B] ring-1 ring-[#D82B2B]'
+                    : 'border-[var(--atlas-border)] hover:border-[var(--atlas-text)]'
+                }`}
               >
                 <div>
                   <div className="flex items-baseline justify-between text-xs font-mono text-[var(--atlas-text-muted)] mb-1">
@@ -85,7 +141,6 @@ export const PeopleSection: React.FC<PeopleSectionProps> = ({ onSelectMovement }
                     {fig.name}
                   </h3>
 
-                  {/* Movements Association */}
                   <div className="flex flex-wrap gap-1 my-3">
                     {fig.primaryMovements.map((mId) => (
                       <button
@@ -98,18 +153,26 @@ export const PeopleSection: React.FC<PeopleSectionProps> = ({ onSelectMovement }
                     ))}
                   </div>
 
+                  {globalRoutes.length > 0 && (
+                    <button
+                      type="button"
+                      onClick={() => onExploreGlobalPerson(personRef)}
+                      className="mb-3 inline-flex items-center gap-2 border border-[#D82B2B] px-2.5 py-1.5 font-mono text-[9px] uppercase tracking-wider text-[#D82B2B] hover:bg-[#D82B2B] hover:text-white transition-colors"
+                    >
+                      Global network // {globalRoutes.length} route{globalRoutes.length === 1 ? '' : 's'} →
+                    </button>
+                  )}
+
                   <p className="text-xs text-[var(--atlas-text-secondary)] leading-relaxed mt-3">
                     {fig.biography}
                   </p>
 
-                  {/* Key Quote */}
                   {fig.keyQuote && (
                     <blockquote className="my-4 pl-3 border-l-2 border-[var(--atlas-text)] italic text-xs text-[#333]">
                       “{fig.keyQuote}”
                     </blockquote>
                   )}
 
-                  {/* Trajectory / Interventions */}
                   <div className="mt-4 pt-3 border-t border-[var(--atlas-border-soft)]">
                     <span className="font-mono text-[10px] text-[var(--atlas-text-quiet)] uppercase block mb-1">
                       Historical Trajectory & Influences
@@ -142,6 +205,57 @@ export const PeopleSection: React.FC<PeopleSectionProps> = ({ onSelectMovement }
             );
           })}
         </div>
+
+        {globalNetworkPeople.length > 0 && (
+          <div className="mt-14 pt-8 border-t border-[var(--atlas-text)]">
+            <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-3 mb-5">
+              <div>
+                <div className="font-mono text-[9px] uppercase tracking-widest text-[var(--atlas-text-muted)]">
+                  Global Network // transmission carriers
+                </div>
+                <h3 className="mt-1 text-2xl font-semibold tracking-tight text-[var(--atlas-text)]">
+                  People documented through international routes
+                </h3>
+              </div>
+              <div className="font-mono text-[9px] uppercase tracking-wider text-[var(--atlas-text-muted)]">
+                Active Year {selectedYear}
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-px bg-[var(--atlas-border)] border border-[var(--atlas-border)]">
+              {globalNetworkPeople.map(({ person, ref, routes }) => {
+                const isFocused = focusedPersonKey === personRefKey(ref);
+                return (
+                  <article
+                    key={person.id}
+                    className={`p-4 ${
+                      isFocused
+                        ? 'bg-[var(--atlas-surface-alt)] ring-1 ring-inset ring-[#D82B2B]'
+                        : 'bg-[var(--atlas-card)]'
+                    }`}
+                  >
+                    <div className="font-mono text-[8px] uppercase tracking-wider text-[var(--atlas-text-muted)]">
+                      Global record // {person.years}
+                    </div>
+                    <h4 className="mt-1 text-lg font-semibold text-[var(--atlas-text)]">
+                      {person.name}
+                    </h4>
+                    <p className="mt-2 text-xs leading-relaxed text-[var(--atlas-text-secondary)]">
+                      {person.summary}
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => onExploreGlobalPerson(ref)}
+                      className="mt-4 font-mono text-[9px] uppercase tracking-wider underline underline-offset-4 text-[var(--atlas-text)] hover:text-[#D82B2B]"
+                    >
+                      View {routes.length} route{routes.length === 1 ? '' : 's'} on Global Map →
+                    </button>
+                  </article>
+                );
+              })}
+            </div>
+          </div>
+        )}
       </div>
     </section>
   );
