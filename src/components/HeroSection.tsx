@@ -90,9 +90,9 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
   const activeLanguage = HERO_LANGUAGES[languageIndex];
 
   return (
-    <section className="relative w-full min-h-[72vh] flex flex-col justify-between pt-16 sm:pt-24 pb-12 px-6 lg:px-12 border-b border-[var(--atlas-border)] bg-[var(--atlas-bg)] overflow-hidden">
+    <section className="relative w-full min-h-[68svh] sm:min-h-[72vh] flex flex-col justify-between pt-12 sm:pt-24 pb-8 sm:pb-12 px-4 sm:px-6 lg:px-12 border-b border-[var(--atlas-border)] bg-[var(--atlas-bg)] overflow-hidden">
       {/* Archival metadata top line */}
-      <div className="flex items-center justify-between text-xs font-mono text-[var(--atlas-text-quiet)] uppercase tracking-widest border-b border-[var(--atlas-border-soft)] pb-4">
+      <div className="flex items-center justify-between gap-3 text-[9px] sm:text-xs font-mono text-[var(--atlas-text-quiet)] uppercase tracking-[0.12em] sm:tracking-widest border-b border-[var(--atlas-border-soft)] pb-3 sm:pb-4">
         <span>ARCHIVE REF // AT-1890-1940</span>
         <span className="hidden sm:inline">EUROPEAN AVANT-GARDE CHRONOLOGY</span>
         <span>EDITION 2026</span>
@@ -101,14 +101,14 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
       {/* Constructivist language marker */}
       <div
         aria-hidden="true"
-        className="absolute top-28 right-6 lg:right-12 flex items-center gap-2 font-mono text-[9px] uppercase tracking-[0.24em] text-[var(--atlas-text-muted)]"
+        className="absolute top-24 sm:top-28 right-4 sm:right-6 lg:right-12 flex items-center gap-2 font-mono text-[9px] uppercase tracking-[0.24em] text-[var(--atlas-text-muted)]"
       >
         <span className="h-px w-10 bg-[#D82B2B]" />
         <span>{activeLanguage.code}</span>
       </div>
 
       {/* Hero typographical statement */}
-      <div className="my-auto py-12 max-w-6xl">
+      <div className="my-auto py-10 sm:py-12 max-w-6xl min-w-0">
         <div className="relative atlas-guillotine-zone">
           <div
             aria-hidden="true"
@@ -126,7 +126,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             />
           )}
 
-          <h1 className="text-6xl sm:text-8xl lg:text-9xl font-semibold tracking-tighter text-[var(--atlas-text)] leading-[0.88] select-none">
+          <h1 className="text-[clamp(2.8rem,15vw,6rem)] sm:text-8xl lg:text-9xl font-semibold tracking-tighter text-[var(--atlas-text)] leading-[0.88] select-none break-words">
             <span className="block">{activeLanguage.titleTop}</span>
             <span className="block">{activeLanguage.titleBottom}</span>
           </h1>
@@ -151,7 +151,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             </div>
           </div>
 
-          <div className="flex items-center gap-4 text-xs font-mono tracking-wider uppercase">
+          <div className="flex flex-col min-[420px]:flex-row items-stretch min-[420px]:items-center gap-2 sm:gap-4 text-xs font-mono tracking-wider uppercase">
             <button
               onClick={onExploreTimeline}
               className="px-5 py-2.5 bg-[var(--atlas-ink-button)] text-[var(--atlas-on-ink)] hover:bg-[var(--atlas-ink-button-hover)] transition-colors cursor-pointer"
