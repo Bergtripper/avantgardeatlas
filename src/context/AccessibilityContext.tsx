@@ -6,6 +6,9 @@ export interface AccessibilitySettings {
   relaxedSpacing: boolean;
   readableFont: boolean;
   highlightLinks: boolean;
+  readingWidth: boolean;
+  reduceMotion: boolean;
+  pauseDynamicType: boolean;
   dockPosition: 'left' | 'right';
 }
 
@@ -20,6 +23,9 @@ interface AccessibilityContextValue {
   toggleRelaxedSpacing: () => void;
   toggleReadableFont: () => void;
   toggleHighlightLinks: () => void;
+  toggleReadingWidth: () => void;
+  toggleReduceMotion: () => void;
+  togglePauseDynamicType: () => void;
   toggleDockPosition: () => void;
   resetAllSettings: () => void;
   isPanelOpen: boolean;
@@ -35,6 +41,9 @@ const defaultSettings: AccessibilitySettings = {
   relaxedSpacing: false,
   readableFont: false,
   highlightLinks: false,
+  readingWidth: false,
+  reduceMotion: false,
+  pauseDynamicType: false,
   dockPosition: 'right',
 };
 
@@ -78,6 +87,9 @@ export const AccessibilityProvider: React.FC<{ children: React.ReactNode }> = ({
     root.classList.toggle('a11y-relaxed-spacing', settings.relaxedSpacing);
     root.classList.toggle('a11y-readable-font', settings.readableFont);
     root.classList.toggle('a11y-highlight-links', settings.highlightLinks);
+    root.classList.toggle('a11y-reading-width', settings.readingWidth);
+    root.classList.toggle('a11y-reduce-motion', settings.reduceMotion);
+    root.classList.toggle('a11y-pause-dynamic-type', settings.pauseDynamicType);
   }, [settings]);
 
   useEffect(() => {
@@ -144,6 +156,18 @@ export const AccessibilityProvider: React.FC<{ children: React.ReactNode }> = ({
     setSettings((current) => ({ ...current, highlightLinks: !current.highlightLinks }));
   }, []);
 
+  const toggleReadingWidth = useCallback(() => {
+    setSettings((current) => ({ ...current, readingWidth: !current.readingWidth }));
+  }, []);
+
+  const toggleReduceMotion = useCallback(() => {
+    setSettings((current) => ({ ...current, reduceMotion: !current.reduceMotion }));
+  }, []);
+
+  const togglePauseDynamicType = useCallback(() => {
+    setSettings((current) => ({ ...current, pauseDynamicType: !current.pauseDynamicType }));
+  }, []);
+
   const toggleDockPosition = useCallback(() => {
     setSettings((current) => ({
       ...current,
@@ -167,6 +191,9 @@ export const AccessibilityProvider: React.FC<{ children: React.ReactNode }> = ({
         toggleRelaxedSpacing,
         toggleReadableFont,
         toggleHighlightLinks,
+        toggleReadingWidth,
+        toggleReduceMotion,
+        togglePauseDynamicType,
         toggleDockPosition,
         resetAllSettings,
         isPanelOpen,
