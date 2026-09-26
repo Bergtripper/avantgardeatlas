@@ -9,6 +9,7 @@ import { TimelineSection } from './components/TimelineSection';
 import { NetworkSection } from './components/NetworkSection';
 import { MovementsIndexSection } from './components/MovementsIndexSection';
 import { Footer } from './components/Footer';
+import { AccessibilityTool } from './components/AccessibilityTool';
 import { parseAtlasRoute, pathForMovement, pathForTab } from './routing';
 
 const ObjectsRouteSection = lazy(() => import('./routes/ObjectsRouteSection'));
@@ -440,6 +441,8 @@ export default function App() {
         )}
         </Suspense>
       </main>
+
+      <AccessibilityTool />
 
       {/* Editorial Colophon Footer */}
       <Footer />
