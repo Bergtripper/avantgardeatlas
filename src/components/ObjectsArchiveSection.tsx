@@ -1,19 +1,31 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ArchivalObject, MovementId } from '../types/atlas';
 import { ArchivalVectorPlate } from './ArchivalVectorPlate';
 
 interface ObjectsArchiveSectionProps {
   objects: ArchivalObject[];
   onSelectMovement: (id: MovementId) => void;
+  selectedYear: number;
+  focusedObjectId?: string | null;
+  onExploreGlobalObject: (object: ArchivalObject) => void;
 }
 
 export const ObjectsArchiveSection: React.FC<ObjectsArchiveSectionProps> = ({
   objects,
-  onSelectMovement
+  onSelectMovement,
+  selectedYear,
+  focusedObjectId = null,
+  onExploreGlobalObject,
 }) => {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedEra, setSelectedEra] = useState<string>('all');
   const [selectedObject, setSelectedObject] = useState<ArchivalObject | null>(null);
+
+  useEffect(() => {
+    if (!focusedObjectId) return;
+    const focused = objects.find((object) => object.id === focusedObjectId);
+    if (focused) setSelectedObject(focused);
+  }, [focusedObjectId, objects]);
 
   const categories = [
     { id: 'all', label: 'All Disciplines' },
@@ -226,7 +238,7 @@ export const ObjectsArchiveSection: React.FC<ObjectsArchiveSectionProps> = ({
                     {selectedObject.description}
                   </p>
 
-                  <div className="mt-8 pt-4 border-t border-[var(--atlas-border)] flex items-center justify-between">
+                  <div className="mt-8 pt-4 border-t border-[var(--atlas-border)] flex flex-wrap items-center gap-2">
                     <button
                       onClick={() => {
                         const mId = selectedObject.movementId;
@@ -236,6 +248,13 @@ export const ObjectsArchiveSection: React.FC<ObjectsArchiveSectionProps> = ({
                       className="font-mono text-xs font-semibold px-4 py-2 bg-[var(--atlas-ink-button)] text-white hover:bg-[#333] cursor-pointer"
                     >
                       Explore {selectedObject.movementId.toUpperCase()} Monograph →
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => onExploreGlobalObject(selectedObject)}
+                      className="font-mono text-xs font-semibold px-4 py-2 border border-[#D82B2B] text-[#D82B2B] hover:bg-[#D82B2B] hover:text-white cursor-pointer transition-colors"
+                    >
+                      Global context // {selectedYear} →
                     </button>
                   </div>
                 </div>

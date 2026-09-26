@@ -1,17 +1,48 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { MovementId } from '../types/atlas';
 import { ALL_STORIES } from '../data/stories';
+import { ALL_DIFFUSION_ROUTES } from '../data/global';
 
 interface StoriesSectionProps {
   onSelectMovement: (id: MovementId) => void;
+  selectedYear: number;
+  focusedStoryId?: string | null;
+  focusedStepIndex?: number | null;
+  onExploreGlobalStory: (storyId: string, stepIndex: number, movementIds: MovementId[], label: string) => void;
 }
 
-export const StoriesSection: React.FC<StoriesSectionProps> = ({ onSelectMovement }) => {
+export const StoriesSection: React.FC<StoriesSectionProps> = ({
+  onSelectMovement,
+  selectedYear,
+  focusedStoryId = null,
+  focusedStepIndex = null,
+  onExploreGlobalStory,
+}) => {
   const [selectedStoryIndex, setSelectedStoryIndex] = useState<number>(0);
   const [currentStepIndex, setCurrentStepIndex] = useState<number>(0);
 
   const activeStory = ALL_STORIES[selectedStoryIndex] || ALL_STORIES[0];
   const activeStep = activeStory.steps[currentStepIndex] || activeStory.steps[0];
+
+  useEffect(() => {
+    if (!focusedStoryId) return;
+    const storyIndex = ALL_STORIES.findIndex((story) => story.id === focusedStoryId);
+    if (storyIndex < 0) return;
+    setSelectedStoryIndex(storyIndex);
+    setCurrentStepIndex(
+      focusedStepIndex != null
+        ? Math.max(0, Math.min(ALL_STORIES[storyIndex].steps.length - 1, focusedStepIndex))
+        : 0,
+    );
+  }, [focusedStoryId, focusedStepIndex]);
+
+  const activeStepGlobalRoutes = ALL_DIFFUSION_ROUTES.filter(
+    (route) =>
+      route.startYear <= selectedYear &&
+      route.sourceMovementIds.some((movementId) =>
+        activeStep.focalMovements.includes(movementId),
+      ),
+  );
 
   const handleSelectStory = (idx: number) => {
     setSelectedStoryIndex(idx);
@@ -131,6 +162,22 @@ export const StoriesSection: React.FC<StoriesSectionProps> = ({ onSelectMovement
                 {activeStep.graphicCue}
               </div>
               <div className="mt-4 w-12 h-0.5 bg-[#D82B2B]" />
+              {activeStepGlobalRoutes.length > 0 && (
+                <button
+                  type="button"
+                  onClick={() =>
+                    onExploreGlobalStory(
+                      activeStory.id,
+                      currentStepIndex,
+                      activeStep.focalMovements,
+                      `${activeStory.title} // Step ${activeStep.stepNumber}`,
+                    )
+                  }
+                  className="mt-5 px-3 py-2 border border-[#D82B2B] text-[#D82B2B] hover:bg-[#D82B2B] hover:text-white font-mono text-[9px] uppercase tracking-wider transition-colors"
+                >
+                  Global context // {activeStepGlobalRoutes.length} route{activeStepGlobalRoutes.length === 1 ? '' : 's'} →
+                </button>
+              )}
             </div>
           </div>
 
