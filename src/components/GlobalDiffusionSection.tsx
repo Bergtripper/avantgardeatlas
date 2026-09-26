@@ -3,6 +3,8 @@ import { getMovementById } from '../data/movements';
 import { MovementId } from '../types/atlas';
 import { getPersonById } from '../data/people';
 import { getPlaceById } from '../data/places';
+import { ALL_OBJECTS } from '../data/objects';
+import { ALL_STORIES } from '../data/stories';
 import {
   ALL_DIFFUSION_ROUTES,
   ALL_GLOBAL_ENTITIES,
@@ -162,14 +164,24 @@ const routePath = (route: DiffusionRoute) => {
   return `M ${start.x} ${start.y} Q ${controlX} ${controlY} ${end.x} ${end.y}`;
 };
 
+export interface GlobalAtlasContextFocus {
+  kind: 'object' | 'story';
+  label: string;
+  movementIds: MovementId[];
+}
+
 interface GlobalDiffusionSectionProps {
   selectedYear: number;
   onSelectYear: (year: number) => void;
   onSelectMovement: (id: MovementId) => void;
   onSelectPerson: (ref: DiffusionPersonRef) => void;
+  onSelectObject: (objectId: string) => void;
+  onSelectStory: (storyId: string, stepIndex: number) => void;
   focusedMovementId?: MovementId | null;
   focusedPersonRef?: DiffusionPersonRef | null;
+  focusedAtlasContext?: GlobalAtlasContextFocus | null;
   onClearPersonFocus?: () => void;
+  onClearAtlasContext?: () => void;
 }
 
 const ATLAS_START_YEAR = 1890;
@@ -182,9 +194,13 @@ export const GlobalDiffusionSection: React.FC<GlobalDiffusionSectionProps> = ({
   onSelectYear,
   onSelectMovement,
   onSelectPerson,
+  onSelectObject,
+  onSelectStory,
   focusedMovementId = null,
   focusedPersonRef = null,
+  focusedAtlasContext = null,
   onClearPersonFocus,
+  onClearAtlasContext,
 }) => {
   const minRouteYear = Math.min(...ALL_DIFFUSION_ROUTES.map((route) => route.startYear));
   const maxRouteYear = Math.max(...ALL_DIFFUSION_ROUTES.map((route) => route.endYear ?? route.startYear));
@@ -292,9 +308,28 @@ export const GlobalDiffusionSection: React.FC<GlobalDiffusionSectionProps> = ({
             (ref) =>
               ref.scope === focusedPersonRef.scope && ref.id === focusedPersonRef.id,
           );
-        return matchesYear && matchesSemantic && matchesMedium && matchesMovement && matchesPerson;
+        const matchesAtlasContext =
+          !focusedAtlasContext ||
+          route.sourceMovementIds.some((movementId) =>
+            focusedAtlasContext.movementIds.includes(movementId),
+          );
+        return (
+          matchesYear &&
+          matchesSemantic &&
+          matchesMedium &&
+          matchesMovement &&
+          matchesPerson &&
+          matchesAtlasContext
+        );
       }),
-    [selectedYear, semanticFilter, mediumFilter, movementFilter, focusedPersonRef],
+    [
+      selectedYear,
+      semanticFilter,
+      mediumFilter,
+      movementFilter,
+      focusedPersonRef,
+      focusedAtlasContext,
+    ],
   );
 
   const selectRoute = (routeId: string) => {
@@ -508,13 +543,81 @@ export const GlobalDiffusionSection: React.FC<GlobalDiffusionSectionProps> = ({
     setMediumFilter('all');
     setMovementFilter('all');
     onClearPersonFocus?.();
+    onClearAtlasContext?.();
   };
 
   const hasActiveFilters =
     semanticFilter !== 'all' ||
     mediumFilter !== 'all' ||
     movementFilter !== 'all' ||
-    Boolean(focusedPersonRef);
+    Boolean(focusedPersonRef) ||
+    Boolean(focusedAtlasContext);
+
+  const renderRelatedAtlasMaterial = (movementIds: MovementId[]) => {
+    const relatedObjects = ALL_OBJECTS
+      .filter(
+        (object) =>
+          object.year <= selectedYear && movementIds.includes(object.movementId),
+      )
+      .slice(0, 4);
+
+    const relatedStorySteps = ALL_STORIES.flatMap((story) =>
+      story.steps.map((step, stepIndex) => ({
+        story,
+        step,
+        stepIndex,
+      })),
+    )
+      .filter(({ step }) =>
+        step.focalMovements.some((movementId) => movementIds.includes(movementId)),
+      )
+      .slice(0, 4);
+
+    if (relatedObjects.length === 0 && relatedStorySteps.length === 0) return null;
+
+    return (
+      <div className="mt-6 pt-4 border-t border-[var(--atlas-border)]">
+        <div className="font-mono text-[9px] uppercase tracking-wider text-[var(--atlas-text-muted)] mb-2">
+          Related Atlas material
+        </div>
+        <p className="mb-3 text-[10px] leading-relaxed text-[var(--atlas-text-muted)]">
+          Editorially related through shared movement classifications; this does not by itself establish direct transmission along the selected route.
+        </p>
+        <div className="space-y-1.5">
+          {relatedObjects.map((object) => (
+            <button
+              key={object.id}
+              type="button"
+              onClick={() => onSelectObject(object.id)}
+              className="block w-full text-left border border-[var(--atlas-border-control)] bg-[var(--atlas-card)] px-2.5 py-2 hover:border-[var(--atlas-text)]"
+            >
+              <span className="block font-mono text-[8px] uppercase tracking-wider text-[var(--atlas-text-muted)]">
+                Object // {object.year} // {object.movementId}
+              </span>
+              <span className="block mt-1 text-[11px] text-[var(--atlas-text)]">
+                {object.title}
+              </span>
+            </button>
+          ))}
+          {relatedStorySteps.map(({ story, step, stepIndex }) => (
+            <button
+              key={`${story.id}-${stepIndex}`}
+              type="button"
+              onClick={() => onSelectStory(story.id, stepIndex)}
+              className="block w-full text-left border border-[var(--atlas-border-control)] bg-[var(--atlas-card)] px-2.5 py-2 hover:border-[var(--atlas-text)]"
+            >
+              <span className="block font-mono text-[8px] uppercase tracking-wider text-[var(--atlas-text-muted)]">
+                Story // step {step.stepNumber} // {step.yearRange}
+              </span>
+              <span className="block mt-1 text-[11px] text-[var(--atlas-text)]">
+                {story.title} — {step.subtitle}
+              </span>
+            </button>
+          ))}
+        </div>
+      </div>
+    );
+  };
 
   return (
     <section className="w-full py-16 px-4 sm:px-6 lg:px-12 border-b border-[var(--atlas-border)] bg-[var(--atlas-bg)]">
@@ -569,6 +672,22 @@ export const GlobalDiffusionSection: React.FC<GlobalDiffusionSectionProps> = ({
                   onClick={() => onClearPersonFocus?.()}
                   className="font-mono text-[10px] leading-none"
                   aria-label="Clear person focus"
+                >
+                  ×
+                </button>
+              </div>
+            )}
+
+            {focusedAtlasContext && (
+              <div className="flex items-center gap-2 border border-[#D82B2B] px-2.5 py-2 text-[#D82B2B]">
+                <span className="font-mono text-[8px] uppercase tracking-wider">
+                  {focusedAtlasContext.kind} // {focusedAtlasContext.label}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => onClearAtlasContext?.()}
+                  className="font-mono text-[10px] leading-none"
+                  aria-label="Clear Atlas material context"
                 >
                   ×
                 </button>
@@ -1191,6 +1310,8 @@ export const GlobalDiffusionSection: React.FC<GlobalDiffusionSectionProps> = ({
                 </div>
               )}
 
+              {renderRelatedAtlasMaterial(selectedCrossroad.movementIds)}
+
               <div className="mt-6 pt-4 border-t border-[var(--atlas-border)] text-[10px] leading-relaxed text-[var(--atlas-text-muted)]">
                 Crossroads are derived from the currently visible Atlas records. They indicate documented convergence in the dataset, not automatic proof of direct influence between every movement shown.
               </div>
@@ -1264,6 +1385,8 @@ export const GlobalDiffusionSection: React.FC<GlobalDiffusionSectionProps> = ({
                   </dd>
                 </div>
               </dl>
+
+              {renderRelatedAtlasMaterial(selectedNode.movementLinks)}
 
               <div className="mt-6 pt-4 border-t border-[var(--atlas-border)]">
                 <div className="font-mono text-[9px] uppercase tracking-wider text-[var(--atlas-text-muted)] mb-2">
@@ -1417,6 +1540,8 @@ export const GlobalDiffusionSection: React.FC<GlobalDiffusionSectionProps> = ({
                   </dd>
                 </div>
               </dl>
+
+              {renderRelatedAtlasMaterial(selectedRoute.sourceMovementIds)}
 
               <div className="mt-6 pt-4 border-t border-[var(--atlas-border)]">
                 <div className="font-mono text-[9px] uppercase tracking-wider text-[var(--atlas-text-muted)] mb-2">
