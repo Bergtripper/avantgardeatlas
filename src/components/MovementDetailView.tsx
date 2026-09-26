@@ -10,6 +10,7 @@ import {
   getGlobalHubById,
 } from '../data/global';
 import { getPlaceById } from '../data/places';
+import { ClaimSources } from './ClaimSources';
 
 interface MovementDetailViewProps {
   movement: Movement;
@@ -199,6 +200,7 @@ export const MovementDetailView: React.FC<MovementDetailViewProps> = ({
             <p className="text-[var(--atlas-text-body)] text-base leading-relaxed">
               {movement.coreIdeas}
             </p>
+            <ClaimSources evidence={movement.provenance?.coreIdeas} />
           </div>
 
           <div className="md:col-span-6 pl-0 md:pl-8">
@@ -211,6 +213,7 @@ export const MovementDetailView: React.FC<MovementDetailViewProps> = ({
             <p className="text-[var(--atlas-text-body)] text-base leading-relaxed">
               {movement.historicalContext}
             </p>
+            <ClaimSources evidence={movement.provenance?.historicalContext} />
           </div>
         </section>
 
