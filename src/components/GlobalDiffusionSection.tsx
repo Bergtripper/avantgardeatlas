@@ -44,6 +44,8 @@ type RouteSemanticId =
   | 'commercial'
   | 'reinterpretation';
 
+type GlobalViewMode = 'map' | 'routes' | 'nodes';
+
 interface RouteSemantic {
   id: RouteSemanticId;
   label: string;
@@ -180,6 +182,12 @@ export const GlobalDiffusionSection: React.FC = () => {
       Array.from(new Set(ALL_DIFFUSION_ROUTES.flatMap((route) => route.media))).sort() as DiffusionMedium[],
     [],
   );
+  const availableMovements = useMemo(
+    () =>
+      Array.from(new Set(ALL_DIFFUSION_ROUTES.flatMap((route) => route.sourceMovementIds))).sort(),
+    [],
+  );
+
   const availableSemantics = useMemo(
     () =>
       SEMANTIC_LEGEND.filter((semantic) =>
@@ -194,6 +202,9 @@ export const GlobalDiffusionSection: React.FC = () => {
   const [yearFilter, setYearFilter] = useState(maxRouteYear);
   const [semanticFilter, setSemanticFilter] = useState<RouteSemanticId | 'all'>('all');
   const [mediumFilter, setMediumFilter] = useState<DiffusionMedium | 'all'>('all');
+  const [movementFilter, setMovementFilter] = useState<string | 'all'>('all');
+  const [viewMode, setViewMode] = useState<GlobalViewMode>('map');
+  const [showFractureInfo, setShowFractureInfo] = useState(false);
 
   const visibleTransmissionNodes = useMemo(
     () =>
@@ -201,13 +212,14 @@ export const GlobalDiffusionSection: React.FC = () => {
         if (!['exhibition', 'institution'].includes(entity.kind)) return false;
         if (entity.startYear > yearFilter) return false;
         if (mediumFilter !== 'all' && !entity.media.includes(mediumFilter)) return false;
+        if (movementFilter !== 'all' && !entity.movementLinks.includes(movementFilter as never)) return false;
         return (
           entity.kind === 'exhibition' ||
           entity.media.includes('advertising') ||
           entity.media.includes('exhibition-design')
         );
       }),
-    [yearFilter, mediumFilter],
+    [yearFilter, mediumFilter, movementFilter],
   );
 
   const filteredRoutes = useMemo(
@@ -218,9 +230,11 @@ export const GlobalDiffusionSection: React.FC = () => {
         const matchesYear = routeYear <= yearFilter;
         const matchesSemantic = semanticFilter === 'all' || semantic.id === semanticFilter;
         const matchesMedium = mediumFilter === 'all' || route.media.includes(mediumFilter);
-        return matchesYear && matchesSemantic && matchesMedium;
+        const matchesMovement =
+          movementFilter === 'all' || route.sourceMovementIds.includes(movementFilter as never);
+        return matchesYear && matchesSemantic && matchesMedium && matchesMovement;
       }),
-    [yearFilter, semanticFilter, mediumFilter],
+    [yearFilter, semanticFilter, mediumFilter, movementFilter],
   );
 
   useEffect(() => {
@@ -287,10 +301,14 @@ export const GlobalDiffusionSection: React.FC = () => {
     setYearFilter(maxRouteYear);
     setSemanticFilter('all');
     setMediumFilter('all');
+    setMovementFilter('all');
   };
 
   const hasActiveFilters =
-    yearFilter !== maxRouteYear || semanticFilter !== 'all' || mediumFilter !== 'all';
+    yearFilter !== maxRouteYear ||
+    semanticFilter !== 'all' ||
+    mediumFilter !== 'all' ||
+    movementFilter !== 'all';
 
   return (
     <section className="w-full py-16 px-4 sm:px-6 lg:px-12 border-b border-[var(--atlas-border)] bg-[var(--atlas-bg)]">
@@ -311,212 +329,234 @@ export const GlobalDiffusionSection: React.FC = () => {
         </div>
 
 
-        <div className="mb-8 border border-[var(--atlas-border)] bg-[var(--atlas-surface)]">
-          <div className="px-4 py-3 border-b border-[var(--atlas-border)] flex flex-wrap items-center justify-between gap-3">
-            <div>
-              <div className="font-mono text-[9px] uppercase tracking-widest text-[var(--atlas-text-muted)]">
-                Filter transmission network
-              </div>
-              <div className="mt-1 text-xs text-[var(--atlas-text-secondary)]">
-                {filteredRoutes.length} of {ALL_DIFFUSION_ROUTES.length} routes visible
-              </div>
-            </div>
-            <button
-              type="button"
-              onClick={resetFilters}
-              disabled={!hasActiveFilters}
-              className="font-mono text-[10px] uppercase tracking-wider px-3 py-1.5 border border-[var(--atlas-border-control)] disabled:opacity-35 disabled:cursor-default hover:border-[var(--atlas-text)]"
-            >
-              Reset filters
-            </button>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-[var(--atlas-border)]">
-            <div className="bg-[var(--atlas-card)] p-4">
+        <div className="sticky top-0 z-40 mb-8 border-y border-[var(--atlas-border)] bg-[var(--atlas-bg)]/95 backdrop-blur">
+          <div className="px-3 py-2 md:px-4 flex flex-wrap items-end gap-3">
+            <div className="min-w-[220px] flex-1">
               <label
                 htmlFor="global-year-filter"
-                className="flex items-center justify-between gap-3 font-mono text-[10px] uppercase tracking-wider text-[var(--atlas-text-muted)]"
+                className="flex items-center justify-between gap-3 font-mono text-[9px] uppercase tracking-wider text-[var(--atlas-text-muted)]"
               >
-                <span>Up to year</span>
+                <span>Year</span>
                 <span className="font-semibold text-[var(--atlas-text)]">{yearFilter}</span>
               </label>
-              <input
-                id="global-year-filter"
-                type="range"
-                min={minRouteYear}
-                max={maxRouteYear}
-                value={yearFilter}
-                onChange={(event) => setYearFilter(Number(event.target.value))}
-                className="w-full mt-3 accent-[#D82B2B]"
-              />
-              <div className="mt-1 flex justify-between font-mono text-[9px] text-[var(--atlas-text-quiet)]">
-                <span>{minRouteYear}</span>
-                <span>{maxRouteYear}</span>
-              </div>
-              {fracture1933 && (
-                <div className="relative h-5 mt-1" aria-label="1933 historical fracture marker">
+              <div className="relative">
+                <input
+                  id="global-year-filter"
+                  type="range"
+                  min={minRouteYear}
+                  max={maxRouteYear}
+                  value={yearFilter}
+                  onChange={(event) => setYearFilter(Number(event.target.value))}
+                  className="w-full mt-2 accent-[#D82B2B]"
+                />
+                {fracture1933 && (
                   <div
-                    className="absolute top-0 h-3 border-l border-[#D82B2B]"
+                    className="absolute top-1 bottom-1 border-l border-[#D82B2B] pointer-events-none"
                     style={{ left: `${fracturePosition}%` }}
+                    aria-hidden="true"
                   />
-                  <span
-                    className="absolute top-2 -translate-x-1/2 font-mono text-[8px] uppercase tracking-wider text-[#D82B2B]"
-                    style={{ left: `${fracturePosition}%` }}
-                  >
-                    1933
-                  </span>
-                </div>
-              )}
+                )}
+              </div>
             </div>
 
-            <div className="bg-[var(--atlas-card)] p-4">
-              <label
-                htmlFor="global-mechanism-filter"
-                className="block font-mono text-[10px] uppercase tracking-wider text-[var(--atlas-text-muted)] mb-2"
-              >
-                Primary mechanism
+            <div>
+              <label htmlFor="global-mechanism-filter" className="block font-mono text-[8px] uppercase tracking-wider text-[var(--atlas-text-muted)] mb-1">
+                Mechanism
               </label>
               <select
                 id="global-mechanism-filter"
                 value={semanticFilter}
                 onChange={(event) => setSemanticFilter(event.target.value as RouteSemanticId | 'all')}
-                className="w-full border border-[var(--atlas-border-control)] bg-[var(--atlas-bg)] text-[var(--atlas-text)] px-3 py-2 text-xs font-mono"
+                className="border border-[var(--atlas-border-control)] bg-[var(--atlas-bg)] text-[var(--atlas-text)] px-2.5 py-2 text-[10px] font-mono"
               >
-                <option value="all">All mechanisms</option>
+                <option value="all">All</option>
                 {availableSemantics.map((semantic) => (
-                  <option key={semantic.id} value={semantic.id}>
-                    {semantic.label}
-                  </option>
+                  <option key={semantic.id} value={semantic.id}>{semantic.label}</option>
                 ))}
               </select>
             </div>
 
-            <div className="bg-[var(--atlas-card)] p-4">
-              <label
-                htmlFor="global-medium-filter"
-                className="block font-mono text-[10px] uppercase tracking-wider text-[var(--atlas-text-muted)] mb-2"
-              >
-                Medium / field
+            <div>
+              <label htmlFor="global-medium-filter" className="block font-mono text-[8px] uppercase tracking-wider text-[var(--atlas-text-muted)] mb-1">
+                Medium
               </label>
               <select
                 id="global-medium-filter"
                 value={mediumFilter}
                 onChange={(event) => setMediumFilter(event.target.value as DiffusionMedium | 'all')}
-                className="w-full border border-[var(--atlas-border-control)] bg-[var(--atlas-bg)] text-[var(--atlas-text)] px-3 py-2 text-xs font-mono"
+                className="border border-[var(--atlas-border-control)] bg-[var(--atlas-bg)] text-[var(--atlas-text)] px-2.5 py-2 text-[10px] font-mono"
               >
-                <option value="all">All media</option>
+                <option value="all">All</option>
                 {availableMedia.map((medium) => (
-                  <option key={medium} value={medium}>
-                    {medium.replaceAll('-', ' ')}
-                  </option>
+                  <option key={medium} value={medium}>{medium.replaceAll('-', ' ')}</option>
                 ))}
               </select>
             </div>
+
+            <div>
+              <label htmlFor="global-movement-filter" className="block font-mono text-[8px] uppercase tracking-wider text-[var(--atlas-text-muted)] mb-1">
+                Movement
+              </label>
+              <select
+                id="global-movement-filter"
+                value={movementFilter}
+                onChange={(event) => setMovementFilter(event.target.value)}
+                className="border border-[var(--atlas-border-control)] bg-[var(--atlas-bg)] text-[var(--atlas-text)] px-2.5 py-2 text-[10px] font-mono"
+              >
+                <option value="all">All</option>
+                {availableMovements.map((movement) => (
+                  <option key={movement} value={movement}>{movement.replaceAll('-', ' ')}</option>
+                ))}
+              </select>
+            </div>
+
+            {fracture1933 && (
+              <button
+                type="button"
+                onClick={() => setShowFractureInfo((value) => !value)}
+                aria-expanded={showFractureInfo}
+                className="px-2.5 py-2 border border-[#D82B2B] font-mono text-[9px] uppercase tracking-wider text-[#D82B2B]"
+              >
+                1933 fracture {showFractureInfo ? '−' : '+'}
+              </button>
+            )}
+
+            <button
+              type="button"
+              onClick={resetFilters}
+              disabled={!hasActiveFilters}
+              className="px-2.5 py-2 border border-[var(--atlas-border-control)] font-mono text-[9px] uppercase tracking-wider disabled:opacity-35"
+            >
+              Reset
+            </button>
           </div>
 
-          {fracture1933 && (
-            <>
-            <div
-              className={`border-t border-[var(--atlas-border)] px-4 py-4 md:px-5 flex flex-col md:flex-row md:items-start justify-between gap-4 ${
-                yearFilter >= fracture1933.year
-                  ? 'bg-[var(--atlas-card)]'
-                  : 'bg-[var(--atlas-surface)] opacity-60'
-              }`}
-            >
-              <div className="max-w-3xl">
-                <div className="font-mono text-[9px] uppercase tracking-widest text-[#D82B2B]">
-                  {fracture1933.label} // {fracture1933.year}
-                </div>
-                <h3 className="mt-1 text-sm font-semibold text-[var(--atlas-text)]">
-                  {fracture1933.title}
-                </h3>
-                <p className="mt-2 text-xs leading-relaxed text-[var(--atlas-text-secondary)]">
+          {showFractureInfo && fracture1933 && (
+            <div className="border-t border-[#D82B2B] px-4 py-3 bg-[var(--atlas-card)]">
+              <div className="font-mono text-[8px] uppercase tracking-widest text-[#D82B2B]">
+                {fracture1933.label} // {fracture1933.year}
+              </div>
+              <div className="mt-1 grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-3 items-start">
+                <p className="text-[11px] leading-relaxed text-[var(--atlas-text-secondary)] max-w-4xl">
                   {fracture1933.summary}
                 </p>
-                <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1">
+                <div className="flex flex-wrap gap-2">
                   {fractureSources.map((source) => (
                     <a
                       key={source?.id}
                       href={source?.url}
                       target="_blank"
                       rel="noreferrer"
-                      className="font-mono text-[9px] underline underline-offset-2 text-[var(--atlas-text-muted)] hover:text-[var(--atlas-text)]"
+                      className="font-mono text-[8px] underline underline-offset-2 text-[var(--atlas-text-muted)]"
                     >
                       {source?.publisher}
                     </a>
                   ))}
                 </div>
               </div>
-              <span className="shrink-0 font-mono text-[9px] uppercase tracking-wider text-[var(--atlas-text-muted)]">
-                {yearFilter >= fracture1933.year ? 'Active in view' : 'Beyond current year'}
+            </div>
+          )}
+
+          <div className="border-t border-[var(--atlas-border)] flex items-center justify-between gap-3 px-3 md:px-4">
+            <div className="flex">
+              {(['map', 'routes', 'nodes'] as GlobalViewMode[]).map((mode) => (
+                <button
+                  key={mode}
+                  type="button"
+                  onClick={() => setViewMode(mode)}
+                  aria-pressed={viewMode === mode}
+                  className={`px-4 py-2.5 border-r border-[var(--atlas-border)] font-mono text-[10px] uppercase tracking-widest ${
+                    viewMode === mode
+                      ? 'bg-[var(--atlas-text)] text-[var(--atlas-bg)]'
+                      : 'text-[var(--atlas-text-secondary)]'
+                  }`}
+                >
+                  {mode}
+                </button>
+              ))}
+            </div>
+            <div className="font-mono text-[8px] uppercase tracking-wider text-[var(--atlas-text-quiet)]">
+              {filteredRoutes.length}/{ALL_DIFFUSION_ROUTES.length} routes
+            </div>
+          </div>
+        </div>
+
+        {viewMode === 'routes' && (
+          <div className="mb-8 border border-[var(--atlas-border)] bg-[var(--atlas-surface)]">
+            <div className="px-4 py-3 border-b border-[var(--atlas-border)] font-mono text-[9px] uppercase tracking-widest text-[var(--atlas-text-muted)]">
+              Routes // chronological index
+            </div>
+            <div>
+              {filteredRoutes.map((route, index) => {
+                const origin = resolvePlace(route.origin);
+                const destination = resolvePlace(route.destination);
+                const semantic = semanticForRoute(route);
+                return (
+                  <button
+                    key={route.id}
+                    type="button"
+                    onClick={() => {
+                      setSelectedRouteId(route.id);
+                      setViewMode('map');
+                    }}
+                    className="w-full grid grid-cols-[52px_1fr_auto] md:grid-cols-[64px_1.5fr_1fr_auto] items-center gap-3 px-4 py-3 border-b last:border-b-0 border-[var(--atlas-border)] text-left hover:bg-[var(--atlas-card)]"
+                  >
+                    <span className="font-mono text-[10px] text-[var(--atlas-text-muted)]">
+                      {route.startYear}
+                    </span>
+                    <span className="text-sm font-semibold text-[var(--atlas-text)]">
+                      {origin?.name} → {destination?.name}
+                    </span>
+                    <span className="hidden md:block font-mono text-[9px] uppercase tracking-wide text-[var(--atlas-text-secondary)] truncate">
+                      {route.title.split(':').slice(1).join(':').trim() || route.title}
+                    </span>
+                    <span className="font-mono text-[8px] uppercase tracking-wider text-[var(--atlas-text-muted)]">
+                      {semantic.label}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {viewMode === 'nodes' && (
+          <div className="mb-8 border border-[var(--atlas-border)] bg-[var(--atlas-surface)]">
+            <div className="px-4 py-3 border-b border-[var(--atlas-border)] flex items-center justify-between gap-3">
+              <span className="font-mono text-[9px] uppercase tracking-widest text-[var(--atlas-text-muted)]">
+                Nodes // exhibitions + institutions + applied design
+              </span>
+              <span className="font-mono text-[8px] uppercase tracking-wider text-[var(--atlas-text-quiet)]">
+                {visibleTransmissionNodes.length} visible
               </span>
             </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 border-t border-[var(--atlas-border)]">
-              <div className="p-4 bg-[var(--atlas-surface)]">
-                <div className="font-mono text-[9px] uppercase tracking-widest text-[var(--atlas-text-muted)]">
-                  Before 1933
-                </div>
-                <div className="mt-1 text-sm font-semibold text-[var(--atlas-text)]">
-                  {phaseStats.before.total} documented routes
-                </div>
-                <div className="mt-1 text-[11px] text-[var(--atlas-text-secondary)]">
-                  {phaseStats.before.displacement} classified as exile / migration
-                </div>
-              </div>
-              <div className="p-4 bg-[var(--atlas-card)] sm:border-l border-[var(--atlas-border)]">
-                <div className="font-mono text-[9px] uppercase tracking-widest text-[#D82B2B]">
-                  1933—{maxRouteYear}
-                </div>
-                <div className="mt-1 text-sm font-semibold text-[var(--atlas-text)]">
-                  {phaseStats.after.total} documented routes
-                </div>
-                <div className="mt-1 text-[11px] text-[var(--atlas-text-secondary)]">
-                  {phaseStats.after.displacement} classified as exile / migration
-                </div>
-              </div>
-            </div>
-            </>
-          )}
-        </div>
-
-        <div className="mb-8 border border-[var(--atlas-border)] bg-[var(--atlas-surface)]">
-          <div className="px-4 py-3 border-b border-[var(--atlas-border)] flex flex-wrap items-center justify-between gap-2">
-            <div className="font-mono text-[9px] uppercase tracking-widest text-[var(--atlas-text-muted)]">
-              Exhibition + applied design nodes
-            </div>
-            <div className="font-mono text-[9px] uppercase tracking-wider text-[var(--atlas-text-quiet)]">
-              {visibleTransmissionNodes.length} visible
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-px bg-[var(--atlas-border)]">
+              {visibleTransmissionNodes.map((entity) => {
+                const place = entity.placeRef
+                  ? resolvePlace(entity.placeRef)
+                  : entity.hubId
+                  ? getGlobalHubById(entity.hubId)
+                  : null;
+                return (
+                  <article key={entity.id} className="bg-[var(--atlas-card)] p-4">
+                    <div className="font-mono text-[8px] uppercase tracking-widest text-[var(--atlas-text-muted)]">
+                      {entity.kind} // {entity.startYear}
+                    </div>
+                    <h3 className="mt-1 text-sm font-semibold text-[var(--atlas-text)]">{entity.name}</h3>
+                    <div className="mt-1 font-mono text-[9px] uppercase tracking-wide text-[var(--atlas-text-quiet)]">
+                      {place?.name ?? '—'}
+                    </div>
+                    <p className="mt-3 text-[11px] leading-relaxed text-[var(--atlas-text-secondary)]">
+                      {entity.summary}
+                    </p>
+                  </article>
+                );
+              })}
             </div>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-[var(--atlas-border)]">
-            {visibleTransmissionNodes.map((entity) => {
-              const place = entity.placeRef
-                ? resolvePlace(entity.placeRef)
-                : entity.hubId
-                ? getGlobalHubById(entity.hubId)
-                : null;
-              return (
-                <div key={entity.id} className="bg-[var(--atlas-card)] p-4 min-w-0">
-                  <div className="font-mono text-[8px] uppercase tracking-widest text-[var(--atlas-text-muted)]">
-                    {entity.kind} // {entity.startYear}
-                  </div>
-                  <div className="mt-1 text-sm font-semibold text-[var(--atlas-text)]">
-                    {entity.name}
-                  </div>
-                  <div className="mt-1 font-mono text-[9px] uppercase tracking-wide text-[var(--atlas-text-quiet)]">
-                    {place?.name ?? '—'}
-                  </div>
-                  <p className="mt-2 text-[11px] leading-relaxed text-[var(--atlas-text-secondary)]">
-                    {entity.summary}
-                  </p>
-                </div>
-              );
-            })}
-          </div>
-        </div>
+        )}
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        <div className={`${viewMode === 'map' ? 'grid' : 'hidden'} grid-cols-1 lg:grid-cols-12 gap-8 items-start`}>
           <div className="lg:col-span-8 border border-[var(--atlas-border)] bg-[var(--atlas-surface)] overflow-hidden">
             <div className="px-4 py-3 border-b border-[var(--atlas-border)] flex flex-wrap items-center justify-between gap-2">
               <span className="font-mono text-[10px] uppercase tracking-widest text-[var(--atlas-text-muted)]">
@@ -692,43 +732,8 @@ export const GlobalDiffusionSection: React.FC = () => {
               })}
             </svg>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 border-t border-[var(--atlas-border)]">
-              {filteredRoutes.map((route, index) => {
-                const active = route.id === selectedRoute?.id;
-                return (
-                  <button
-                    key={route.id}
-                    type="button"
-                    onClick={() => setSelectedRouteId(route.id)}
-                    aria-pressed={active}
-                    className={`text-left p-4 border-b sm:border-b-0 sm:border-r last:border-r-0 border-[var(--atlas-border)] transition-colors ${
-                      active
-                        ? 'bg-[var(--atlas-text)] text-[var(--atlas-bg)]'
-                        : 'bg-[var(--atlas-surface)] text-[var(--atlas-text)] hover:bg-[var(--atlas-surface-alt)]'
-                    }`}
-                  >
-                    <span className="block font-mono text-[9px] uppercase tracking-wider opacity-60 mb-1">
-                      ROUTE 0{index + 1} // {route.startYear}
-                    </span>
-                    <span className="block text-sm font-semibold leading-tight">
-                      {route.title.split(':')[0]}
-                    </span>
-                    <span className="block mt-1 font-mono text-[9px] uppercase tracking-wide opacity-65">
-                      {semanticForRoute(route).label}
-                    </span>
-                    {route.historicalContextIds?.includes('political-fracture-1933') && (
-                      <span className="block mt-2 font-mono text-[8px] uppercase tracking-wider text-[#D82B2B]">
-                        1933 context
-                      </span>
-                    )}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          {selectedRoute ? (
-            <aside className="lg:col-span-4 border border-[var(--atlas-border)] bg-[var(--atlas-surface)] p-6">
+            {selectedRoute ? (
+            <aside className="lg:col-span-4 lg:sticky lg:top-28 border border-[var(--atlas-border)] bg-[var(--atlas-surface)] p-6">
               <div className="font-mono text-[10px] uppercase tracking-widest text-[var(--atlas-text-muted)] mb-2">
                 Selected Transmission // {selectedRoute.startYear}
               </div>
