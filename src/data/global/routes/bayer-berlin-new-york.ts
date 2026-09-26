@@ -8,8 +8,10 @@ export const bayerBerlinNewYorkRoute: DiffusionRoute = {
   startYear: 1938,
   personRefs: [{ scope: 'atlas', id: 'herbert-bayer' }],
   mechanisms: ['migration', 'institution-transfer', 'exhibition'],
+  primaryMechanism: 'exhibition',
   historicalContextIds: ['political-fracture-1933'],
   sourceMovementIds: ['bauhaus', 'new-typography'],
+  transmissionEntityIds: ['bauhaus-moma-1938'],
   destinationEntityIds: ['bauhaus-moma-1938'],
   media: ['exhibition-design', 'graphic-design', 'photography'],
   summary:
