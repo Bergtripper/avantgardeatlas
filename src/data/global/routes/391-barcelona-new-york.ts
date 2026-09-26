@@ -16,5 +16,7 @@ export const route391BarcelonaNewYork: DiffusionRoute = {
     'After its first four issues in Barcelona, Francis Picabia carried 391 to New York, making the magazine itself a mobile Dada transmission vehicle.',
   transformationNote:
     'The publication’s identity travelled with its editor, linking separate Dada circles through a recurring editorial platform rather than through a single fixed institution.',
+  evidenceStatus: 'editorial-synthesis',
+  transformationEvidenceStatus: 'interpretive',
   sourceIds: ['iowa-391', 'iowa-picabia-391'],
 };
