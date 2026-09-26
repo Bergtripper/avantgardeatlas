@@ -119,7 +119,7 @@ const semanticForRoute = (route: DiffusionRoute): RouteSemantic => {
   if (route.primaryMechanism) {
     return semanticForMechanisms([route.primaryMechanism]);
   }
-  return semanticForRoute(route);
+  return semanticForMechanisms(route.mechanisms);
 };
 
 const SEMANTIC_LEGEND: RouteSemantic[] = [
@@ -180,21 +180,6 @@ export const GlobalDiffusionSection: React.FC = () => {
       Array.from(new Set(ALL_DIFFUSION_ROUTES.flatMap((route) => route.media))).sort() as DiffusionMedium[],
     [],
   );
-  const visibleTransmissionNodes = useMemo(
-    () =>
-      ALL_GLOBAL_ENTITIES.filter((entity) => {
-        if (!['exhibition', 'institution'].includes(entity.kind)) return false;
-        if (entity.startYear > yearFilter) return false;
-        if (mediumFilter !== 'all' && !entity.media.includes(mediumFilter)) return false;
-        return (
-          entity.kind === 'exhibition' ||
-          entity.media.includes('advertising') ||
-          entity.media.includes('exhibition-design')
-        );
-      }),
-    [yearFilter, mediumFilter],
-  );
-
   const availableSemantics = useMemo(
     () =>
       SEMANTIC_LEGEND.filter((semantic) =>
@@ -209,6 +194,21 @@ export const GlobalDiffusionSection: React.FC = () => {
   const [yearFilter, setYearFilter] = useState(maxRouteYear);
   const [semanticFilter, setSemanticFilter] = useState<RouteSemanticId | 'all'>('all');
   const [mediumFilter, setMediumFilter] = useState<DiffusionMedium | 'all'>('all');
+
+  const visibleTransmissionNodes = useMemo(
+    () =>
+      ALL_GLOBAL_ENTITIES.filter((entity) => {
+        if (!['exhibition', 'institution'].includes(entity.kind)) return false;
+        if (entity.startYear > yearFilter) return false;
+        if (mediumFilter !== 'all' && !entity.media.includes(mediumFilter)) return false;
+        return (
+          entity.kind === 'exhibition' ||
+          entity.media.includes('advertising') ||
+          entity.media.includes('exhibition-design')
+        );
+      }),
+    [yearFilter, mediumFilter],
+  );
 
   const filteredRoutes = useMemo(
     () =>
@@ -255,7 +255,7 @@ export const GlobalDiffusionSection: React.FC = () => {
   }, [filteredRoutes]);
 
   const selectedSemantic = selectedRoute
-    ? semanticForMechanisms(selectedRoute.mechanisms)
+    ? semanticForRoute(selectedRoute)
     : ROUTE_SEMANTICS.circulation;
 
   const selectedOrigin = selectedRoute ? resolvePlace(selectedRoute.origin) : null;
