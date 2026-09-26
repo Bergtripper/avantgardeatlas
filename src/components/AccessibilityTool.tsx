@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   AlignLeft,
   Check,
@@ -6,6 +6,7 @@ import {
   Highlighter,
   Minus,
   MoveHorizontal,
+  Pause,
   Plus,
   RotateCcw,
   Type,
@@ -27,6 +28,9 @@ export const AccessibilityTool: React.FC = () => {
     toggleRelaxedSpacing,
     toggleReadableFont,
     toggleHighlightLinks,
+    toggleReadingWidth,
+    toggleReduceMotion,
+    togglePauseDynamicType,
     toggleDockPosition,
     resetAllSettings,
     isPanelOpen,
@@ -35,7 +39,14 @@ export const AccessibilityTool: React.FC = () => {
   } = useAccessibility();
 
   const [collapsed, setCollapsed] = useState(false);
+  const panelRef = useRef<HTMLDivElement>(null);
   const dockRight = settings.dockPosition === 'right';
+
+  useEffect(() => {
+    if (isPanelOpen) {
+      panelRef.current?.focus();
+    }
+  }, [isPanelOpen]);
 
   return (
     <>
@@ -129,7 +140,11 @@ export const AccessibilityTool: React.FC = () => {
             aria-label="Close accessibility panel"
           />
 
-          <div className="atlas-a11y-panel relative z-10 w-full max-w-md max-h-[92vh] overflow-y-auto">
+          <div
+            ref={panelRef}
+            tabIndex={-1}
+            className="atlas-a11y-panel relative z-10 w-full max-w-md max-h-[92vh] overflow-y-auto"
+          >
             <div className="atlas-a11y-panel-header">
               <div>
                 <div className="atlas-a11y-kicker">ACCESSIBILITY // READING</div>
@@ -274,6 +289,59 @@ export const AccessibilityTool: React.FC = () => {
                       type="checkbox"
                       checked={settings.highlightLinks}
                       onChange={toggleHighlightLinks}
+                    />
+                  </label>
+
+                  <label className="atlas-a11y-toggle-row">
+                    <div>
+                      <div className="font-semibold text-sm flex items-center gap-2">
+                        <AlignLeft size={13} /> Reading Width
+                      </div>
+                      <div className="atlas-a11y-description">
+                        Limits long-form text to a more comfortable reading measure.
+                      </div>
+                    </div>
+                    <input
+                      type="checkbox"
+                      checked={settings.readingWidth}
+                      onChange={toggleReadingWidth}
+                    />
+                  </label>
+                </div>
+              </section>
+
+              <section className="pt-5 border-t border-[var(--atlas-border)]">
+                <div className="atlas-a11y-section-title mb-3">
+                  <Pause size={14} />
+                  MOTION & DYNAMIC TYPE
+                </div>
+
+                <div className="space-y-px bg-[var(--atlas-border)] border border-[var(--atlas-border)]">
+                  <label className="atlas-a11y-toggle-row">
+                    <div>
+                      <div className="font-semibold text-sm">Reduce Motion</div>
+                      <div className="atlas-a11y-description">
+                        Suppresses decorative animation and animated transitions across the Atlas.
+                      </div>
+                    </div>
+                    <input
+                      type="checkbox"
+                      checked={settings.reduceMotion}
+                      onChange={toggleReduceMotion}
+                    />
+                  </label>
+
+                  <label className="atlas-a11y-toggle-row">
+                    <div>
+                      <div className="font-semibold text-sm">Pause Dynamic Typography</div>
+                      <div className="atlas-a11y-description">
+                        Freezes automatic language and movement-name rotations while keeping content visible.
+                      </div>
+                    </div>
+                    <input
+                      type="checkbox"
+                      checked={settings.pauseDynamicType}
+                      onChange={togglePauseDynamicType}
                     />
                   </label>
                 </div>
