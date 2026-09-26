@@ -1,16 +1,82 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 interface HeroSectionProps {
   onExploreTimeline: () => void;
   onExploreNetwork: () => void;
 }
 
+const HERO_LANGUAGES = [
+  {
+    code: 'EN',
+    titleTop: 'AVANT-GARDE',
+    titleBottom: 'ATLAS',
+    subtitle: 'A visual map of the movements that created modern design.',
+  },
+  {
+    code: 'DE',
+    titleTop: 'AVANTGARDE',
+    titleBottom: 'ATLAS',
+    subtitle: 'Eine visuelle Karte der Bewegungen, die das moderne Design prägten.',
+  },
+  {
+    code: 'FR',
+    titleTop: 'AVANT-GARDE',
+    titleBottom: 'ATLAS',
+    subtitle: 'Une cartographie visuelle des mouvements qui ont façonné le design moderne.',
+  },
+  {
+    code: 'IT',
+    titleTop: 'AVANGUARDIA',
+    titleBottom: 'ATLANTE',
+    subtitle: 'Una mappa visiva dei movimenti che hanno plasmato il design moderno.',
+  },
+  {
+    code: 'RU',
+    titleTop: 'АВАНГАРД',
+    titleBottom: 'АТЛАС',
+    subtitle: 'Визуальная карта движений, сформировавших современный дизайн.',
+  },
+  {
+    code: 'NL',
+    titleTop: 'AVANT-GARDE',
+    titleBottom: 'ATLAS',
+    subtitle: 'Een visuele kaart van de bewegingen die het moderne ontwerp vormgaven.',
+  },
+  {
+    code: 'ES',
+    titleTop: 'VANGUARDIA',
+    titleBottom: 'ATLAS',
+    subtitle: 'Un mapa visual de los movimientos que dieron forma al diseño moderno.',
+  },
+  {
+    code: 'JA',
+    titleTop: 'アヴァンギャルド',
+    titleBottom: 'アトラス',
+    subtitle: 'モダンデザインを形づくった運動をたどる視覚的な地図。',
+  },
+] as const;
+
 export const HeroSection: React.FC<HeroSectionProps> = ({
   onExploreTimeline,
-  onExploreNetwork
+  onExploreNetwork,
 }) => {
+  const [languageIndex, setLanguageIndex] = useState(0);
+
+  useEffect(() => {
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduceMotion) return;
+
+    const interval = window.setInterval(() => {
+      setLanguageIndex((current) => (current + 1) % HERO_LANGUAGES.length);
+    }, 3400);
+
+    return () => window.clearInterval(interval);
+  }, []);
+
+  const activeLanguage = HERO_LANGUAGES[languageIndex];
+
   return (
-    <section className="relative w-full min-h-[72vh] flex flex-col justify-between pt-16 sm:pt-24 pb-12 px-6 lg:px-12 border-b border-[var(--atlas-border)] bg-[var(--atlas-bg)]">
+    <section className="relative w-full min-h-[72vh] flex flex-col justify-between pt-16 sm:pt-24 pb-12 px-6 lg:px-12 border-b border-[var(--atlas-border)] bg-[var(--atlas-bg)] overflow-hidden">
       {/* Archival metadata top line */}
       <div className="flex items-center justify-between text-xs font-mono text-[var(--atlas-text-quiet)] uppercase tracking-widest border-b border-[var(--atlas-border-soft)] pb-4">
         <span>ARCHIVE REF // AT-1890-1940</span>
@@ -18,20 +84,53 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
         <span>EDITION 2026</span>
       </div>
 
+      {/* Constructivist language marker */}
+      <div
+        aria-hidden="true"
+        className="absolute top-28 right-6 lg:right-12 flex items-center gap-2 font-mono text-[9px] uppercase tracking-[0.24em] text-[var(--atlas-text-muted)]"
+      >
+        <span className="h-px w-10 bg-[#D82B2B]" />
+        <span>{activeLanguage.code}</span>
+      </div>
+
       {/* Hero typographical statement */}
-      <div className="my-auto py-12 max-w-5xl">
-        <h1 className="text-6xl sm:text-8xl lg:text-9xl font-semibold tracking-tighter text-[var(--atlas-text)] leading-[0.88] select-none">
-          AVANT-GARDE<br />ATLAS
-        </h1>
+      <div className="my-auto py-12 max-w-6xl">
+        <div className="relative">
+          <div
+            aria-hidden="true"
+            className="absolute -left-3 sm:-left-5 top-2 h-16 sm:h-24 w-1.5 bg-[#D82B2B] atlas-hero-accent"
+          />
+          <div
+            aria-hidden="true"
+            className="absolute -left-3 sm:-left-5 top-[5.25rem] sm:top-[7.75rem] w-14 sm:w-20 h-px bg-[var(--atlas-text)] atlas-hero-accent-delay"
+          />
+
+          <h1
+            key={`title-${activeLanguage.code}`}
+            className="atlas-language-swap text-6xl sm:text-8xl lg:text-9xl font-semibold tracking-tighter text-[var(--atlas-text)] leading-[0.88] select-none"
+          >
+            <span className="block">{activeLanguage.titleTop}</span>
+            <span className="block">{activeLanguage.titleBottom}</span>
+          </h1>
+        </div>
 
         <div className="mt-8 flex flex-col md:flex-row md:items-end justify-between gap-8 pt-8 border-t border-[var(--atlas-rule-subtle)]">
-          <div>
+          <div className="max-w-2xl">
             <div className="text-2xl sm:text-3xl font-mono tracking-tight text-[var(--atlas-text)]">
               1890—1940
             </div>
-            <p className="mt-3 text-lg sm:text-xl text-[var(--atlas-text-secondary)] max-w-xl font-light leading-relaxed">
-              A visual map of the movements that created modern design.
-            </p>
+            <h3
+              key={`subtitle-${activeLanguage.code}`}
+              className="atlas-language-swap atlas-language-swap-delayed mt-3 text-lg sm:text-xl text-[var(--atlas-text-secondary)] max-w-xl font-light leading-relaxed"
+            >
+              {activeLanguage.subtitle}
+            </h3>
+            <div className="mt-4 flex items-center gap-3 font-mono text-[8px] uppercase tracking-[0.22em] text-[var(--atlas-text-quiet)]">
+              <span className="inline-block size-1.5 bg-[#D82B2B]" />
+              <span>
+                EN · DE · FR · IT · RU · NL · ES · JA
+              </span>
+            </div>
           </div>
 
           <div className="flex items-center gap-4 text-xs font-mono tracking-wider uppercase">
@@ -67,7 +166,9 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
         </div>
         <div className="text-right">
           <span className="block text-[10px] text-[var(--atlas-text-faint)] uppercase">Navigation</span>
-          <span className="text-[var(--atlas-text)] underline cursor-pointer" onClick={onExploreTimeline}>Scroll to inspect ↓</span>
+          <span className="text-[var(--atlas-text)] underline cursor-pointer" onClick={onExploreTimeline}>
+            Scroll to inspect ↓
+          </span>
         </div>
       </div>
     </section>
