@@ -131,7 +131,7 @@ for (const object of ALL_OBJECTS) {
   if (!Number.isInteger(object.year) || object.year < 1800 || object.year > 2000) {
     errors.push(`Object ${object.id}: implausible year ${object.year}`);
   }
-}
+
   for (const [claimKey, evidence] of Object.entries(object.provenance ?? {})) {
     if (!evidence || evidence.sourceIds.length === 0) {
       errors.push(`Object ${object.id} claim ${claimKey}: provenance has no sourceIds`);
@@ -143,7 +143,7 @@ for (const object of ALL_OBJECTS) {
       }
     }
   }
-
+}
 
 
 const connectionKeys = new Set<string>();
