@@ -95,6 +95,18 @@ for (const movement of ALL_MOVEMENTS) {
     }
   }
 
+  for (const [claimKey, evidence] of Object.entries(movement.provenance ?? {})) {
+    if (!evidence || evidence.sourceIds.length === 0) {
+      errors.push(`Movement ${movement.id} claim ${claimKey}: provenance has no sourceIds`);
+      continue;
+    }
+    for (const sourceId of evidence.sourceIds) {
+      if (!getGlobalSourceById(sourceId)) {
+        errors.push(`Movement ${movement.id} claim ${claimKey}: unknown source "${sourceId}"`);
+      }
+    }
+  }
+
   for (const colour of movement.visualDna.colour.palette) {
     if (!/^#[0-9a-fA-F]{6}$/.test(colour.hex)) {
       errors.push(`Movement ${movement.id}: invalid colour hex "${colour.hex}"`);
@@ -120,6 +132,19 @@ for (const object of ALL_OBJECTS) {
     errors.push(`Object ${object.id}: implausible year ${object.year}`);
   }
 }
+  for (const [claimKey, evidence] of Object.entries(object.provenance ?? {})) {
+    if (!evidence || evidence.sourceIds.length === 0) {
+      errors.push(`Object ${object.id} claim ${claimKey}: provenance has no sourceIds`);
+      continue;
+    }
+    for (const sourceId of evidence.sourceIds) {
+      if (!getGlobalSourceById(sourceId)) {
+        errors.push(`Object ${object.id} claim ${claimKey}: unknown source "${sourceId}"`);
+      }
+    }
+  }
+
+
 
 const connectionKeys = new Set<string>();
 for (const connection of ALL_CONNECTIONS) {
@@ -181,6 +206,21 @@ for (const story of ALL_STORIES) {
     for (const movementId of step.focalMovements) {
       if (!getMovementById(movementId)) {
         errors.push(`Story ${story.id} step ${step.stepNumber}: unknown focalMovements reference "${movementId}"`);
+      }
+    }
+    for (const [claimKey, evidence] of Object.entries(step.provenance ?? {})) {
+      if (!evidence || evidence.sourceIds.length === 0) {
+        errors.push(
+          `Story ${story.id} step ${step.stepNumber} claim ${claimKey}: provenance has no sourceIds`,
+        );
+        continue;
+      }
+      for (const sourceId of evidence.sourceIds) {
+        if (!getGlobalSourceById(sourceId)) {
+          errors.push(
+            `Story ${story.id} step ${step.stepNumber} claim ${claimKey}: unknown source "${sourceId}"`,
+          );
+        }
       }
     }
   });
