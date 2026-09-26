@@ -16,5 +16,7 @@ export const moholyNagyDessauChicagoRoute: DiffusionRoute = {
     'Moholy-Nagy carried Bauhaus pedagogy into the United States and founded the New Bauhaus in Chicago in 1937.',
   transformationNote:
     'The Bauhaus model was transplanted into an American industrial and commercial environment rather than reproduced unchanged.',
+  evidenceStatus: 'editorial-synthesis',
+  transformationEvidenceStatus: 'interpretive',
   sourceIds: ['bauhaus-after-1933', 'bauhaus-new-bauhaus-chicago'],
 };
