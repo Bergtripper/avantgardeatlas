@@ -38,6 +38,12 @@ import { momaDadaTerm } from './moma-dada-term';
 import { momaSuprematism } from './moma-suprematism';
 import { viennaSecessionHistory } from './vienna-secession-history';
 import { werkbundarchivChronology } from './werkbundarchiv-chronology';
+import { momaCuboFuturismKnifeGrinder } from './moma-cubo-futurism-knife-grinder';
+import { momaPurism } from './moma-purism';
+import { momaNeueSachlichkeit } from './moma-neue-sachlichkeit';
+import { momaAugustSander } from './moma-august-sander';
+import { bauhausArchivHistory } from './bauhaus-archiv-history';
+import { bauhausArchivTeaching } from './bauhaus-archiv-teaching';
 
 export {
   bauhausAfter1933,
@@ -80,6 +86,12 @@ export {
   momaSuprematism,
   viennaSecessionHistory,
   werkbundarchivChronology,
+  momaCuboFuturismKnifeGrinder,
+  momaPurism,
+  momaNeueSachlichkeit,
+  momaAugustSander,
+  bauhausArchivHistory,
+  bauhausArchivTeaching,
 };
 
 export const ALL_GLOBAL_SOURCES = [
@@ -123,6 +135,12 @@ export const ALL_GLOBAL_SOURCES = [
   momaSuprematism,
   viennaSecessionHistory,
   werkbundarchivChronology,
+  momaCuboFuturismKnifeGrinder,
+  momaPurism,
+  momaNeueSachlichkeit,
+  momaAugustSander,
+  bauhausArchivHistory,
+  bauhausArchivTeaching,
 ];
 
 export const globalSourcesRegistry = Object.fromEntries(

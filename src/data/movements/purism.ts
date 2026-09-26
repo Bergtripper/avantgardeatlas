@@ -10,9 +10,9 @@ export const purismMovement: Movement = {
   countries: ['France'],
   cities: ['Paris'],
   mottoOrKeywords: ['The Machine Aesthetic', 'L\'Esprit Nouveau', 'Objects-Types'],
-  summary: 'A refined post-Cubist movement created by Le Corbusier and Amédée Ozenfant celebrating standardized machine-made objects, harmonic proportion, and classical order.',
-  coreIdeas: 'To restore classical rigor and order to painting after the chaotic fragmentation of Cubism. Purism celebrated everyday industrial "type-objects" (bottles, glasses, pipes, guitars) refined by selection and mass production, composed using the golden ratio and serene mathematical harmonies.',
-  historicalContext: 'Launched in Paris with the manifesto "Après le Cubisme" (1918) and promoted through the influential journal "L\'Esprit Nouveau" (1920–1925). Served as the conceptual crucible for Le Corbusier’s radical architectural manifestos.',
+  summary: 'A post-Cubist movement developed by Amédée Ozenfant and Charles-Édouard Jeanneret (Le Corbusier) from 1918, emphasizing clarity, order, geometric composition, and the depiction of standardized everyday objects.',
+  coreIdeas: 'Purism proposed a more ordered alternative to Cubist fragmentation. Ozenfant and Jeanneret treated simple manufactured objects as stable pictorial types and organized them through controlled geometry, proportion, and restrained surfaces.',
+  historicalContext: 'Ozenfant and Jeanneret published "Après le Cubisme" in 1918 alongside the first exhibition of Purist painting. Their ideas were subsequently developed through "L’Esprit Nouveau" and became closely entangled with Le Corbusier’s architectural thinking during the early 1920s.',
   visualPrinciples: [
     'Selection of standardized everyday industrial objects (objets-types)',
     'Rigorous geometric proportion governed by regulating lines (tracés régulateurs)',
@@ -68,6 +68,11 @@ export const purismMovement: Movement = {
   ],
   influencesFrom: ['cubism'],
   influencesTo: ['international-style', 'rationalism'],
+  provenance: {
+    summary: { sourceIds: ['moma-purism'], status: 'documented' },
+    coreIdeas: { sourceIds: ['moma-purism'], status: 'editorial-synthesis' },
+    historicalContext: { sourceIds: ['moma-purism'], status: 'documented' },
+  },
   styleTheme: {
     accentColor: '#C2410C',
     secondaryColor: '#64748B',
