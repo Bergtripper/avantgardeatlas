@@ -179,12 +179,12 @@ export const ObjectsArchiveSection: React.FC<ObjectsArchiveSectionProps> = ({
 
         {/* Object Detail Modal / Drawer */}
         {selectedObject && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
-            <div className="bg-[var(--atlas-surface)] border border-[var(--atlas-text)] w-full max-w-4xl max-h-[90vh] overflow-y-auto p-6 sm:p-8 relative shadow-2xl">
+          <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/60 backdrop-blur-xs">
+            <div className="bg-[var(--atlas-surface)] border border-[var(--atlas-text)] w-full max-w-4xl max-h-[92svh] sm:max-h-[90vh] overflow-y-auto p-4 pt-16 sm:p-8 relative shadow-2xl">
               {/* Close Button */}
               <button
                 onClick={() => setSelectedObject(null)}
-                className="absolute top-6 right-6 font-mono text-sm uppercase px-3 py-1 border border-[var(--atlas-text)] hover:bg-[var(--atlas-ink-button)] hover:text-white cursor-pointer transition-colors"
+                className="absolute top-4 right-4 sm:top-6 sm:right-6 min-h-11 font-mono text-xs sm:text-sm uppercase px-3 py-2 border border-[var(--atlas-text)] hover:bg-[var(--atlas-ink-button)] hover:text-white cursor-pointer transition-colors"
               >
                 Close ✕
               </button>
