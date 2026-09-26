@@ -108,9 +108,9 @@ export default function App() {
     const sectionTitle = currentTab === 'archive'
       ? 'Objects'
       : currentTab === 'geography'
-      ? 'Geography'
+      ? 'Maps / Europe'
       : currentTab === 'global'
-      ? 'Global Diffusion'
+      ? 'Maps / Global'
       : currentTab.charAt(0).toUpperCase() + currentTab.slice(1);
 
     document.title = movement
