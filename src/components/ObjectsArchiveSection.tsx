@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { ArchivalObject, MovementId } from '../types/atlas';
 import { ArchivalVectorPlate } from './ArchivalVectorPlate';
+import { ClaimSources } from './ClaimSources';
 
 interface ObjectsArchiveSectionProps {
   objects: ArchivalObject[];
@@ -223,6 +224,7 @@ export const ObjectsArchiveSection: React.FC<ObjectsArchiveSectionProps> = ({
                     <p className="text-xs text-[#333] font-mono">
                       {selectedObject.medium}
                     </p>
+                    <ClaimSources evidence={selectedObject.provenance?.medium} compact />
                   </div>
 
                   <div className="my-4">
@@ -232,11 +234,13 @@ export const ObjectsArchiveSection: React.FC<ObjectsArchiveSectionProps> = ({
                     <p className="text-xs text-[var(--atlas-text-body)] leading-relaxed">
                       {selectedObject.significance}
                     </p>
+                    <ClaimSources evidence={selectedObject.provenance?.significance} compact />
                   </div>
 
                   <p className="text-xs text-[var(--atlas-text-soft)] leading-relaxed">
                     {selectedObject.description}
                   </p>
+                  <ClaimSources evidence={selectedObject.provenance?.description} />
 
                   <div className="mt-8 pt-4 border-t border-[var(--atlas-border)] flex flex-wrap items-center gap-2">
                     <button
