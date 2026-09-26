@@ -478,7 +478,6 @@ export const GlobalDiffusionSection: React.FC<GlobalDiffusionSectionProps> = ({
     .filter(Boolean) ?? [];
 
   const resetFilters = () => {
-    setYearFilter(maxRouteYear);
     setSemanticFilter('all');
     setMediumFilter('all');
     setMovementFilter('all');
