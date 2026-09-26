@@ -32,6 +32,12 @@ import { treccaniGiuseppeTerragni } from './treccani-giuseppe-terragni';
 import { momaConstructivism } from './moma-constructivism';
 import { momaDeStijlTerm } from './moma-de-stijl-term';
 import { momaInternationalStyleTerm } from './moma-international-style-term';
+import { momaCubism } from './moma-cubism';
+import { momaFuturism } from './moma-futurism';
+import { momaDadaTerm } from './moma-dada-term';
+import { momaSuprematism } from './moma-suprematism';
+import { viennaSecessionHistory } from './vienna-secession-history';
+import { werkbundarchivChronology } from './werkbundarchiv-chronology';
 
 export {
   bauhausAfter1933,
@@ -68,6 +74,12 @@ export {
   momaConstructivism,
   momaDeStijlTerm,
   momaInternationalStyleTerm,
+  momaCubism,
+  momaFuturism,
+  momaDadaTerm,
+  momaSuprematism,
+  viennaSecessionHistory,
+  werkbundarchivChronology,
 };
 
 export const ALL_GLOBAL_SOURCES = [
@@ -105,6 +117,12 @@ export const ALL_GLOBAL_SOURCES = [
   momaConstructivism,
   momaDeStijlTerm,
   momaInternationalStyleTerm,
+  momaCubism,
+  momaFuturism,
+  momaDadaTerm,
+  momaSuprematism,
+  viennaSecessionHistory,
+  werkbundarchivChronology,
 ];
 
 export const globalSourcesRegistry = Object.fromEntries(
