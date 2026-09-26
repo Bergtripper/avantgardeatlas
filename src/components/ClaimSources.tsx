@@ -1,6 +1,7 @@
 import React from 'react';
 import { ClaimEvidence } from '../types/atlas';
 import { getSourceById } from '../data/sources';
+import { EvidenceBadge } from './EvidenceBadge';
 
 interface ClaimSourcesProps {
   evidence?: ClaimEvidence;
@@ -24,6 +25,7 @@ export const ClaimSources: React.FC<ClaimSourcesProps> = ({
       className={`${compact ? 'mt-2' : 'mt-3 pt-3 border-t border-[var(--atlas-border-soft)]'} text-xs`}
     >
       <div className="flex flex-wrap items-center gap-1.5">
+        <EvidenceBadge status={evidence.status} compact />
         <span className="font-mono text-[8px] uppercase tracking-wider text-[#D82B2B]">
           Sources
         </span>
