@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { getMovementById } from '../data/movements';
 import { getPersonById } from '../data/people';
 import { getPlaceById } from '../data/places';
 import {
@@ -199,6 +200,7 @@ export const GlobalDiffusionSection: React.FC = () => {
   );
 
   const [selectedRouteId, setSelectedRouteId] = useState(ALL_DIFFUSION_ROUTES[0]?.id ?? '');
+  const [selectedNodeId, setSelectedNodeId] = useState('');
   const [yearFilter, setYearFilter] = useState(maxRouteYear);
   const [semanticFilter, setSemanticFilter] = useState<RouteSemanticId | 'all'>('all');
   const [mediumFilter, setMediumFilter] = useState<DiffusionMedium | 'all'>('all');
@@ -237,13 +239,47 @@ export const GlobalDiffusionSection: React.FC = () => {
     [yearFilter, semanticFilter, mediumFilter, movementFilter],
   );
 
+  const selectRoute = (routeId: string) => {
+    setSelectedNodeId('');
+    setSelectedRouteId(routeId);
+    setViewMode('map');
+  };
+
+  const selectNode = (nodeId: string) => {
+    setSelectedNodeId(nodeId);
+    setViewMode('map');
+  };
+
   useEffect(() => {
+    if (selectedNodeId) return;
     if (filteredRoutes.some((route) => route.id === selectedRouteId)) return;
     setSelectedRouteId(filteredRoutes[0]?.id ?? '');
-  }, [filteredRoutes, selectedRouteId]);
+  }, [filteredRoutes, selectedRouteId, selectedNodeId]);
 
   const selectedRoute =
     filteredRoutes.find((route) => route.id === selectedRouteId) ?? filteredRoutes[0];
+
+  const selectedNode = selectedNodeId ? getGlobalEntityById(selectedNodeId) : undefined;
+  const selectedNodePlace = selectedNode
+    ? selectedNode.placeRef
+      ? resolvePlace(selectedNode.placeRef)
+      : selectedNode.hubId
+      ? resolvePlace({ scope: 'global', id: selectedNode.hubId })
+      : null
+    : null;
+  const selectedNodeRoutes = selectedNode
+    ? ALL_DIFFUSION_ROUTES.filter(
+        (route) =>
+          route.transmissionEntityIds?.includes(selectedNode.id) ||
+          route.destinationEntityIds.includes(selectedNode.id),
+      )
+    : [];
+  const selectedNodeSources = selectedNode
+    ? selectedNode.sourceIds.map((id) => getGlobalSourceById(id)).filter(Boolean)
+    : [];
+  const selectedNodeMovements = selectedNode
+    ? selectedNode.movementLinks.map((id) => getMovementById(id)?.name ?? id)
+    : [];
 
   const atlasRoutePlaces = useMemo(() => {
     const seen = new Map<string, ReturnType<typeof resolvePlace>>();
@@ -254,9 +290,12 @@ export const GlobalDiffusionSection: React.FC = () => {
         seen.set(ref.id, resolvePlace(ref));
       });
     });
+    if (selectedNode?.placeRef?.scope === 'atlas' && !seen.has(selectedNode.placeRef.id)) {
+      seen.set(selectedNode.placeRef.id, resolvePlace(selectedNode.placeRef));
+    }
 
     return Array.from(seen.values()).filter(Boolean) as NonNullable<ReturnType<typeof resolvePlace>>[];
-  }, [filteredRoutes]);
+  }, [filteredRoutes, selectedNode]);
 
   const visibleGlobalHubIds = useMemo(() => {
     const ids = new Set<string>();
@@ -265,8 +304,10 @@ export const GlobalDiffusionSection: React.FC = () => {
         if (ref.scope === 'global') ids.add(ref.id);
       });
     });
+    if (selectedNode?.placeRef?.scope === 'global') ids.add(selectedNode.placeRef.id);
+    if (selectedNode?.hubId) ids.add(selectedNode.hubId);
     return ids;
-  }, [filteredRoutes]);
+  }, [filteredRoutes, selectedNode]);
 
   const selectedSemantic = selectedRoute
     ? semanticForRoute(selectedRoute)
@@ -495,10 +536,7 @@ export const GlobalDiffusionSection: React.FC = () => {
                   <button
                     key={route.id}
                     type="button"
-                    onClick={() => {
-                      setSelectedRouteId(route.id);
-                      setViewMode('map');
-                    }}
+                    onClick={() => selectRoute(route.id)}
                     className="w-full grid grid-cols-[52px_1fr_auto] md:grid-cols-[64px_1.5fr_1fr_auto] items-center gap-3 px-4 py-3 border-b last:border-b-0 border-[var(--atlas-border)] text-left hover:bg-[var(--atlas-card)]"
                   >
                     <span className="font-mono text-[10px] text-[var(--atlas-text-muted)]">
@@ -538,7 +576,12 @@ export const GlobalDiffusionSection: React.FC = () => {
                   ? getGlobalHubById(entity.hubId)
                   : null;
                 return (
-                  <article key={entity.id} className="bg-[var(--atlas-card)] p-4">
+                  <button
+                    key={entity.id}
+                    type="button"
+                    onClick={() => selectNode(entity.id)}
+                    className="bg-[var(--atlas-card)] p-4 text-left hover:bg-[var(--atlas-surface-alt)] transition-colors"
+                  >
                     <div className="font-mono text-[8px] uppercase tracking-widest text-[var(--atlas-text-muted)]">
                       {entity.kind} // {entity.startYear}
                     </div>
@@ -549,7 +592,10 @@ export const GlobalDiffusionSection: React.FC = () => {
                     <p className="mt-3 text-[11px] leading-relaxed text-[var(--atlas-text-secondary)]">
                       {entity.summary}
                     </p>
-                  </article>
+                    <div className="mt-3 font-mono text-[8px] uppercase tracking-wider text-[var(--atlas-text-muted)]">
+                      View on map →
+                    </div>
+                  </button>
                 );
               })}
             </div>
@@ -640,7 +686,7 @@ export const GlobalDiffusionSection: React.FC = () => {
               />
 
               {filteredRoutes.map((route) => {
-                const active = route.id === selectedRoute?.id;
+                const active = !selectedNode && route.id === selectedRoute?.id;
                 const semantic = semanticForRoute(route);
                 const markerId =
                   semantic.marker === 'diamond'
@@ -660,11 +706,11 @@ export const GlobalDiffusionSection: React.FC = () => {
                       role="button"
                       tabIndex={0}
                       aria-label={`${route.title}. ${semantic.label}.`}
-                      onClick={() => setSelectedRouteId(route.id)}
+                      onClick={() => selectRoute(route.id)}
                       onKeyDown={(event) => {
                         if (event.key === 'Enter' || event.key === ' ') {
                           event.preventDefault();
-                          setSelectedRouteId(route.id);
+                          selectRoute(route.id);
                         }
                       }}
                     />
@@ -687,8 +733,17 @@ export const GlobalDiffusionSection: React.FC = () => {
                 const point = projectGlobalCoordinate(place.longitude, place.latitude);
                 return (
                   <g key={`atlas-${place.id}`} transform={`translate(${point.x}, ${point.y})`}>
-                    <circle r="4.5" fill="var(--geo-city-active)" />
-                    <circle r="9" fill="none" stroke="var(--geo-city-active)" strokeWidth="0.8" opacity="0.35" />
+                    <circle
+                      r={selectedNodePlace?.id === place.id ? 6 : 4.5}
+                      fill={selectedNodePlace?.id === place.id ? '#D82B2B' : 'var(--geo-city-active)'}
+                    />
+                    <circle
+                      r={selectedNodePlace?.id === place.id ? 12 : 9}
+                      fill="none"
+                      stroke={selectedNodePlace?.id === place.id ? '#D82B2B' : 'var(--geo-city-active)'}
+                      strokeWidth="0.8"
+                      opacity="0.45"
+                    />
                     <text
                       x="10"
                       y="-8"
@@ -704,8 +759,9 @@ export const GlobalDiffusionSection: React.FC = () => {
 
               {ALL_GLOBAL_HUBS.filter((hub) => visibleGlobalHubIds.has(hub.id)).map((hub) => {
                 const point = projectGlobalCoordinate(hub.longitude, hub.latitude);
-                const active =
-                  selectedDestination?.id === hub.id || selectedOrigin?.id === hub.id;
+                const active = selectedNode
+                  ? selectedNodePlace?.id === hub.id
+                  : selectedDestination?.id === hub.id || selectedOrigin?.id === hub.id;
 
                 return (
                   <g key={hub.id} transform={`translate(${point.x}, ${point.y})`}>
@@ -733,7 +789,83 @@ export const GlobalDiffusionSection: React.FC = () => {
             </svg>
           </div>
 
-          {selectedRoute ? (
+          {selectedNode ? (
+            <aside className="lg:col-span-4 lg:sticky lg:top-28 border border-[var(--atlas-border)] bg-[var(--atlas-surface)] p-6">
+              <div className="font-mono text-[10px] uppercase tracking-widest text-[var(--atlas-text-muted)] mb-2">
+                Selected Node // {selectedNode.kind} // {selectedNode.startYear}
+              </div>
+              <h3 className="text-2xl font-semibold tracking-tight text-[var(--atlas-text)]">
+                {selectedNode.name}
+              </h3>
+
+              <div className="mt-5 border border-[var(--atlas-border)] bg-[var(--atlas-card)] p-3">
+                <div className="font-mono text-[9px] uppercase text-[var(--atlas-text-muted)]">Location</div>
+                <div className="text-sm font-semibold mt-1">
+                  {selectedNodePlace?.name ?? '—'}{selectedNodePlace?.country ? ` · ${selectedNodePlace.country}` : ''}
+                </div>
+              </div>
+
+              <p className="mt-5 text-sm leading-relaxed text-[var(--atlas-text-body)]">
+                {selectedNode.summary}
+              </p>
+
+              <dl className="mt-6 space-y-4 text-xs">
+                <div>
+                  <dt className="font-mono uppercase tracking-wider text-[var(--atlas-text-muted)]">Movements</dt>
+                  <dd className="mt-1 text-[var(--atlas-text)]">
+                    {selectedNodeMovements.join(' · ') || '—'}
+                  </dd>
+                </div>
+                <div>
+                  <dt className="font-mono uppercase tracking-wider text-[var(--atlas-text-muted)]">Media</dt>
+                  <dd className="mt-1 text-[var(--atlas-text-secondary)]">
+                    {selectedNode.media.map((medium) => medium.replaceAll('-', ' ')).join(' · ')}
+                  </dd>
+                </div>
+                <div>
+                  <dt className="font-mono uppercase tracking-wider text-[var(--atlas-text-muted)]">Connected routes</dt>
+                  <dd className="mt-2 space-y-1.5">
+                    {selectedNodeRoutes.length > 0 ? (
+                      selectedNodeRoutes.map((route) => (
+                        <button
+                          key={route.id}
+                          type="button"
+                          onClick={() => selectRoute(route.id)}
+                          className="block w-full text-left border border-[var(--atlas-border-control)] bg-[var(--atlas-card)] px-2.5 py-2 hover:border-[var(--atlas-text)]"
+                        >
+                          <span className="block font-mono text-[8px] uppercase tracking-wider text-[var(--atlas-text-muted)]">
+                            {route.startYear} // {semanticForRoute(route).label}
+                          </span>
+                          <span className="block mt-1 text-[11px] text-[var(--atlas-text)]">{route.title}</span>
+                        </button>
+                      ))
+                    ) : (
+                      <span className="text-[var(--atlas-text-muted)]">No route currently linked to this node.</span>
+                    )}
+                  </dd>
+                </div>
+              </dl>
+
+              <div className="mt-6 pt-4 border-t border-[var(--atlas-border)]">
+                <div className="font-mono text-[9px] uppercase tracking-wider text-[var(--atlas-text-muted)] mb-2">
+                  Sources
+                </div>
+                <div className="space-y-2">
+                  {selectedNodeSources.map((source) => (
+                    <a
+                      key={source?.id}
+                      href={source?.url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="block text-xs underline underline-offset-2 text-[var(--atlas-text-secondary)] hover:text-[var(--atlas-text)]"
+                    >
+                      {source?.publisher} — {source?.title}
+                    </a>
+                  ))}
+                </div>
+              </div>
+            </aside>
+          ) : selectedRoute ? (
             <aside className="lg:col-span-4 lg:sticky lg:top-28 border border-[var(--atlas-border)] bg-[var(--atlas-surface)] p-6">
               <div className="font-mono text-[10px] uppercase tracking-widest text-[var(--atlas-text-muted)] mb-2">
                 Selected Transmission // {selectedRoute.startYear}
