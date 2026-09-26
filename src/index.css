@@ -639,8 +639,7 @@ html.a11y-highlight-links .atlas-shell :where(a, button:not([disabled])) {
 @media (max-width: 640px) {
   .atlas-a11y-tab {
     top: auto;
-    bottom: 1rem;
-    transform: none;
+    bottom: max(1rem, env(safe-area-inset-bottom));
   }
 }
 
@@ -685,4 +684,60 @@ html.a11y-pause-dynamic-type .atlas-guillotine-bar,
 html.a11y-pause-dynamic-type .atlas-entity-cut-bar,
 html.a11y-pause-dynamic-type .atlas-hard-cut {
   animation: none !important;
+}
+
+
+/* Phase G — Responsive Architecture & Interaction Polish */
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+.atlas-shell {
+  min-width: 0;
+}
+
+.atlas-shell :where(button, a, input, select, textarea) {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.atlas-shell :where(.overflow-x-auto) {
+  scrollbar-width: thin;
+  overscroll-behavior-inline: contain;
+}
+
+.atlas-a11y-tab {
+  max-height: calc(100svh - 9rem);
+}
+
+@media (max-width: 640px) {
+  .atlas-a11y-tab {
+    max-height: none;
+  }
+
+  .atlas-a11y-panel {
+    width: 100%;
+    max-width: none;
+    max-height: calc(100svh - 1.5rem);
+  }
+}
+
+@media (pointer: coarse) {
+  .atlas-a11y-mini,
+  .atlas-a11y-main,
+  .atlas-a11y-step,
+  .atlas-a11y-icon-button,
+  .atlas-a11y-secondary-button {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .atlas-shell input[type='range'] {
+    min-height: 44px;
+  }
+}
+
+@media (max-width: 420px) {
+  .atlas-shell [class*='tracking-widest'] {
+    letter-spacing: 0.08em;
+  }
 }

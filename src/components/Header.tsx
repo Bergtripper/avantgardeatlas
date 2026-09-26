@@ -68,10 +68,10 @@ export const Header: React.FC<HeaderProps> = ({
 
   return (
     <header className="sticky top-0 z-40 w-full bg-[var(--atlas-header-bg)] backdrop-blur-xs border-b border-[var(--atlas-border)] transition-colors">
-      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-3">
+      <div className="max-w-7xl mx-auto px-2.5 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-1.5 sm:gap-3">
         <button
           onClick={() => selectTab('timeline')}
-          className="relative text-left group cursor-pointer focus:outline-hidden shrink-0 px-2.5 py-2"
+          className="relative text-left group cursor-pointer focus:outline-hidden min-w-0 shrink px-2 py-2 sm:px-2.5"
           aria-label="Open Avant-Garde Atlas timeline home"
         >
           <span
@@ -95,8 +95,8 @@ export const Header: React.FC<HeaderProps> = ({
             className="absolute -left-1 top-1/2 size-2 -translate-y-1/2 bg-[#D82B2B] transition-transform duration-300 ease-out group-hover:translate-x-[calc(100%+0.5rem)] group-hover:rotate-45 group-focus-visible:translate-x-[calc(100%+0.5rem)] group-focus-visible:rotate-45"
           />
 
-          <span className="relative z-10 text-sm sm:text-lg font-semibold tracking-tight text-[var(--atlas-text)]">
-            AVANT-GARDE ATLAS
+          <span className="relative z-10 text-[11px] min-[380px]:text-sm sm:text-lg font-semibold tracking-tight text-[var(--atlas-text)] whitespace-nowrap">
+            <span className="max-[379px]:hidden">AVANT-GARDE </span>ATLAS
           </span>
           <span className="relative z-10 hidden 2xl:inline font-mono text-xs text-[var(--atlas-text-muted)] ml-3 tracking-widest">
             1890—1940
@@ -177,7 +177,7 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
         </nav>
 
-        <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+        <div className="flex items-center gap-1 sm:gap-2 shrink-0">
           <button
             type="button"
             onClick={onToggleTheme}
@@ -186,7 +186,8 @@ export const Header: React.FC<HeaderProps> = ({
             aria-pressed={theme === 'dark'}
             title="Toggle light / dark theme"
           >
-            {theme === 'light' ? 'Light' : 'Dark'}
+            <span className="hidden min-[430px]:inline">{theme === 'light' ? 'Light' : 'Dark'}</span>
+            <span className="min-[430px]:hidden" aria-hidden="true">{theme === 'light' ? 'L' : 'D'}</span>
           </button>
           <button
             type="button"
