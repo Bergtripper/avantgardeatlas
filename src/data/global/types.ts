@@ -98,6 +98,7 @@ export interface DiffusionRoute {
   endYear?: number;
   personRefs: DiffusionPersonRef[];
   mechanisms: DiffusionMechanism[];
+  primaryMechanism?: DiffusionMechanism;
   sourceMovementIds: MovementId[];
   historicalContextIds?: string[];
   transmissionEntityIds?: string[];
