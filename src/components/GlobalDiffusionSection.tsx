@@ -161,14 +161,25 @@ const routePath = (route: DiffusionRoute) => {
   return `M ${start.x} ${start.y} Q ${controlX} ${controlY} ${end.x} ${end.y}`;
 };
 
-export const GlobalDiffusionSection: React.FC = () => {
+interface GlobalDiffusionSectionProps {
+  selectedYear: number;
+  onSelectYear: (year: number) => void;
+}
+
+const ATLAS_START_YEAR = 1890;
+const ATLAS_END_YEAR = 1940;
+
+export const GlobalDiffusionSection: React.FC<GlobalDiffusionSectionProps> = ({
+  selectedYear,
+  onSelectYear,
+}) => {
   const minRouteYear = Math.min(...ALL_DIFFUSION_ROUTES.map((route) => route.startYear));
   const maxRouteYear = Math.max(...ALL_DIFFUSION_ROUTES.map((route) => route.endYear ?? route.startYear));
   const fracture1933 = ALL_GLOBAL_HISTORICAL_EVENTS.find(
     (event) => event.id === 'political-fracture-1933',
   );
   const fracturePosition = fracture1933
-    ? ((fracture1933.year - minRouteYear) / (maxRouteYear - minRouteYear)) * 100
+    ? ((fracture1933.year - ATLAS_START_YEAR) / (ATLAS_END_YEAR - ATLAS_START_YEAR)) * 100
     : 0;
   const fractureSources = fracture1933
     ? fracture1933.sourceIds.map((id) => getGlobalSourceById(id)).filter(Boolean)
@@ -212,7 +223,6 @@ export const GlobalDiffusionSection: React.FC = () => {
   const [selectedRouteId, setSelectedRouteId] = useState(ALL_DIFFUSION_ROUTES[0]?.id ?? '');
   const [selectedNodeId, setSelectedNodeId] = useState('');
   const [selectedCrossroadKey, setSelectedCrossroadKey] = useState('');
-  const [yearFilter, setYearFilter] = useState(maxRouteYear);
   const [semanticFilter, setSemanticFilter] = useState<RouteSemanticId | 'all'>('all');
   const [mediumFilter, setMediumFilter] = useState<DiffusionMedium | 'all'>('all');
   const [movementFilter, setMovementFilter] = useState<string | 'all'>('all');
@@ -223,7 +233,7 @@ export const GlobalDiffusionSection: React.FC = () => {
     () =>
       ALL_GLOBAL_ENTITIES.filter((entity) => {
         if (!['exhibition', 'institution'].includes(entity.kind)) return false;
-        if (entity.startYear > yearFilter) return false;
+        if (entity.startYear > selectedYear) return false;
         if (mediumFilter !== 'all' && !entity.media.includes(mediumFilter)) return false;
         if (movementFilter !== 'all' && !entity.movementLinks.includes(movementFilter as never)) return false;
         return (
@@ -232,18 +242,18 @@ export const GlobalDiffusionSection: React.FC = () => {
           entity.media.includes('exhibition-design')
         );
       }),
-    [yearFilter, mediumFilter, movementFilter],
+    [selectedYear, mediumFilter, movementFilter],
   );
 
   const convergenceEntities = useMemo(
     () =>
       ALL_GLOBAL_ENTITIES.filter((entity) => {
-        if (entity.startYear > yearFilter) return false;
+        if (entity.startYear > selectedYear) return false;
         if (mediumFilter !== 'all' && !entity.media.includes(mediumFilter)) return false;
         if (movementFilter !== 'all' && !entity.movementLinks.includes(movementFilter as never)) return false;
         return true;
       }),
-    [yearFilter, mediumFilter, movementFilter],
+    [selectedYear, mediumFilter, movementFilter],
   );
 
   const filteredRoutes = useMemo(
@@ -251,14 +261,14 @@ export const GlobalDiffusionSection: React.FC = () => {
       ALL_DIFFUSION_ROUTES.filter((route) => {
         const routeYear = route.startYear;
         const semantic = semanticForRoute(route);
-        const matchesYear = routeYear <= yearFilter;
+        const matchesYear = routeYear <= selectedYear;
         const matchesSemantic = semanticFilter === 'all' || semantic.id === semanticFilter;
         const matchesMedium = mediumFilter === 'all' || route.media.includes(mediumFilter);
         const matchesMovement =
           movementFilter === 'all' || route.sourceMovementIds.includes(movementFilter as never);
         return matchesYear && matchesSemantic && matchesMedium && matchesMovement;
       }),
-    [yearFilter, semanticFilter, mediumFilter, movementFilter],
+    [selectedYear, semanticFilter, mediumFilter, movementFilter],
   );
 
   const selectRoute = (routeId: string) => {
@@ -475,7 +485,6 @@ export const GlobalDiffusionSection: React.FC = () => {
   };
 
   const hasActiveFilters =
-    yearFilter !== maxRouteYear ||
     semanticFilter !== 'all' ||
     mediumFilter !== 'all' ||
     movementFilter !== 'all';
@@ -506,8 +515,8 @@ export const GlobalDiffusionSection: React.FC = () => {
                 htmlFor="global-year-filter"
                 className="flex items-center justify-between gap-3 font-mono text-[9px] uppercase tracking-wider text-[var(--atlas-text-muted)]"
               >
-                <span>Year</span>
-                <span className="font-semibold text-[var(--atlas-text)]">{yearFilter}</span>
+                <span>Active Year · network up to</span>
+                <span className="font-semibold text-[var(--atlas-text)]">{selectedYear}</span>
               </label>
               <div className="relative">
                 <input
@@ -515,7 +524,7 @@ export const GlobalDiffusionSection: React.FC = () => {
                   type="range"
                   min={minRouteYear}
                   max={maxRouteYear}
-                  value={yearFilter}
+                  value={selectedYear}
                   onChange={(event) => setYearFilter(Number(event.target.value))}
                   className="w-full mt-2 accent-[#D82B2B]"
                 />
@@ -793,7 +802,7 @@ export const GlobalDiffusionSection: React.FC = () => {
           <div className="lg:col-span-8 border border-[var(--atlas-border)] bg-[var(--atlas-surface)] overflow-hidden">
             <div className="px-4 py-3 border-b border-[var(--atlas-border)] flex flex-wrap items-center justify-between gap-2">
               <span className="font-mono text-[10px] uppercase tracking-widest text-[var(--atlas-text-muted)]">
-                {minRouteYear}—{maxRouteYear} // Transmission Network
+                {minRouteYear}—{maxRouteYear} // Transmission Network // Active Year {selectedYear}
               </span>
               <span className="font-mono text-[10px] uppercase tracking-widest text-[var(--atlas-text-quiet)]">
                 {filteredRoutes.length} route{filteredRoutes.length === 1 ? '' : 's'} · filtered view
