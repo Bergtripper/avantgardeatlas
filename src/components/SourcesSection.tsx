@@ -22,6 +22,12 @@ const usageLabel = (kind: string) => {
       return 'Place';
     case 'event':
       return 'Event';
+    case 'movement-claim':
+      return 'Movement claim';
+    case 'object-claim':
+      return 'Object claim';
+    case 'story-step-claim':
+      return 'Story claim';
     default:
       return kind;
   }
