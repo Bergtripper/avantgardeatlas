@@ -10,9 +10,9 @@ export const dadaMovement: Movement = {
   countries: ['Switzerland', 'Germany', 'France', 'United States'],
   cities: ['Zurich', 'Berlin', 'Cologne', 'Paris', 'New York'],
   mottoOrKeywords: ['Anti-Art', 'Chance as a Principle', 'Photomontage Sabotage'],
-  summary: 'An anti-rationalist, anarchic protest movement sparked by the horrors of World War I, dismantling bourgeois logic through chance, collage, noise poetry, and readymades.',
-  coreIdeas: 'If rationalist Western society, science, and bourgeois culture could produce the industrial slaughter of the trenches, then rationality itself must be destroyed. Art must embrace chance, nonsense, absurd juxtaposition, and cynical irony.',
-  historicalContext: 'Founded at the Cabaret Voltaire in neutral Zurich in 1916 by Hugo Ball, Emmy Hennings, Tristan Tzara, and Hans Arp. Quickly evolved into a politically subversive agitprop movement in revolutionary postwar Berlin.',
+  summary: 'An international artistic and literary movement that emerged during World War I and used chance, collage, photomontage, performance, readymades, irreverence, and absurdity to challenge established definitions of art and cultural authority.',
+  coreIdeas: 'Dada artists linked the catastrophe of World War I to a crisis of political, social, and cultural values. Rather than proposing one coherent style, they used chance, nonsense, appropriation, collaboration, performance, and everyday objects to disrupt conventions of artistic authorship, taste, order, and logic.',
+  historicalContext: 'Dada emerged in 1916 around the Cabaret Voltaire in Zurich and also developed independently in New York before spreading through Berlin, Cologne, Hanover, Paris, and other centers. Its politics, methods, and tone varied considerably from one local group to another.',
   visualPrinciples: [
     'Chance operations: tearing paper and letting fragments fall at random',
     'Invention of photomontage: slicing newspaper photographs and mass media adverts',
@@ -56,7 +56,7 @@ export const dadaMovement: Movement = {
   },
   architectureNotes: 'Kurt Schwitters created the "Merzbau" (1923–1937) in Hanover, transforming his family apartment into an ever-expanding, labyrinthine three-dimensional collage cavern.',
   graphicDesignNotes: 'John Heartfield weaponized photomontage for the AIZ worker magazine, pioneering political visual satire against Adolf Hitler and corporate fascism.',
-  industryRelationship: 'Skeptical of industrial regimentation, yet voraciously cannibalized industrial printed refuse, commercial trade catalogs, and mass-market propaganda.',
+  industryRelationship: 'Dada frequently appropriated materials from modern media and commodity culture—newspapers, advertisements, tickets, magazines, photographs, and manufactured objects—turning the visual language of mass production into material for critique and experiment.',
   keyPeople: [
     'hannah-hoch',
     'john-heartfield',
@@ -70,6 +70,12 @@ export const dadaMovement: Movement = {
   ],
   influencesFrom: ['cubism', 'futurism'],
   influencesTo: ['new-typography', 'constructivism'],
+  provenance: {
+    summary: { sourceIds: ['moma-dada-term'], status: 'documented' },
+    coreIdeas: { sourceIds: ['moma-dada-term'], status: 'editorial-synthesis' },
+    historicalContext: { sourceIds: ['moma-dada-term'], status: 'documented' },
+    industryRelationship: { sourceIds: ['moma-dada-term'], status: 'editorial-synthesis' },
+  },
   styleTheme: {
     accentColor: '#BE123C',
     secondaryColor: '#1C1917',
