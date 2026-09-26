@@ -1,7 +1,8 @@
 import { lazy, Suspense, useState, useEffect } from 'react';
-import { MovementId } from './types/atlas';
+import { ArchivalObject, MovementId } from './types/atlas';
 import { ALL_MOVEMENTS, getMovementById } from './data/movements';
 import { DiffusionPersonRef } from './data/global';
+import type { GlobalAtlasContextFocus } from './components/GlobalDiffusionSection';
 import { Header, NavTab } from './components/Header';
 import { HeroSection } from './components/HeroSection';
 import { TimelineSection } from './components/TimelineSection';
@@ -50,6 +51,10 @@ export default function App() {
   const [globalMovementFocus, setGlobalMovementFocus] = useState<MovementId | null>(null);
   const [globalPersonFocus, setGlobalPersonFocus] = useState<DiffusionPersonRef | null>(null);
   const [peopleFocus, setPeopleFocus] = useState<DiffusionPersonRef | null>(null);
+  const [focusedObjectId, setFocusedObjectId] = useState<string | null>(null);
+  const [focusedStoryId, setFocusedStoryId] = useState<string | null>(null);
+  const [focusedStoryStepIndex, setFocusedStoryStepIndex] = useState<number | null>(null);
+  const [globalAtlasContext, setGlobalAtlasContext] = useState<GlobalAtlasContextFocus | null>(null);
   const [lastOverviewTab, setLastOverviewTab] = useState<NavTab>(
     initialMovement ? 'movements' : initialRoute.tab
   );
@@ -87,6 +92,12 @@ export default function App() {
           setGlobalPersonFocus(null);
         }
         if (route.tab !== 'people') setPeopleFocus(null);
+        if (route.tab !== 'archive') setFocusedObjectId(null);
+        if (route.tab !== 'stories') {
+          setFocusedStoryId(null);
+          setFocusedStoryStepIndex(null);
+        }
+        if (route.tab !== 'global') setGlobalAtlasContext(null);
       }
 
       window.scrollTo({ top: 0, behavior: 'auto' });
@@ -147,6 +158,10 @@ export default function App() {
     setGlobalMovementFocus(null);
     setGlobalPersonFocus(null);
     setPeopleFocus(null);
+    setFocusedObjectId(null);
+    setFocusedStoryId(null);
+    setFocusedStoryStepIndex(null);
+    setGlobalAtlasContext(null);
     setCurrentTab(tab);
     setLastOverviewTab(tab);
     window.history.pushState({}, '', pathForTab(tab));
@@ -180,6 +195,63 @@ export default function App() {
     setGlobalPersonFocus(ref);
     setPeopleFocus(ref);
     window.history.pushState({}, '', pathForTab('global'));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleExploreGlobalObject = (object: ArchivalObject) => {
+    setSelectedMovementId(null);
+    setCurrentTab('global');
+    setLastOverviewTab('global');
+    setGlobalMovementFocus(null);
+    setGlobalPersonFocus(null);
+    setGlobalAtlasContext({
+      kind: 'object',
+      label: object.title,
+      movementIds: [object.movementId],
+    });
+    setFocusedObjectId(object.id);
+    window.history.pushState({}, '', pathForTab('global'));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleExploreGlobalStory = (
+    storyId: string,
+    stepIndex: number,
+    movementIds: MovementId[],
+    label: string,
+  ) => {
+    setSelectedMovementId(null);
+    setCurrentTab('global');
+    setLastOverviewTab('global');
+    setGlobalMovementFocus(null);
+    setGlobalPersonFocus(null);
+    setGlobalAtlasContext({
+      kind: 'story',
+      label,
+      movementIds,
+    });
+    setFocusedStoryId(storyId);
+    setFocusedStoryStepIndex(stepIndex);
+    window.history.pushState({}, '', pathForTab('global'));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleSelectObjectFromGlobal = (objectId: string) => {
+    setSelectedMovementId(null);
+    setCurrentTab('archive');
+    setLastOverviewTab('archive');
+    setFocusedObjectId(objectId);
+    window.history.pushState({}, '', pathForTab('archive'));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleSelectStoryFromGlobal = (storyId: string, stepIndex: number) => {
+    setSelectedMovementId(null);
+    setCurrentTab('stories');
+    setLastOverviewTab('stories');
+    setFocusedStoryId(storyId);
+    setFocusedStoryStepIndex(stepIndex);
+    window.history.pushState({}, '', pathForTab('stories'));
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -266,7 +338,12 @@ export default function App() {
             )}
 
             {currentTab === 'archive' && (
-              <ObjectsRouteSection onSelectMovement={handleSelectMovement} />
+              <ObjectsRouteSection
+                onSelectMovement={handleSelectMovement}
+                selectedYear={selectedYear}
+                focusedObjectId={focusedObjectId}
+                onExploreGlobalObject={handleExploreGlobalObject}
+              />
             )}
 
             {currentTab === 'compare' && (
@@ -286,7 +363,13 @@ export default function App() {
             )}
 
             {currentTab === 'stories' && (
-              <StoriesSection onSelectMovement={handleSelectMovement} />
+              <StoriesSection
+                onSelectMovement={handleSelectMovement}
+                selectedYear={selectedYear}
+                focusedStoryId={focusedStoryId}
+                focusedStepIndex={focusedStoryStepIndex}
+                onExploreGlobalStory={handleExploreGlobalStory}
+              />
             )}
 
             {currentTab === 'geography' && (
@@ -303,9 +386,13 @@ export default function App() {
                 onSelectYear={setSelectedYear}
                 onSelectMovement={handleSelectMovement}
                 onSelectPerson={handleSelectPersonFromGlobal}
+                onSelectObject={handleSelectObjectFromGlobal}
+                onSelectStory={handleSelectStoryFromGlobal}
                 focusedMovementId={globalMovementFocus}
                 focusedPersonRef={globalPersonFocus}
+                focusedAtlasContext={globalAtlasContext}
                 onClearPersonFocus={() => setGlobalPersonFocus(null)}
+                onClearAtlasContext={() => setGlobalAtlasContext(null)}
               />
             )}
           </>
