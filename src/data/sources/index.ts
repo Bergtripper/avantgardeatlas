@@ -7,6 +7,9 @@ import {
   ALL_GLOBAL_SOURCES,
   getGlobalSourceById,
 } from '../global';
+import { ALL_MOVEMENTS } from '../movements';
+import { ALL_OBJECTS } from '../objects';
+import { ALL_STORIES } from '../stories';
 import { AtlasSourceRecord, SourceUsageRef } from './types';
 
 const usagesForSource = (sourceId: string): SourceUsageRef[] => {
@@ -40,6 +43,44 @@ const usagesForSource = (sourceId: string): SourceUsageRef[] => {
     if (event.sourceIds.includes(sourceId)) {
       usages.push({ kind: 'event', id: event.id, label: event.title });
     }
+  });
+
+  ALL_MOVEMENTS.forEach((movement) => {
+    Object.entries(movement.provenance ?? {}).forEach(([claimKey, evidence]) => {
+      if (evidence?.sourceIds.includes(sourceId)) {
+        usages.push({
+          kind: 'movement-claim',
+          id: `${movement.id}:${claimKey}`,
+          label: `${movement.name} // ${claimKey}`,
+        });
+      }
+    });
+  });
+
+  ALL_OBJECTS.forEach((object) => {
+    Object.entries(object.provenance ?? {}).forEach(([claimKey, evidence]) => {
+      if (evidence?.sourceIds.includes(sourceId)) {
+        usages.push({
+          kind: 'object-claim',
+          id: `${object.id}:${claimKey}`,
+          label: `${object.title} // ${claimKey}`,
+        });
+      }
+    });
+  });
+
+  ALL_STORIES.forEach((story) => {
+    story.steps.forEach((step) => {
+      Object.entries(step.provenance ?? {}).forEach(([claimKey, evidence]) => {
+        if (evidence?.sourceIds.includes(sourceId)) {
+          usages.push({
+            kind: 'story-step-claim',
+            id: `${story.id}:${step.stepNumber}:${claimKey}`,
+            label: `${story.title} // step ${step.stepNumber} // ${claimKey}`,
+          });
+        }
+      });
+    });
   });
 
   return usages;
