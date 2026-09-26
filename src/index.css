@@ -643,3 +643,46 @@ html.a11y-highlight-links .atlas-shell :where(a, button:not([disabled])) {
     transform: none;
   }
 }
+
+
+/* Phase F — complete inclusive-reading behavior */
+.atlas-shell :where(a, button, input, select, textarea, [role='button'], [tabindex]):focus-visible,
+.atlas-a11y-panel:focus-visible {
+  outline: 3px solid #D82B2B;
+  outline-offset: 3px;
+}
+
+html.a11y-reading-width .atlas-shell :where(
+  p,
+  blockquote,
+  dd,
+  .prose
+) {
+  max-inline-size: 70ch;
+}
+
+html.a11y-reduce-motion {
+  scroll-behavior: auto !important;
+}
+
+html.a11y-reduce-motion .atlas-shell *,
+html.a11y-reduce-motion .atlas-shell *::before,
+html.a11y-reduce-motion .atlas-shell *::after {
+  scroll-behavior: auto !important;
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  transition-delay: 0ms !important;
+}
+
+html.a11y-reduce-motion .atlas-guillotine-bar,
+html.a11y-reduce-motion .atlas-entity-cut-bar,
+html.a11y-reduce-motion .atlas-hard-cut {
+  animation: none !important;
+}
+
+html.a11y-pause-dynamic-type .atlas-guillotine-bar,
+html.a11y-pause-dynamic-type .atlas-entity-cut-bar,
+html.a11y-pause-dynamic-type .atlas-hard-cut {
+  animation: none !important;
+}
