@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { getMovementById } from '../data/movements';
+import { MovementId } from '../types/atlas';
 import { getPersonById } from '../data/people';
 import { getPlaceById } from '../data/places';
 import {
@@ -51,7 +52,7 @@ interface CityCrossroad {
   key: string;
   placeRef: DiffusionPlaceRef;
   place: NonNullable<ReturnType<typeof resolvePlace>>;
-  movementIds: string[];
+  movementIds: MovementId[];
   routeIds: string[];
   entityIds: string[];
 }
@@ -316,7 +317,7 @@ export const GlobalDiffusionSection: React.FC = () => {
       {
         placeRef: DiffusionPlaceRef;
         place: NonNullable<ReturnType<typeof resolvePlace>>;
-        movementIds: Set<string>;
+        movementIds: Set<MovementId>;
         routeIds: Set<string>;
         entityIds: Set<string>;
       }
@@ -330,7 +331,7 @@ export const GlobalDiffusionSection: React.FC = () => {
         records.set(key, {
           placeRef,
           place,
-          movementIds: new Set<string>(),
+          movementIds: new Set<MovementId>(),
           routeIds: new Set<string>(),
           entityIds: new Set<string>(),
         });
@@ -414,12 +415,13 @@ export const GlobalDiffusionSection: React.FC = () => {
     if (selectedNode?.placeRef?.scope === 'atlas' && !seen.has(selectedNode.placeRef.id)) {
       seen.set(selectedNode.placeRef.id, resolvePlace(selectedNode.placeRef));
     }
-    if (selectedCrossroad?.placeRef.scope === 'atlas' && !seen.has(selectedCrossroad.placeRef.id)) {
-      seen.set(selectedCrossroad.placeRef.id, resolvePlace(selectedCrossroad.placeRef));
-    }
+    cityCrossroads.forEach((crossroad) => {
+      if (crossroad.placeRef.scope !== 'atlas' || seen.has(crossroad.placeRef.id)) return;
+      seen.set(crossroad.placeRef.id, crossroad.place);
+    });
 
     return Array.from(seen.values()).filter(Boolean) as NonNullable<ReturnType<typeof resolvePlace>>[];
-  }, [filteredRoutes, selectedNode, selectedCrossroad]);
+  }, [filteredRoutes, selectedNode, cityCrossroads]);
 
   const visibleGlobalHubIds = useMemo(() => {
     const ids = new Set<string>();
@@ -430,9 +432,11 @@ export const GlobalDiffusionSection: React.FC = () => {
     });
     if (selectedNode?.placeRef?.scope === 'global') ids.add(selectedNode.placeRef.id);
     if (selectedNode?.hubId) ids.add(selectedNode.hubId);
-    if (selectedCrossroad?.placeRef.scope === 'global') ids.add(selectedCrossroad.placeRef.id);
+    cityCrossroads.forEach((crossroad) => {
+      if (crossroad.placeRef.scope === 'global') ids.add(crossroad.placeRef.id);
+    });
     return ids;
-  }, [filteredRoutes, selectedNode, selectedCrossroad]);
+  }, [filteredRoutes, selectedNode, cityCrossroads]);
 
   const selectedSemantic = selectedRoute
     ? semanticForRoute(selectedRoute)
@@ -920,7 +924,24 @@ export const GlobalDiffusionSection: React.FC = () => {
                 const activeCrossroad = selectedCrossroad?.key === crossroad?.key;
                 const activeNode = selectedNodePlace?.id === place.id;
                 return (
-                  <g key={`atlas-${place.id}`} transform={`translate(${point.x}, ${point.y})`}>
+                  <g
+                    key={`atlas-${place.id}`}
+                    transform={`translate(${point.x}, ${point.y})`}
+                    role={crossroad ? 'button' : undefined}
+                    tabIndex={crossroad ? 0 : undefined}
+                    className={crossroad ? 'cursor-pointer' : undefined}
+                    aria-label={
+                      crossroad
+                        ? `${place.name}: ${crossroad.movementIds.length} movement crossroad`
+                        : undefined
+                    }
+                    onClick={() => crossroad && selectCrossroad(crossroad.key)}
+                    onKeyDown={(event) => {
+                      if (!crossroad || (event.key !== 'Enter' && event.key !== ' ')) return;
+                      event.preventDefault();
+                      selectCrossroad(crossroad.key);
+                    }}
+                  >
                     {crossroad && (
                       <circle
                         r={10 + Math.min(6, crossroad.movementIds.length * 1.5)}
