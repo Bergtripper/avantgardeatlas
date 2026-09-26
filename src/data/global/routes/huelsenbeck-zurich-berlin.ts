@@ -15,5 +15,7 @@ export const huelsenbeckZurichBerlinRoute: DiffusionRoute = {
     'Richard Huelsenbeck returned from Zurich to Berlin in 1917 carrying direct experience of the Cabaret Voltaire circle and became a key organizer of Berlin Dada.',
   transformationNote:
     'Berlin Dada developed a sharper political and propagandistic character than the Zurich milieu, demonstrating how a shared Dada vocabulary changed under local conditions.',
+  evidenceStatus: 'editorial-synthesis',
+  transformationEvidenceStatus: 'interpretive',
   sourceIds: ['moma-dada-heritage', 'moma-dada-overview'],
 };
