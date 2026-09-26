@@ -308,12 +308,15 @@ for (const route of ALL_DIFFUSION_ROUTES) {
     }
   }
 
+  if (route.primaryMechanism && !route.mechanisms.includes(route.primaryMechanism)) {
+    errors.push(
+      `Diffusion route ${route.id}: primary mechanism "${route.primaryMechanism}" is not listed in mechanisms`,
+    );
+  }
+
   for (const entityId of route.transmissionEntityIds ?? []) {
-    const entity = getGlobalEntityById(entityId);
-    if (!entity) {
+    if (!getGlobalEntityById(entityId)) {
       errors.push(`Diffusion route ${route.id}: unknown transmission entity "${entityId}"`);
-    } else if (entity.kind !== 'publication') {
-      warnings.push(`Diffusion route ${route.id}: transmission entity "${entityId}" is not a publication`);
     }
   }
 
