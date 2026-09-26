@@ -100,6 +100,9 @@ for (const movement of ALL_MOVEMENTS) {
       errors.push(`Movement ${movement.id} claim ${claimKey}: provenance has no sourceIds`);
       continue;
     }
+    if (!evidence.status) {
+      errors.push(`Movement ${movement.id} claim ${claimKey}: provenance has no evidence status`);
+    }
     for (const sourceId of evidence.sourceIds) {
       if (!getGlobalSourceById(sourceId)) {
         errors.push(`Movement ${movement.id} claim ${claimKey}: unknown source "${sourceId}"`);
@@ -136,6 +139,9 @@ for (const object of ALL_OBJECTS) {
     if (!evidence || evidence.sourceIds.length === 0) {
       errors.push(`Object ${object.id} claim ${claimKey}: provenance has no sourceIds`);
       continue;
+    }
+    if (!evidence.status) {
+      errors.push(`Object ${object.id} claim ${claimKey}: provenance has no evidence status`);
     }
     for (const sourceId of evidence.sourceIds) {
       if (!getGlobalSourceById(sourceId)) {
@@ -214,6 +220,11 @@ for (const story of ALL_STORIES) {
           `Story ${story.id} step ${step.stepNumber} claim ${claimKey}: provenance has no sourceIds`,
         );
         continue;
+      }
+      if (!evidence.status) {
+        errors.push(
+          `Story ${story.id} step ${step.stepNumber} claim ${claimKey}: provenance has no evidence status`,
+        );
       }
       for (const sourceId of evidence.sourceIds) {
         if (!getGlobalSourceById(sourceId)) {
@@ -378,6 +389,15 @@ for (const route of ALL_DIFFUSION_ROUTES) {
     if (!getGlobalSourceById(sourceId)) {
       errors.push(`Diffusion route ${route.id}: unknown source "${sourceId}"`);
     }
+  }
+
+  if (!route.evidenceStatus) {
+    warnings.push(`Diffusion route ${route.id}: route evidence status has not been reviewed yet`);
+  }
+  if (!route.transformationEvidenceStatus) {
+    warnings.push(
+      `Diffusion route ${route.id}: transformation note evidence status has not been reviewed yet`,
+    );
   }
 }
 
