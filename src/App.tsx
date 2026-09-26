@@ -248,7 +248,10 @@ export default function App() {
             )}
 
             {currentTab === 'global' && (
-              <GlobalDiffusionSection />
+              <GlobalDiffusionSection
+                selectedYear={selectedYear}
+                onSelectYear={setSelectedYear}
+              />
             )}
           </>
         )}
