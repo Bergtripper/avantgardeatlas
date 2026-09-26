@@ -11,6 +11,7 @@ import {
   DiffusionMechanism,
   DiffusionMedium,
   DiffusionPlaceRef,
+  DiffusionPersonRef,
   DiffusionRoute,
   getGlobalEntityById,
   getGlobalHistoricalEventById,
@@ -165,17 +166,25 @@ interface GlobalDiffusionSectionProps {
   selectedYear: number;
   onSelectYear: (year: number) => void;
   onSelectMovement: (id: MovementId) => void;
+  onSelectPerson: (ref: DiffusionPersonRef) => void;
   focusedMovementId?: MovementId | null;
+  focusedPersonRef?: DiffusionPersonRef | null;
+  onClearPersonFocus?: () => void;
 }
 
 const ATLAS_START_YEAR = 1890;
 const ATLAS_END_YEAR = 1940;
 
+const personRefKey = (ref: DiffusionPersonRef) => `${ref.scope}:${ref.id}`;
+
 export const GlobalDiffusionSection: React.FC<GlobalDiffusionSectionProps> = ({
   selectedYear,
   onSelectYear,
   onSelectMovement,
+  onSelectPerson,
   focusedMovementId = null,
+  focusedPersonRef = null,
+  onClearPersonFocus,
 }) => {
   const minRouteYear = Math.min(...ALL_DIFFUSION_ROUTES.map((route) => route.startYear));
   const maxRouteYear = Math.max(...ALL_DIFFUSION_ROUTES.map((route) => route.endYear ?? route.startYear));
@@ -277,9 +286,15 @@ export const GlobalDiffusionSection: React.FC<GlobalDiffusionSectionProps> = ({
         const matchesMedium = mediumFilter === 'all' || route.media.includes(mediumFilter);
         const matchesMovement =
           movementFilter === 'all' || route.sourceMovementIds.includes(movementFilter);
-        return matchesYear && matchesSemantic && matchesMedium && matchesMovement;
+        const matchesPerson =
+          !focusedPersonRef ||
+          route.personRefs.some(
+            (ref) =>
+              ref.scope === focusedPersonRef.scope && ref.id === focusedPersonRef.id,
+          );
+        return matchesYear && matchesSemantic && matchesMedium && matchesMovement && matchesPerson;
       }),
-    [selectedYear, semanticFilter, mediumFilter, movementFilter],
+    [selectedYear, semanticFilter, mediumFilter, movementFilter, focusedPersonRef],
   );
 
   const selectRoute = (routeId: string) => {
@@ -459,10 +474,14 @@ export const GlobalDiffusionSection: React.FC<GlobalDiffusionSectionProps> = ({
   const selectedDestination = selectedRoute ? resolvePlace(selectedRoute.destination) : null;
 
   const selectedPeople = selectedRoute?.personRefs
-    .map((ref) =>
-      ref.scope === 'atlas' ? getPersonById(ref.id)?.name : getGlobalPersonById(ref.id)?.name,
-    )
-    .filter(Boolean) ?? [];
+    .map((ref) => ({
+      ref,
+      name:
+        ref.scope === 'atlas'
+          ? getPersonById(ref.id)?.name
+          : getGlobalPersonById(ref.id)?.name,
+    }))
+    .filter((item) => Boolean(item.name)) ?? [];
 
   const selectedRouteMovements = selectedRoute?.sourceMovementIds
     .map((id) => getMovementById(id))
@@ -488,12 +507,14 @@ export const GlobalDiffusionSection: React.FC<GlobalDiffusionSectionProps> = ({
     setSemanticFilter('all');
     setMediumFilter('all');
     setMovementFilter('all');
+    onClearPersonFocus?.();
   };
 
   const hasActiveFilters =
     semanticFilter !== 'all' ||
     mediumFilter !== 'all' ||
-    movementFilter !== 'all';
+    movementFilter !== 'all' ||
+    Boolean(focusedPersonRef);
 
   return (
     <section className="w-full py-16 px-4 sm:px-6 lg:px-12 border-b border-[var(--atlas-border)] bg-[var(--atlas-bg)]">
@@ -534,7 +555,27 @@ export const GlobalDiffusionSection: React.FC<GlobalDiffusionSectionProps> = ({
                   onChange={(event) => onSelectYear(Number(event.target.value))}
                   className="w-full mt-2 accent-[#D82B2B]"
                 />
-                {fracture1933 && (
+                {focusedPersonRef && (
+              <div className="flex items-center gap-2 border border-[#D82B2B] px-2.5 py-2 text-[#D82B2B]">
+                <span className="font-mono text-[8px] uppercase tracking-wider">
+                  Person // {
+                    focusedPersonRef.scope === 'atlas'
+                      ? getPersonById(focusedPersonRef.id)?.name ?? focusedPersonRef.id
+                      : getGlobalPersonById(focusedPersonRef.id)?.name ?? focusedPersonRef.id
+                  }
+                </span>
+                <button
+                  type="button"
+                  onClick={() => onClearPersonFocus?.()}
+                  className="font-mono text-[10px] leading-none"
+                  aria-label="Clear person focus"
+                >
+                  ×
+                </button>
+              </div>
+            )}
+
+            {fracture1933 && (
                   <div
                     className="absolute top-1 bottom-1 border-l border-[#D82B2B] pointer-events-none"
                     style={{ left: `${fracturePosition}%` }}
@@ -1323,7 +1364,18 @@ export const GlobalDiffusionSection: React.FC<GlobalDiffusionSectionProps> = ({
                 </div>
                 <div>
                   <dt className="font-mono uppercase tracking-wider text-[var(--atlas-text-muted)]">People</dt>
-                  <dd className="mt-1 text-[var(--atlas-text)]">{selectedPeople.join(', ')}</dd>
+                  <dd className="mt-1 flex flex-wrap gap-1.5">
+                    {selectedPeople.map(({ ref, name }) => (
+                      <button
+                        key={personRefKey(ref)}
+                        type="button"
+                        onClick={() => onSelectPerson(ref)}
+                        className="px-2 py-1 border border-[var(--atlas-border-control)] bg-[var(--atlas-card)] font-mono text-[9px] hover:border-[var(--atlas-text)]"
+                      >
+                        {name}
+                      </button>
+                    ))}
+                  </dd>
                 </div>
                 <div>
                   <dt className="font-mono uppercase tracking-wider text-[var(--atlas-text-muted)]">Mechanisms</dt>
