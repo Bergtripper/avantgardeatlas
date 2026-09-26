@@ -11,6 +11,16 @@ export const hotelTasselObject: ArchivalObject = {
   location: 'Brussels, Belgium',
   dimensions: 'Interior townhouse stairwell',
   description: 'Slender cast-iron columns blooming into delicate vegetal tendrils that flow uninterrupted into painted wall murals and curving floor mosaics.',
-  significance: 'Widely regarded as the first true Art Nouveau interior, introducing the organic "whiplash" curve into modern architectural metalwork.',
+  significance: 'A key early Art Nouveau interior in which architecture, ironwork, stained glass, mosaics, and decorative detail were conceived as an integrated ensemble.',
+  provenance: {
+    description: {
+      sourceIds: ['vam-art-nouveau-international-style'],
+      status: 'editorial-synthesis',
+    },
+    significance: {
+      sourceIds: ['vam-art-nouveau-international-style'],
+      status: 'documented',
+    },
+  },
   graphicType: 'secession-building'
 };
