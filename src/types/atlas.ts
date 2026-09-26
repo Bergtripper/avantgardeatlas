@@ -42,8 +42,14 @@ export interface VisualDNA {
 export type PersonId = string;
 export type ObjectId = string;
 
+export type EvidenceStatus =
+  | 'documented'
+  | 'editorial-synthesis'
+  | 'interpretive';
+
 export interface ClaimEvidence {
   sourceIds: string[];
+  status: EvidenceStatus;
   note?: string;
 }
 
