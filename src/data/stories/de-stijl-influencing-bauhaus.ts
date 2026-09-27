@@ -3,49 +3,64 @@ import { ConnectionStory } from '../../types/atlas';
 export const deStijlInfluencingBauhausStory: ConnectionStory = {
   id: 'story-de-stijl-bauhaus',
   title: 'Why De Stijl Influenced the Bauhaus',
-  subtitle: 'The Dutch Invasion of Weimar & The Purge of Mysticism',
+  subtitle: 'Weimar Encounters between De Stijl and the Bauhaus',
   timeframe: '1921—1925',
-  summary: 'How Theo van Doesburg arrived in Weimar in 1921, mocked Johannes Itten’s mystical expressionist robes, and forced the early Bauhaus to embrace primary colors, orthogonal geometry, and industrial logic.',
+  summary: 'How Theo van Doesburg’s presence in Weimar and his private De Stijl teaching intersected with an already evolving Bauhaus, contributing to debates about abstraction, geometry, craft, technology, and the school’s changing direction.',
   steps: [
     {
       stepNumber: 1,
       subtitle: 'The Mystical Early Bauhaus',
       yearRange: '1919—1921',
-      text: 'When Walter Gropius opened the Bauhaus in Weimar in 1919, its spiritual heart was not machine functionalism, but Johannes Itten’s Preliminary Course. Students wore monastic monk garments, shaved their heads, practiced Mazdaznan breathing exercises, and created handcrafted, expressive timber and stained-glass crafts.',
+      text: 'The early Bauhaus in Weimar combined craft workshops with experimental teaching and included strongly expressionist and spiritual tendencies, particularly around Johannes Itten’s preliminary course. This phase differed markedly from the school’s later emphasis on technology and industrial production.',
       graphicCue: 'Monastic Handcraft vs Machine',
-      focalMovements: ['bauhaus']
+      focalMovements: ['bauhaus'],
+      provenance: {
+        text: { sourceIds: ['bauhaus-archiv-history'], status: 'editorial-synthesis' },
+      }
     },
     {
       stepNumber: 2,
       subtitle: 'Van Doesburg Arrives in Weimar',
       yearRange: 'December 1920',
-      text: 'Theo van Doesburg, founder of the Dutch magazine De Stijl, arrived in Weimar with his wife Nelly. Van Doesburg expected to be offered a mastership at the Bauhaus. Gropius, wary of Van Doesburg’s aggressive dogma and abrasive temperament, refused to appoint him to the faculty.',
+      text: 'Theo van Doesburg settled in Weimar around 1921 and sought closer contact with the Bauhaus, but he never joined its faculty. Instead, he developed an independent presence in the city while promoting De Stijl ideas through lectures, publications, and private teaching.',
       graphicCue: 'The Uninvited Provocateur',
-      focalMovements: ['de-stijl', 'bauhaus']
+      focalMovements: ['de-stijl', 'bauhaus'],
+      provenance: {
+        text: { sourceIds: ['moma-van-doesburg', 'moma-de-stijl-term'], status: 'documented' },
+      }
     },
     {
       stepNumber: 3,
       subtitle: 'The Guerrilla De Stijl Course',
       yearRange: '1921—1922',
-      text: 'Refusing defeat, Van Doesburg rented an atelier in Weimar and launched an unofficial private course on De Stijl principles. Bauhaus students—including Marcel Breuer, Herbert Bayer, and Werner Graeff—surreptitiously attended. Van Doesburg showed them Mondrian’s paintings, Rietveld’s chairs, and rigid orthogonal grids, declaring expressionist handcraft obsolete.',
+      text: 'Van Doesburg organized a private De Stijl course outside the Bauhaus. Bauhaus students and associates encountered his ideas directly, adding a visible Dutch geometric and constructivist reference point to the broader set of influences already circulating in Weimar.',
       graphicCue: 'Underground Orthogonal Pedagogy',
-      focalMovements: ['de-stijl', 'bauhaus']
+      focalMovements: ['de-stijl', 'bauhaus'],
+      provenance: {
+        text: { sourceIds: ['moma-van-doesburg', 'moma-de-stijl-term'], status: 'editorial-synthesis' },
+      }
     },
     {
       stepNumber: 4,
       subtitle: 'Itten Resigns, Moholy-Nagy Takes Over',
       yearRange: '1923',
-      text: 'The Dutch intervention caused an ideological explosion inside the faculty. Itten, defending spiritual individuality and craft, resigned in early 1923. Gropius replaced him with Hungarian constructivist László Moholy-Nagy, pivoting the entire school slogan to "Art and Technology: A New Unity".',
+      text: 'Johannes Itten left the Bauhaus in 1923 and László Moholy-Nagy succeeded him in the preliminary course. The school’s turn toward “Art and Technology: A New Unity” had several causes; Van Doesburg’s activity in Weimar formed part of that wider environment but should not be treated as the sole trigger.',
       graphicCue: 'The Shift to Art & Technology',
-      focalMovements: ['bauhaus', 'constructivism']
+      focalMovements: ['bauhaus', 'constructivism'],
+      provenance: {
+        text: { sourceIds: ['bauhaus-archiv-history', 'moma-van-doesburg'], status: 'editorial-synthesis' },
+      }
     },
     {
       stepNumber: 5,
       subtitle: 'The Dessau Synthesis',
       yearRange: '1925—1926',
-      text: 'When the Bauhaus relocated to Dessau, the transformation was total. Marcel Breuer translated Rietveld’s wooden planar joints into tubular nickel steel. Herbert Bayer applied orthogonal layout to typography. De Stijl’s primary colors and spatial continuity became part of the universal modern canon.',
+      text: 'By the Dessau period, Bauhaus design showed stronger commitments to industry, standardized production, typography, and modern architecture. De Stijl was one important reference among several—including Constructivism and the Werkbund—rather than a single source for this transformation.',
       graphicCue: 'The Modernist Breakthrough',
-      focalMovements: ['bauhaus', 'de-stijl', 'international-style']
+      focalMovements: ['bauhaus', 'de-stijl', 'international-style'],
+      provenance: {
+        text: { sourceIds: ['bauhaus-archiv-history', 'moma-de-stijl-term'], status: 'editorial-synthesis' },
+      }
     }
   ]
 };
