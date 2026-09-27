@@ -3,41 +3,53 @@ import { ConnectionStory } from '../../types/atlas';
 export const artNouveauToBauhausStory: ConnectionStory = {
   id: 'story-art-nouveau-to-bauhaus',
   title: 'From Art Nouveau to Bauhaus',
-  subtitle: 'The 30-Year Journey from Botanical Ornament to Industrial Steel',
+  subtitle: 'A Selective Route from Reform Ornament to Industrial Design',
   timeframe: '1890—1925',
-  summary: 'Tracing how European design purged the organic whiplash curve of 1895, passed through the geometry of Vienna and the standardization of the Werkbund, and arrived at the tubular steel and curtain-wall glass of Dessau.',
+  summary: 'A selective editorial route through overlapping reform movements—from Art Nouveau and the Vienna Secession to the Werkbund and Bauhaus—showing how debates about ornament, craft, standardization, and industrial production changed across several European contexts.',
   steps: [
     {
       stepNumber: 1,
       subtitle: 'The Organic Sinuous Revolt',
       yearRange: '1890—1900',
-      text: 'Victor Horta in Brussels and Hector Guimard in Paris rebelled against Victorian classical copyists. Using modern cast iron, they shaped structural columns into living plant stems and whiplash arabesques, creating the total organic artwork.',
+      text: 'In Brussels and Paris, designers such as Victor Horta and Hector Guimard used iron, glass, flowing line, and integrated interiors to develop alternatives to conventional historicist design. Their work connected architecture, fittings, surfaces, and graphic ornament within a broader reform culture.',
       graphicCue: 'The Whiplash Awakening',
-      focalMovements: ['art-nouveau']
+      focalMovements: ['art-nouveau'],
+      provenance: {
+        text: { sourceIds: ['vam-art-nouveau-international-style'], status: 'editorial-synthesis' },
+      }
     },
     {
       stepNumber: 2,
       subtitle: 'Vienna Geometrizes the Surface',
       yearRange: '1897—1905',
-      text: 'Josef Hoffmann and Koloman Moser in Vienna grew tired of untamed botanical tangles. They straightened the curves into the "Quadratstil" (square style), establishing rhythmic orthogonal checkerboard grids on furniture, silver, and architecture.',
+      text: 'In Vienna, figures including Josef Hoffmann and Koloman Moser developed a more geometric design language within the Secession and related applied-arts networks. Square grids, repeated motifs, and integrated interiors became important features, but this shift was not a simple linear rejection of Art Nouveau.',
       graphicCue: 'The Viennese Square',
-      focalMovements: ['vienna-secession']
+      focalMovements: ['vienna-secession'],
+      provenance: {
+        text: { sourceIds: ['vienna-secession-history'], status: 'editorial-synthesis' },
+      }
     },
     {
       stepNumber: 3,
       subtitle: 'The Machine Standardization Debate',
       yearRange: '1907—1914',
-      text: 'In Munich and Berlin, the Deutscher Werkbund brought artists together with factory directors. At the fateful 1914 Cologne debate, Hermann Muthesius insisted on standardization (Typisierung) for machine mass production, while Henry van de Velde fought for individual artist expression.',
+      text: 'The Deutscher Werkbund linked designers, architects, workshops, and manufacturers. Its internal debates—including the well-known 1914 dispute between Hermann Muthesius and Henry van de Velde—made standardization, artistic authorship, product quality, and industrial scale explicit points of contention.',
       graphicCue: 'Typisierung vs Individual',
-      focalMovements: ['deutscher-werkbund']
+      focalMovements: ['deutscher-werkbund'],
+      provenance: {
+        text: { sourceIds: ['werkbundarchiv-chronology'], status: 'documented' },
+      }
     },
     {
       stepNumber: 4,
-      subtitle: 'The Postwar Catharsis and Dessau Climax',
+      subtitle: 'Bauhaus Reframes the Debate',
       yearRange: '1919—1926',
-      text: 'The First World War destroyed the old imperial world. Walter Gropius resolved the Werkbund conflict: machine standardization and artistic form merged into the Bauhaus curriculum. The botanical vine had transformed into the seamless nickel-plated tubular steel chair.',
+      text: 'After 1919, the Bauhaus inherited several earlier reform questions but changed its answers over time. The school began with a strong craft orientation and later, especially in Dessau, moved toward technology, prototypes, architecture, and industrial production. This was a reconfiguration of earlier debates rather than their simple resolution.',
       graphicCue: 'The Industrial Transformation',
-      focalMovements: ['bauhaus', 'international-style']
+      focalMovements: ['bauhaus', 'international-style'],
+      provenance: {
+        text: { sourceIds: ['bauhaus-archiv-history', 'bauhaus-archiv-teaching'], status: 'editorial-synthesis' },
+      }
     }
   ]
 };

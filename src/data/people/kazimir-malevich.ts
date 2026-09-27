@@ -12,7 +12,7 @@ export const kazimirMalevich: HistoricalFigure = {
     'Founded the UNOVIS collective in Vitebsk (1919–1922)',
     'Constructed three-dimensional plaster "Architectons" predicting future vertical cities (1920s)'
   ],
-  biography: 'The mystic prophet of non-objective art. He stripped European painting of representational subject matter to achieve the "zero of form" and explore pure cosmic sensation.',
+  biography: 'Russian and Ukrainian-born painter and theorist who developed Suprematism as a non-objective visual language based on geometric form, color, and what he described as pure feeling, while also working in teaching, design, and three-dimensional studies.',
   keyDisciplines: ['Painting', 'Sculpture', 'Architectural Modeling', 'Philosophy'],
   keyQuote: 'The square is not a subconscious form. It is the creation of intuitive reason. It is the first step of pure creation in art.'
 };
