@@ -436,6 +436,28 @@ warnings.push(
       : ' All core movement claims are sourced.'),
 );
 
+const movementNarrativeClaimKeys = ['summary', 'coreIdeas', 'historicalContext'] as const;
+const movementNarrativeCovered = ALL_MOVEMENTS.reduce(
+  (total, movement) =>
+    total +
+    movementNarrativeClaimKeys.filter((claimKey) => Boolean(movement.provenance?.[claimKey])).length,
+  0,
+);
+const movementNarrativeTotal = ALL_MOVEMENTS.length * movementNarrativeClaimKeys.length;
+const movementNarrativeMissing = ALL_MOVEMENTS
+  .map((movement) => ({
+    id: movement.id,
+    missing: movementNarrativeClaimKeys.filter((claimKey) => !movement.provenance?.[claimKey]),
+  }))
+  .filter((entry) => entry.missing.length > 0);
+
+warnings.push(
+  `Publication-critical movement narrative coverage: ${movementNarrativeCovered}/${movementNarrativeTotal} (${Math.round((movementNarrativeCovered / movementNarrativeTotal) * 100)}%).` +
+    (movementNarrativeMissing.length
+      ? ` Missing: ${movementNarrativeMissing.map((entry) => `${entry.id} [${entry.missing.join(', ')}]`).join('; ')}.`
+      : ' All movement summaries, core ideas and historical contexts are sourced.'),
+);
+
 const objectEditorialClaimKeys = ['description', 'significance'] as const;
 const objectCoveredClaims = ALL_OBJECTS.reduce(
   (total, object) =>
@@ -510,23 +532,23 @@ for (const movement of ALL_MOVEMENTS) {
   }
 }
 
-const movementIds = new Set(ALL_MOVEMENTS.map((m) => m.id));
-for (const movementId of movementIds) {
-  const movement = getMovementById(movementId);
-  if (!movement) continue;
+/* ALL_CONNECTIONS is a curated display graph, not an exhaustive mirror of every
+   influencesFrom/influencesTo declaration. Validate only the edges that are
+   actually published in that curated graph. */
+for (const connection of ALL_CONNECTIONS) {
+  const sourceMovement = getMovementById(connection.source);
+  const targetMovement = getMovementById(connection.target);
+  if (!sourceMovement || !targetMovement) continue;
 
-  for (const target of movement.influencesTo) {
-    const hasConnection = ALL_CONNECTIONS.some((c) => c.source === movementId && c.target === target);
-    if (!hasConnection) {
-      warnings.push(`Movement ${movementId}: influencesTo "${target}" has no matching ALL_CONNECTIONS edge`);
-    }
+  if (!sourceMovement.influencesTo.includes(connection.target)) {
+    warnings.push(
+      `Curated connection ${connection.source}->${connection.target}: source movement does not declare target in influencesTo`,
+    );
   }
-
-  for (const source of movement.influencesFrom) {
-    const hasConnection = ALL_CONNECTIONS.some((c) => c.source === source && c.target === movementId);
-    if (!hasConnection) {
-      warnings.push(`Movement ${movementId}: influencesFrom "${source}" has no matching ALL_CONNECTIONS edge`);
-    }
+  if (!targetMovement.influencesFrom.includes(connection.source)) {
+    warnings.push(
+      `Curated connection ${connection.source}->${connection.target}: target movement does not declare source in influencesFrom`,
+    );
   }
 }
 
