@@ -13,7 +13,7 @@ export const leCorbusier: HistoricalFigure = {
     'Formulator of the "Five Points of a New Architecture" (1926)',
     'Key founder of CIAM (International Congresses of Modern Architecture, 1928)'
   ],
-  biography: 'Swiss-French architect, painter, urbanist, writer, and polemicist whose work connected Purism, architectural theory, housing prototypes, urban planning, and a highly influential personal system of modern design.'
+  biography: 'Swiss-French architect, painter, urbanist, writer, and polemicist whose work connected Purism, architectural theory, housing prototypes, urban planning, and a highly influential personal system of modern design.',
   keyDisciplines: ['Architecture', 'Painting', 'Urbanism', 'Philosophy'],
   keyQuote: 'A house is a machine for living in. Architecture is the learned game, correct and magnificent, of forms assembled in the light.'
 };
