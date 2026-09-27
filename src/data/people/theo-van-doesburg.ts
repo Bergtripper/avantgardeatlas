@@ -12,7 +12,7 @@ export const theoVanDoesburg: HistoricalFigure = {
     'Collaborated with Dadaists under the pseudonym I.K. Bonset',
     'Invented Elementarism (1924), introducing diagonal counter-composition and breaking with Mondrian'
   ],
-  biography: 'Dutch artist, writer, editor, and organizer who made the journal De Stijl into a platform for abstract art and architecture while building connections with Dada, Constructivism, and the Bauhaus milieu without becoming a Bauhaus faculty member.'
+  biography: 'Dutch artist, writer, editor, and organizer who made the journal De Stijl into a platform for abstract art and architecture while building connections with Dada, Constructivism, and the Bauhaus milieu without becoming a Bauhaus faculty member.',
   keyDisciplines: ['Painting', 'Architecture', 'Typography', 'Publishing', 'Poetry'],
   keyQuote: 'The square is the ultimate symbol of human intellect conquering formless nature.'
 };
