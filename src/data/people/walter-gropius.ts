@@ -12,7 +12,7 @@ export const walterGropius: HistoricalFigure = {
     'Architect of the Fagus Factory and Bauhaus Dessau glass curtain campus',
     'Chairman of Architecture at Harvard Graduate School of Design (1938–1952)'
   ],
-  biography: 'German architect and educator who founded the Bauhaus in 1919 and reshaped its program over the following decade, linking workshop-based education with architecture, modern production, and an expanding engagement with technology and industry.'
+  biography: 'German architect and educator who founded the Bauhaus in 1919 and reshaped its program over the following decade, linking workshop-based education with architecture, modern production, and an expanding engagement with technology and industry.',
   keyDisciplines: ['Architecture', 'Pedagogy', 'Industrial Design', 'Master Planning'],
   keyQuote: 'Architects, sculptors, painters, we all must return to the crafts! For art is not a "profession".'
 };
