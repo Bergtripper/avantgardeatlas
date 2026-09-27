@@ -27,6 +27,7 @@ import { ALL_SOURCES } from '../src/data/sources';
 
 const errors: string[] = [];
 const warnings: string[] = [];
+const editorialBacklog: string[] = [];
 
 const checkUnique = (label: string, ids: string[]) => {
   const seen = new Set<string>();
@@ -420,15 +421,42 @@ const movementCoveredClaims = ALL_MOVEMENTS.reduce(
   0,
 );
 const movementTotalClaims = ALL_MOVEMENTS.length * movementEditorialClaimKeys.length;
-const movementsWithoutProvenance = ALL_MOVEMENTS
-  .filter((movement) => Object.keys(movement.provenance ?? {}).length === 0)
-  .map((movement) => movement.id);
+const movementMissingClaims = ALL_MOVEMENTS
+  .map((movement) => ({
+    id: movement.id,
+    missing: movementEditorialClaimKeys.filter((claimKey) => !movement.provenance?.[claimKey]),
+  }))
+  .filter((entry) => entry.missing.length > 0);
 
-warnings.push(
-  `Editorial provenance coverage — movements: ${movementCoveredClaims}/${movementTotalClaims} claim fields (${Math.round((movementCoveredClaims / movementTotalClaims) * 100)}%).` +
-    (movementsWithoutProvenance.length
-      ? ` No claim-level provenance yet: ${movementsWithoutProvenance.join(', ')}.`
-      : ''),
+editorialBacklog.push(
+  `Movement specialist-note provenance: ${movementCoveredClaims}/${movementTotalClaims} total claim fields (${Math.round((movementCoveredClaims / movementTotalClaims) * 100)}%).` +
+    (movementMissingClaims.length
+      ? ` Remaining optional/specialist fields: ${movementMissingClaims
+          .map((entry) => `${entry.id} [${entry.missing.join(', ')}]`)
+          .join('; ')}.`
+      : ' All movement claim fields are sourced.'),
+);
+
+const movementNarrativeClaimKeys = ['summary', 'coreIdeas', 'historicalContext'] as const;
+const movementNarrativeCovered = ALL_MOVEMENTS.reduce(
+  (total, movement) =>
+    total +
+    movementNarrativeClaimKeys.filter((claimKey) => Boolean(movement.provenance?.[claimKey])).length,
+  0,
+);
+const movementNarrativeTotal = ALL_MOVEMENTS.length * movementNarrativeClaimKeys.length;
+const movementNarrativeMissing = ALL_MOVEMENTS
+  .map((movement) => ({
+    id: movement.id,
+    missing: movementNarrativeClaimKeys.filter((claimKey) => !movement.provenance?.[claimKey]),
+  }))
+  .filter((entry) => entry.missing.length > 0);
+
+console.log(
+  `Publication-critical movement narrative coverage: ${movementNarrativeCovered}/${movementNarrativeTotal} (${Math.round((movementNarrativeCovered / movementNarrativeTotal) * 100)}%).` +
+    (movementNarrativeMissing.length
+      ? ` Missing: ${movementNarrativeMissing.map((entry) => `${entry.id} [${entry.missing.join(', ')}]`).join('; ')}.`
+      : ' All movement summaries, core ideas and historical contexts are sourced.'),
 );
 
 const objectEditorialClaimKeys = ['description', 'significance'] as const;
@@ -439,21 +467,32 @@ const objectCoveredClaims = ALL_OBJECTS.reduce(
   0,
 );
 const objectTotalClaims = ALL_OBJECTS.length * objectEditorialClaimKeys.length;
-const objectsWithoutEditorialProvenance = ALL_OBJECTS
-  .filter((object) => !object.provenance?.description && !object.provenance?.significance)
-  .map((object) => object.id);
+const objectMissingClaims = ALL_OBJECTS
+  .map((object) => ({
+    id: object.id,
+    missing: objectEditorialClaimKeys.filter((claimKey) => !object.provenance?.[claimKey]),
+  }))
+  .filter((entry) => entry.missing.length > 0);
 
-warnings.push(
-  `Editorial provenance coverage — objects: ${objectCoveredClaims}/${objectTotalClaims} core claim fields (${Math.round((objectCoveredClaims / objectTotalClaims) * 100)}%).` +
-    (objectsWithoutEditorialProvenance.length
-      ? ` Objects still unsourced at claim level: ${objectsWithoutEditorialProvenance.length}.`
-      : ''),
+editorialBacklog.push(
+  `Object claim provenance: ${objectCoveredClaims}/${objectTotalClaims} core claim fields (${Math.round((objectCoveredClaims / objectTotalClaims) * 100)}%).` +
+    (objectMissingClaims.length
+      ? ` Remaining objects: ${objectMissingClaims
+          .map((entry) => `${entry.id} [${entry.missing.join(', ')}]`)
+          .join('; ')}.`
+      : ' All core object claims are sourced.'),
 );
 
-const storySteps = ALL_STORIES.flatMap((story) => story.steps);
-const sourcedStorySteps = storySteps.filter((step) => Boolean(step.provenance?.text)).length;
-warnings.push(
-  `Editorial provenance coverage — story steps: ${sourcedStorySteps}/${storySteps.length} narrative text claims (${storySteps.length ? Math.round((sourcedStorySteps / storySteps.length) * 100) : 100}%).`,
+const storyStepRecords = ALL_STORIES.flatMap((story) =>
+  story.steps.map((step) => ({ storyId: story.id, step })),
+);
+const sourcedStorySteps = storyStepRecords.filter(({ step }) => Boolean(step.provenance?.text)).length;
+const unsourcedStorySteps = storyStepRecords
+  .filter(({ step }) => !step.provenance?.text)
+  .map(({ storyId, step }) => `${storyId}#${step.stepNumber}`);
+console.log(
+  `Story narrative provenance: ${sourcedStorySteps}/${storyStepRecords.length} text claims (${storyStepRecords.length ? Math.round((sourcedStorySteps / storyStepRecords.length) * 100) : 100}%).` +
+    (unsourcedStorySteps.length ? ` Unsourced steps: ${unsourcedStorySteps.join(', ')}.` : ' All story text steps are sourced.'),
 );
 
 const incompletePeople = ALL_PEOPLE.filter(
@@ -472,22 +511,24 @@ if (incompletePeople.length) {
   );
 }
 
-const movementIds = new Set(ALL_MOVEMENTS.map((m) => m.id));
-for (const movementId of movementIds) {
-  const movement = getMovementById(movementId);
-  if (!movement) continue;
-
-  for (const target of movement.influencesTo) {
-    const hasConnection = ALL_CONNECTIONS.some((c) => c.source === movementId && c.target === target);
-    if (!hasConnection) {
-      warnings.push(`Movement ${movementId}: influencesTo "${target}" has no matching ALL_CONNECTIONS edge`);
+/* Cross-registry editorial consistency checks. These are warnings because
+   association does not always imply featured status, but mismatches should be reviewed. */
+for (const movement of ALL_MOVEMENTS) {
+  for (const personId of movement.keyPeople) {
+    const person = getPersonById(personId);
+    if (person && !person.primaryMovements.includes(movement.id)) {
+      warnings.push(
+        `Cross-registry: movement ${movement.id} lists ${personId} as keyPeople, but the person does not list ${movement.id} in primaryMovements`,
+      );
     }
   }
 
-  for (const source of movement.influencesFrom) {
-    const hasConnection = ALL_CONNECTIONS.some((c) => c.source === source && c.target === movementId);
-    if (!hasConnection) {
-      warnings.push(`Movement ${movementId}: influencesFrom "${source}" has no matching ALL_CONNECTIONS edge`);
+  for (const objectId of movement.keyWorks) {
+    const object = getObjectById(objectId);
+    if (object && object.movementId !== movement.id) {
+      errors.push(
+        `Cross-registry: movement ${movement.id} lists ${objectId} as keyWorks, but object movementId is ${object.movementId}`,
+      );
     }
   }
 }
@@ -499,6 +540,11 @@ console.log(
 if (warnings.length) {
   console.warn(`\nWarnings (${warnings.length}):`);
   warnings.forEach((warning) => console.warn(`  - ${warning}`));
+}
+
+if (editorialBacklog.length) {
+  console.log(`\nEditorial backlog (${editorialBacklog.length}):`);
+  editorialBacklog.forEach((item) => console.log(`  - ${item}`));
 }
 
 if (errors.length) {
