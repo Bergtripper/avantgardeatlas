@@ -12,7 +12,7 @@ export const vladimirTatlin: HistoricalFigure = {
     'Designed the Monument to the Third International (Tatlin\'s Tower, 1919–1920)',
     'Designed the human-powered flying glider "Letatlin" (1929–1932)'
   ],
-  biography: 'Russian artist and designer whose counter-reliefs, Monument to the Third International, applied-design experiments, and later Letatlin project made material construction and spatial experimentation central to his work.'
+  biography: 'Russian artist and designer whose counter-reliefs, Monument to the Third International, applied-design experiments, and later Letatlin project made material construction and spatial experimentation central to his work.',
   keyDisciplines: ['Sculpture', 'Architecture', 'Industrial Design', 'Aviation Engineering'],
   keyQuote: 'Real materials in real space. Not the old, not the new, but the necessary.'
 };
