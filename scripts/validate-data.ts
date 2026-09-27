@@ -420,15 +420,20 @@ const movementCoveredClaims = ALL_MOVEMENTS.reduce(
   0,
 );
 const movementTotalClaims = ALL_MOVEMENTS.length * movementEditorialClaimKeys.length;
-const movementsWithoutProvenance = ALL_MOVEMENTS
-  .filter((movement) => Object.keys(movement.provenance ?? {}).length === 0)
-  .map((movement) => movement.id);
+const movementMissingClaims = ALL_MOVEMENTS
+  .map((movement) => ({
+    id: movement.id,
+    missing: movementEditorialClaimKeys.filter((claimKey) => !movement.provenance?.[claimKey]),
+  }))
+  .filter((entry) => entry.missing.length > 0);
 
 warnings.push(
   `Editorial provenance coverage — movements: ${movementCoveredClaims}/${movementTotalClaims} claim fields (${Math.round((movementCoveredClaims / movementTotalClaims) * 100)}%).` +
-    (movementsWithoutProvenance.length
-      ? ` No claim-level provenance yet: ${movementsWithoutProvenance.join(', ')}.`
-      : ''),
+    (movementMissingClaims.length
+      ? ` Missing claims: ${movementMissingClaims
+          .map((entry) => `${entry.id} [${entry.missing.join(', ')}]`)
+          .join('; ')}.`
+      : ' All core movement claims are sourced.'),
 );
 
 const objectEditorialClaimKeys = ['description', 'significance'] as const;
@@ -439,21 +444,32 @@ const objectCoveredClaims = ALL_OBJECTS.reduce(
   0,
 );
 const objectTotalClaims = ALL_OBJECTS.length * objectEditorialClaimKeys.length;
-const objectsWithoutEditorialProvenance = ALL_OBJECTS
-  .filter((object) => !object.provenance?.description && !object.provenance?.significance)
-  .map((object) => object.id);
+const objectMissingClaims = ALL_OBJECTS
+  .map((object) => ({
+    id: object.id,
+    missing: objectEditorialClaimKeys.filter((claimKey) => !object.provenance?.[claimKey]),
+  }))
+  .filter((entry) => entry.missing.length > 0);
 
 warnings.push(
   `Editorial provenance coverage — objects: ${objectCoveredClaims}/${objectTotalClaims} core claim fields (${Math.round((objectCoveredClaims / objectTotalClaims) * 100)}%).` +
-    (objectsWithoutEditorialProvenance.length
-      ? ` Objects still unsourced at claim level: ${objectsWithoutEditorialProvenance.length}.`
-      : ''),
+    (objectMissingClaims.length
+      ? ` Missing claims: ${objectMissingClaims
+          .map((entry) => `${entry.id} [${entry.missing.join(', ')}]`)
+          .join('; ')}.`
+      : ' All core object claims are sourced.'),
 );
 
-const storySteps = ALL_STORIES.flatMap((story) => story.steps);
-const sourcedStorySteps = storySteps.filter((step) => Boolean(step.provenance?.text)).length;
+const storyStepRecords = ALL_STORIES.flatMap((story) =>
+  story.steps.map((step) => ({ storyId: story.id, step })),
+);
+const sourcedStorySteps = storyStepRecords.filter(({ step }) => Boolean(step.provenance?.text)).length;
+const unsourcedStorySteps = storyStepRecords
+  .filter(({ step }) => !step.provenance?.text)
+  .map(({ storyId, step }) => `${storyId}#${step.stepNumber}`);
 warnings.push(
-  `Editorial provenance coverage — story steps: ${sourcedStorySteps}/${storySteps.length} narrative text claims (${storySteps.length ? Math.round((sourcedStorySteps / storySteps.length) * 100) : 100}%).`,
+  `Editorial provenance coverage — story steps: ${sourcedStorySteps}/${storyStepRecords.length} narrative text claims (${storyStepRecords.length ? Math.round((sourcedStorySteps / storyStepRecords.length) * 100) : 100}%).` +
+    (unsourcedStorySteps.length ? ` Unsourced steps: ${unsourcedStorySteps.join(', ')}.` : ' All story text steps are sourced.'),
 );
 
 const incompletePeople = ALL_PEOPLE.filter(
@@ -470,6 +486,28 @@ if (incompletePeople.length) {
       .map((person) => person.id)
       .join(', ')}.`,
   );
+}
+
+/* Cross-registry editorial consistency checks. These are warnings because
+   association does not always imply featured status, but mismatches should be reviewed. */
+for (const movement of ALL_MOVEMENTS) {
+  for (const personId of movement.keyPeople) {
+    const person = getPersonById(personId);
+    if (person && !person.primaryMovements.includes(movement.id)) {
+      warnings.push(
+        `Cross-registry: movement ${movement.id} lists ${personId} as keyPeople, but the person does not list ${movement.id} in primaryMovements`,
+      );
+    }
+  }
+
+  for (const objectId of movement.keyWorks) {
+    const object = getObjectById(objectId);
+    if (object && object.movementId !== movement.id) {
+      errors.push(
+        `Cross-registry: movement ${movement.id} lists ${objectId} as keyWorks, but object movementId is ${object.movementId}`,
+      );
+    }
+  }
 }
 
 const movementIds = new Set(ALL_MOVEMENTS.map((m) => m.id));
