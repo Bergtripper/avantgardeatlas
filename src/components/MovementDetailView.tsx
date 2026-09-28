@@ -424,19 +424,14 @@ export const MovementDetailView: React.FC<MovementDetailViewProps> = ({
               ) : (
                 <div className="space-y-3">
                   {influencesFrom.map((m) => (
-                    <div
+                    <EntityLink
                       key={m.id}
-                      role="button"
-                      tabIndex={0}
-                      aria-label={`Open ${m.name} monograph`}
-                      onClick={() => onSelectMovement(m.id)}
-                      onKeyDown={(event) => {
-                        if (event.key === 'Enter' || event.key === ' ') {
-                          event.preventDefault();
-                          onSelectMovement(m.id);
-                        }
-                      }}
-                      className="p-3 bg-[var(--atlas-card)] border border-[var(--atlas-border-control)] hover:border-[var(--atlas-text)] cursor-pointer transition-colors"
+                      kind="movement"
+                      label={m.name}
+                      variant="card"
+                      onActivate={() => onSelectMovement(m.id)}
+                      className="p-3 bg-[var(--atlas-card)]"
+                      ariaLabel={`Open ${m.name} monograph`}
                     >
                       <div className="font-semibold text-sm text-[var(--atlas-text)]">
                         {m.name} ({m.period})
@@ -444,7 +439,7 @@ export const MovementDetailView: React.FC<MovementDetailViewProps> = ({
                       <div className="text-xs text-[var(--atlas-text-subtle)] mt-1 line-clamp-2">
                         {m.summary}
                       </div>
-                    </div>
+                    </EntityLink>
                   ))}
                 </div>
               )}
@@ -462,19 +457,14 @@ export const MovementDetailView: React.FC<MovementDetailViewProps> = ({
               ) : (
                 <div className="space-y-3">
                   {influencesTo.map((m) => (
-                    <div
+                    <EntityLink
                       key={m.id}
-                      role="button"
-                      tabIndex={0}
-                      aria-label={`Open ${m.name} monograph`}
-                      onClick={() => onSelectMovement(m.id)}
-                      onKeyDown={(event) => {
-                        if (event.key === 'Enter' || event.key === ' ') {
-                          event.preventDefault();
-                          onSelectMovement(m.id);
-                        }
-                      }}
-                      className="p-3 bg-[var(--atlas-card)] border border-[var(--atlas-border-control)] hover:border-[var(--atlas-text)] cursor-pointer transition-colors"
+                      kind="movement"
+                      label={m.name}
+                      variant="card"
+                      onActivate={() => onSelectMovement(m.id)}
+                      className="p-3 bg-[var(--atlas-card)]"
+                      ariaLabel={`Open ${m.name} monograph`}
                     >
                       <div className="font-semibold text-sm text-[var(--atlas-text)]">
                         {m.name} ({m.period})
@@ -482,7 +472,7 @@ export const MovementDetailView: React.FC<MovementDetailViewProps> = ({
                       <div className="text-xs text-[var(--atlas-text-subtle)] mt-1 line-clamp-2">
                         {m.summary}
                       </div>
-                    </div>
+                    </EntityLink>
                   ))}
                 </div>
               )}
