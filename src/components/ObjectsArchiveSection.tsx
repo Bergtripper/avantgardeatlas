@@ -3,10 +3,12 @@ import { ArchivalObject, MovementId } from '../types/atlas';
 import { ArchivalVectorPlate } from './ArchivalVectorPlate';
 import { ClaimSources } from './ClaimSources';
 import { EntityLink } from './EntityLink';
+import { getPersonByName } from '../data/people';
 
 interface ObjectsArchiveSectionProps {
   objects: ArchivalObject[];
   onSelectMovement: (id: MovementId) => void;
+  onSelectPerson: (id: string) => void;
   selectedYear: number;
   focusedObjectId?: string | null;
   onExploreGlobalObject: (object: ArchivalObject) => void;
@@ -15,6 +17,7 @@ interface ObjectsArchiveSectionProps {
 export const ObjectsArchiveSection: React.FC<ObjectsArchiveSectionProps> = ({
   objects,
   onSelectMovement,
+  onSelectPerson,
   selectedYear,
   focusedObjectId = null,
   onExploreGlobalObject,
@@ -179,7 +182,16 @@ export const ObjectsArchiveSection: React.FC<ObjectsArchiveSectionProps> = ({
         </div>
 
         {/* Object Detail Modal / Drawer */}
-        {selectedObject && (
+        {selectedObject && (() => {
+          const media = selectedObject.media?.image;
+          const realImageUrl =
+            media?.verified
+              ? media.imageUrl ?? media.thumbnailUrl
+              : undefined;
+          const creatorPerson = getPersonByName(selectedObject.creator);
+          const collections = selectedObject.media?.externalCollections ?? [];
+
+          return (
           <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/60 backdrop-blur-xs">
             <div className="bg-[var(--atlas-surface)] border border-[var(--atlas-text)] w-full max-w-4xl max-h-[92svh] sm:max-h-[90vh] overflow-y-auto p-4 pt-16 sm:p-8 relative shadow-2xl">
               {/* Close Button */}
@@ -192,11 +204,29 @@ export const ObjectsArchiveSection: React.FC<ObjectsArchiveSectionProps> = ({
 
               <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start mt-4">
                 <div className="md:col-span-6">
-                  <ArchivalVectorPlate
-                    type={selectedObject.graphicType}
-                    className="w-full h-80"
-                    caption={`${selectedObject.title} (${selectedObject.year})`}
-                  />
+                  {realImageUrl ? (
+                    <figure className="border border-[var(--atlas-border)] bg-[var(--atlas-card)]">
+                      <img
+                        src={realImageUrl}
+                        alt={media?.alt ?? selectedObject.title}
+                        className="w-full max-h-[28rem] object-contain bg-[var(--atlas-card)]"
+                      />
+                      <figcaption className="px-3 py-2 border-t border-[var(--atlas-border)] font-mono text-[9px] leading-relaxed text-[var(--atlas-text-muted)]">
+                        {media?.creditLine ?? media?.caption ?? 'Verified institutional image'}
+                      </figcaption>
+                    </figure>
+                  ) : (
+                    <div>
+                      <ArchivalVectorPlate
+                        type={selectedObject.graphicType}
+                        className="w-full h-80"
+                        caption={`${selectedObject.title} (${selectedObject.year})`}
+                      />
+                      <div className="mt-2 font-mono text-[9px] uppercase tracking-wider text-[var(--atlas-text-muted)]">
+                        Editorial visual fallback // not a reproduction of the historical work
+                      </div>
+                    </div>
+                  )}
                   {selectedObject.dimensions && (
                     <div className="mt-2 font-mono text-[11px] text-[var(--atlas-text-muted)]">
                       DIMENSIONS: {selectedObject.dimensions}
@@ -211,9 +241,25 @@ export const ObjectsArchiveSection: React.FC<ObjectsArchiveSectionProps> = ({
                   <h3 className="text-2xl sm:text-3xl font-bold tracking-tight text-[var(--atlas-text)] mt-1">
                     {selectedObject.title}
                   </h3>
-                  <div className="text-sm font-semibold text-[var(--atlas-text-secondary)] mt-1 font-mono">
-                    {selectedObject.creator}
-                  </div>
+                  {creatorPerson ? (
+                    <EntityLink
+                      kind="person"
+                      label={creatorPerson.name}
+                      variant="chip"
+                      onActivate={() => {
+                        setSelectedObject(null);
+                        onSelectPerson(creatorPerson.id);
+                      }}
+                      className="mt-2 normal-case"
+                      ariaLabel={`Open person record for ${creatorPerson.name}`}
+                    >
+                      {selectedObject.creator} →
+                    </EntityLink>
+                  ) : (
+                    <div className="text-sm font-semibold text-[var(--atlas-text-secondary)] mt-1 font-mono">
+                      {selectedObject.creator}
+                    </div>
+                  )}
                   <div className="text-xs text-[var(--atlas-text-muted)] mt-0.5">
                     Location: {selectedObject.location}
                   </div>
@@ -243,6 +289,57 @@ export const ObjectsArchiveSection: React.FC<ObjectsArchiveSectionProps> = ({
                   </p>
                   <ClaimSources evidence={selectedObject.provenance?.description} />
 
+                  {media && (
+                    <div className="mt-6 pt-4 border-t border-[var(--atlas-border-soft)]">
+                      <span className="font-mono text-[10px] text-[var(--atlas-text-quiet)] uppercase block mb-2">
+                        Image Source & Rights
+                      </span>
+                      <div className="space-y-1 font-mono text-[10px] text-[var(--atlas-text-secondary)]">
+                        {media.institution && <div>Institution: {media.institution}</div>}
+                        <div>Rights: {media.rightsLabel ?? media.rightsStatus}</div>
+                        <a
+                          href={media.sourceUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="inline-block underline underline-offset-4 hover:text-[#D82B2B]"
+                        >
+                          Authoritative source ↗
+                        </a>
+                        {media.rightsUrl && (
+                          <a
+                            href={media.rightsUrl}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="block underline underline-offset-4 hover:text-[#D82B2B]"
+                          >
+                            Rights statement ↗
+                          </a>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {collections.length > 0 && (
+                    <div className="mt-6 pt-4 border-t border-[var(--atlas-border-soft)]">
+                      <span className="font-mono text-[10px] text-[var(--atlas-text-quiet)] uppercase block mb-2">
+                        Explore Collections
+                      </span>
+                      <div className="space-y-1.5">
+                        {collections.map((collection) => (
+                          <a
+                            key={collection.url}
+                            href={collection.url}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="block font-mono text-[10px] underline underline-offset-4 text-[var(--atlas-text)] hover:text-[#D82B2B]"
+                          >
+                            {collection.institution} // {collection.label} ↗
+                          </a>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
                   <div className="mt-8 pt-4 border-t border-[var(--atlas-border)] flex flex-wrap items-center gap-2">
                     <EntityLink
                       kind="movement"
@@ -269,7 +366,8 @@ export const ObjectsArchiveSection: React.FC<ObjectsArchiveSectionProps> = ({
               </div>
             </div>
           </div>
-        )}
+          );
+        })()}
       </div>
     </section>
   );
