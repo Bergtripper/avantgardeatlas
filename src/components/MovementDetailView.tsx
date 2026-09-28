@@ -17,6 +17,8 @@ interface MovementDetailViewProps {
   movement: Movement;
   onBack: () => void;
   onSelectMovement: (id: MovementId) => void;
+  onSelectPerson: (id: string) => void;
+  onSelectObject: (id: string) => void;
   allMovements: Movement[];
   selectedYear: number;
   onExploreGlobalMovement: (id: MovementId) => void;
@@ -26,6 +28,8 @@ export const MovementDetailView: React.FC<MovementDetailViewProps> = ({
   movement,
   onBack,
   onSelectMovement,
+  onSelectPerson,
+  onSelectObject,
   allMovements: _allMovements,
   selectedYear,
   onExploreGlobalMovement,
@@ -310,8 +314,18 @@ export const MovementDetailView: React.FC<MovementDetailViewProps> = ({
                     {activeWork.description}
                   </p>
                 </div>
-                <div className="mt-8 pt-4 border-t border-[var(--atlas-border)] text-xs font-mono text-[var(--atlas-text-muted)]">
-                  ARCHIVAL SPECIFICATION // MONOGRAPH RECORD
+                <div className="mt-8 pt-4 border-t border-[var(--atlas-border)] flex flex-wrap items-center justify-between gap-3">
+                  <span className="text-xs font-mono text-[var(--atlas-text-muted)]">
+                    ARCHIVAL SPECIFICATION // MONOGRAPH RECORD
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => onSelectObject(activeWork.id)}
+                    className="font-mono text-[10px] uppercase tracking-wider px-3 py-2 border border-[var(--atlas-text)] text-[var(--atlas-text)] hover:bg-[var(--atlas-text)] hover:text-[var(--atlas-bg)] transition-colors"
+                    aria-label={`Open object record for ${activeWork.title}`}
+                  >
+                    Open object record →
+                  </button>
                 </div>
               </div>
             </div>
@@ -356,9 +370,15 @@ export const MovementDetailView: React.FC<MovementDetailViewProps> = ({
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {keyPeople.map((person, idx) => (
-              <div key={person.id || idx} className="border border-[var(--atlas-border)] bg-[var(--atlas-surface)] p-4 flex flex-col justify-between">
+              <button
+                key={person.id || idx}
+                type="button"
+                onClick={() => onSelectPerson(person.id)}
+                className="group border border-[var(--atlas-border)] bg-[var(--atlas-surface)] p-4 flex flex-col justify-between text-left hover:border-[var(--atlas-text)] focus-visible:border-[var(--atlas-text)] transition-colors"
+                aria-label={`Open person record for ${person.name}`}
+              >
                 <div>
-                  <div className="font-bold text-sm text-[var(--atlas-text)]">
+                  <div className="font-bold text-sm text-[var(--atlas-text)] group-hover:underline">
                     {person.name}
                   </div>
                   {(person.birthDeath || person.years) && (
@@ -370,7 +390,10 @@ export const MovementDetailView: React.FC<MovementDetailViewProps> = ({
                     {person.role || (person.interventions && person.interventions[0]) || person.biography}
                   </p>
                 </div>
-              </div>
+                <span className="mt-4 pt-3 border-t border-[var(--atlas-border)] font-mono text-[9px] uppercase tracking-wider text-[var(--atlas-text-muted)] group-hover:text-[#D82B2B]">
+                  Open person record →
+                </span>
+              </button>
             ))}
           </div>
         </section>
