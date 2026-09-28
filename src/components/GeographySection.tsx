@@ -1,8 +1,8 @@
 import React, { useMemo, useRef, useState } from 'react';
 import { MovementId } from '../types/atlas';
 import { ALL_PLACES } from '../data/places';
-import {
 import { EntityLink } from './EntityLink';
+import {
   EUROPE_BASEMAP_PATH,
   EUROPE_MAP,
   GEOGRAPHY_CONNECTIONS,
