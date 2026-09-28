@@ -261,6 +261,15 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const handleSelectObjectFromPerson = (objectId: string) => {
+    setSelectedMovementId(null);
+    setCurrentTab('archive');
+    setLastOverviewTab('archive');
+    setFocusedObjectId(objectId);
+    window.history.pushState({}, '', pathForTab('archive'));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   const handleExploreGlobalPerson = (ref: DiffusionPersonRef) => {
     setSelectedMovementId(null);
     setCurrentTab('global');
@@ -455,6 +464,7 @@ export default function App() {
             {currentTab === 'people' && (
               <PeopleSection
                 onSelectMovement={handleSelectMovement}
+                onSelectObject={handleSelectObjectFromPerson}
                 selectedYear={selectedYear}
                 focusedPersonRef={peopleFocus}
                 onExploreGlobalPerson={handleExploreGlobalPerson}

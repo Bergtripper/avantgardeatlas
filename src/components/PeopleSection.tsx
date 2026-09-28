@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { MovementId } from '../types/atlas';
 import { ALL_PEOPLE } from '../data/people';
+import { getObjectsForPersonName } from '../data/objects';
 import { EntityLink } from './EntityLink';
 import {
   ALL_DIFFUSION_ROUTES,
@@ -10,6 +11,7 @@ import {
 
 interface PeopleSectionProps {
   onSelectMovement: (id: MovementId) => void;
+  onSelectObject: (id: string) => void;
   selectedYear: number;
   focusedPersonRef?: DiffusionPersonRef | null;
   onExploreGlobalPerson: (ref: DiffusionPersonRef) => void;
@@ -19,6 +21,7 @@ const personRefKey = (ref: DiffusionPersonRef) => `${ref.scope}:${ref.id}`;
 
 export const PeopleSection: React.FC<PeopleSectionProps> = ({
   onSelectMovement,
+  onSelectObject,
   selectedYear,
   focusedPersonRef = null,
   onExploreGlobalPerson,
@@ -122,6 +125,13 @@ export const PeopleSection: React.FC<PeopleSectionProps> = ({
             const personRef: DiffusionPersonRef = { scope: 'atlas', id: fig.id };
             const globalRoutes = routesForPerson(personRef);
             const isFocused = focusedPersonKey === personRefKey(personRef);
+            const selectedObjects = getObjectsForPersonName(fig.name);
+            const portrait = fig.media?.portrait;
+            const portraitUrl =
+              portrait?.verified
+                ? portrait.thumbnailUrl ?? portrait.imageUrl
+                : undefined;
+            const collections = fig.media?.externalCollections ?? [];
 
             return (
               <div
@@ -167,17 +177,28 @@ export const PeopleSection: React.FC<PeopleSectionProps> = ({
                     </button>
                   )}
 
+                  {portraitUrl && (
+                    <figure className="mt-4 border border-[var(--atlas-border)] bg-[var(--atlas-card)]">
+                      <img
+                        src={portraitUrl}
+                        alt={portrait?.alt ?? fig.name}
+                        className="w-full aspect-[4/3] object-cover"
+                        loading="lazy"
+                      />
+                      <figcaption className="px-3 py-2 font-mono text-[9px] leading-relaxed text-[var(--atlas-text-muted)]">
+                        {portrait?.creditLine ?? portrait?.caption ?? 'Verified portrait source'}
+                      </figcaption>
+                    </figure>
+                  )}
+
                   <p className="text-xs text-[var(--atlas-text-secondary)] leading-relaxed mt-3">
                     {fig.biography}
                   </p>
 
-                  {fig.keyQuote && (
-                    <blockquote className="my-4 pl-3 border-l-2 border-[var(--atlas-text)] italic text-xs text-[#333]">
-                      “{fig.keyQuote}”
-                    </blockquote>
-                  )}
-
-                  <div className="mt-4 pt-3 border-t border-[var(--atlas-border-soft)]">
+                  <div
+                    id={`person-details-${fig.id}`}
+                    className="mt-4 pt-3 border-t border-[var(--atlas-border-soft)]"
+                  >
                     <span className="font-mono text-[10px] text-[var(--atlas-text-quiet)] uppercase block mb-1">
                       Historical Trajectory & Influences
                     </span>
@@ -190,6 +211,61 @@ export const PeopleSection: React.FC<PeopleSectionProps> = ({
                       ))}
                     </ul>
                   </div>
+
+                  {isExpanded && selectedObjects.length > 0 && (
+                    <div className="mt-5 pt-4 border-t border-[var(--atlas-border-soft)]">
+                      <span className="font-mono text-[10px] text-[var(--atlas-text-quiet)] uppercase block mb-2">
+                        Selected Objects
+                      </span>
+                      <div className="flex flex-col gap-2">
+                        {selectedObjects.slice(0, 4).map((object) => (
+                          <EntityLink
+                            key={object.id}
+                            kind="object"
+                            label={object.title}
+                            variant="action"
+                            onActivate={() => onSelectObject(object.id)}
+                            className="w-full text-left normal-case tracking-normal"
+                            ariaLabel={`Open object record for ${object.title}`}
+                          >
+                            <span className="block text-[10px] font-semibold">{object.title}</span>
+                            <span className="block mt-0.5 text-[9px] opacity-70">
+                              {object.year} · {object.category}
+                            </span>
+                          </EntityLink>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {isExpanded && collections.length > 0 && (
+                    <div className="mt-5 pt-4 border-t border-[var(--atlas-border-soft)]">
+                      <span className="font-mono text-[10px] text-[var(--atlas-text-quiet)] uppercase block mb-2">
+                        Explore Collections
+                      </span>
+                      <div className="space-y-1.5">
+                        {collections.map((collection) => (
+                          <a
+                            key={collection.url}
+                            href={collection.url}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="block font-mono text-[10px] underline underline-offset-4 text-[var(--atlas-text)] hover:text-[#D82B2B]"
+                          >
+                            {collection.institution} // {collection.label} ↗
+                          </a>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {fig.keyQuote && (
+                    <blockquote className="my-4 pl-3 border-l-2 border-[var(--atlas-text)] italic text-xs text-[#333]">
+                      “{fig.keyQuote}”
+                    </blockquote>
+                  )}
+
+
                 </div>
 
                 <div className="mt-6 pt-3 border-t border-[var(--atlas-border)] flex items-center justify-between text-xs font-mono">
