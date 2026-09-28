@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { ArchivalObject, MovementId } from '../types/atlas';
 import { ArchivalVectorPlate } from './ArchivalVectorPlate';
 import { ClaimSources } from './ClaimSources';
+import { EntityLink } from './EntityLink';
 
 interface ObjectsArchiveSectionProps {
   objects: ArchivalObject[];
@@ -243,16 +244,19 @@ export const ObjectsArchiveSection: React.FC<ObjectsArchiveSectionProps> = ({
                   <ClaimSources evidence={selectedObject.provenance?.description} />
 
                   <div className="mt-8 pt-4 border-t border-[var(--atlas-border)] flex flex-wrap items-center gap-2">
-                    <button
-                      onClick={() => {
+                    <EntityLink
+                      kind="movement"
+                      label={selectedObject.movementId}
+                      variant="action"
+                      onActivate={() => {
                         const mId = selectedObject.movementId;
                         setSelectedObject(null);
                         onSelectMovement(mId);
                       }}
-                      className="font-mono text-xs font-semibold px-4 py-2 bg-[var(--atlas-ink-button)] text-white hover:bg-[#333] cursor-pointer"
+                      className="text-xs font-semibold px-4 bg-[var(--atlas-ink-button)] text-white hover:bg-[#333]"
                     >
                       Explore {selectedObject.movementId.toUpperCase()} Monograph →
-                    </button>
+                    </EntityLink>
                     <button
                       type="button"
                       onClick={() => onExploreGlobalObject(selectedObject)}
