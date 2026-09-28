@@ -52,7 +52,7 @@ export const AccessibilityTool: React.FC = () => {
     <>
       <aside
         aria-label="Accessibility and reading tools"
-        className={`atlas-a11y-desktop-trigger absolute top-28 xl:top-20 z-50 hidden sm:block ${
+        className={`atlas-a11y-desktop-trigger absolute top-28 xl:top-20 z-50 hidden xl:block ${
           dockRight ? 'right-0' : 'left-0'
         }`}
       >
@@ -351,7 +351,7 @@ export const AccessibilityTool: React.FC = () => {
                 <button
                   type="button"
                   onClick={toggleDockPosition}
-                  className="atlas-a11y-secondary-button hidden sm:inline-flex"
+                  className="atlas-a11y-secondary-button hidden xl:inline-flex"
                 >
                   <MoveHorizontal size={13} />
                   DOCK // {dockRight ? 'RIGHT' : 'LEFT'}
