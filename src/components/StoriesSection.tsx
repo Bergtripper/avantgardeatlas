@@ -30,12 +30,22 @@ export const StoriesSection: React.FC<StoriesSectionProps> = ({
     if (!focusedStoryId) return;
     const storyIndex = ALL_STORIES.findIndex((story) => story.id === focusedStoryId);
     if (storyIndex < 0) return;
+
     setSelectedStoryIndex(storyIndex);
     setCurrentStepIndex(
       focusedStepIndex != null
         ? Math.max(0, Math.min(ALL_STORIES[storyIndex].steps.length - 1, focusedStepIndex))
         : 0,
     );
+
+    const frame = window.requestAnimationFrame(() => {
+      const target = document.getElementById('story-active-record');
+      if (!target) return;
+      target.scrollIntoView({ behavior: 'auto', block: 'center' });
+      target.focus({ preventScroll: true });
+    });
+
+    return () => window.cancelAnimationFrame(frame);
   }, [focusedStoryId, focusedStepIndex]);
 
   const activeStepGlobalRoutes = ALL_DIFFUSION_ROUTES.filter(
@@ -88,7 +98,11 @@ export const StoriesSection: React.FC<StoriesSectionProps> = ({
         </div>
 
         {/* Active Story Box */}
-        <div className="border border-[var(--atlas-text)] bg-[var(--atlas-surface)] p-6 sm:p-10">
+        <div
+          id="story-active-record"
+          tabIndex={-1}
+          className="scroll-mt-32 outline-none border border-[var(--atlas-text)] bg-[var(--atlas-surface)] p-6 sm:p-10"
+        >
           {/* Story Meta Header */}
           <div className="border-b border-[var(--atlas-border)] pb-6">
             <div className="flex items-baseline justify-between flex-wrap gap-2 text-xs font-mono text-[var(--atlas-text-muted)]">

@@ -60,9 +60,18 @@ export const GeographySection: React.FC<GeographySectionProps> = ({
 
   React.useEffect(() => {
     if (!focusedCityId) return;
-    if (ALL_PLACES.some((city) => city.id === focusedCityId)) {
-      setActiveCityId(focusedCityId);
-    }
+    if (!ALL_PLACES.some((city) => city.id === focusedCityId)) return;
+
+    setActiveCityId(focusedCityId);
+
+    const frame = window.requestAnimationFrame(() => {
+      const target = document.getElementById('geography-city-detail');
+      if (!target) return;
+      target.scrollIntoView({ behavior: 'auto', block: 'center' });
+      target.focus({ preventScroll: true });
+    });
+
+    return () => window.cancelAnimationFrame(frame);
   }, [focusedCityId]);
 
   const activeCities = ALL_PLACES.filter(
@@ -510,7 +519,11 @@ export const GeographySection: React.FC<GeographySectionProps> = ({
             </div>
           </div>
 
-          <div className="lg:col-span-4 border border-[var(--atlas-border)] bg-[var(--atlas-surface)] p-6 min-h-[460px] flex flex-col justify-between">
+          <div
+            id="geography-city-detail"
+            tabIndex={-1}
+            className="scroll-mt-32 outline-none lg:col-span-4 border border-[var(--atlas-border)] bg-[var(--atlas-surface)] p-6 min-h-[460px] flex flex-col justify-between"
+          >
             <div>
               <div className="flex items-center justify-between border-b border-[var(--atlas-border)] pb-3 text-xs font-mono">
                 <span className="text-[var(--atlas-text-quiet)] uppercase">Urban Epicenter</span>
