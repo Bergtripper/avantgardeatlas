@@ -30,9 +30,19 @@ export const PeopleSection: React.FC<PeopleSectionProps> = ({
   const [activeFigureId, setActiveFigureId] = useState<string | null>(null);
 
   useEffect(() => {
-    if (focusedPersonRef?.scope === 'atlas') {
-      setActiveFigureId(focusedPersonRef.id);
-    }
+    if (focusedPersonRef?.scope !== 'atlas') return;
+
+    setActiveFigureId(focusedPersonRef.id);
+
+    const frame = window.requestAnimationFrame(() => {
+      const target = document.getElementById(`person-card-${focusedPersonRef.id}`);
+      if (!target) return;
+
+      target.scrollIntoView({ behavior: 'auto', block: 'center' });
+      target.focus({ preventScroll: true });
+    });
+
+    return () => window.cancelAnimationFrame(frame);
   }, [focusedPersonRef]);
 
   const allDisciplines = Array.from(
@@ -136,7 +146,10 @@ export const PeopleSection: React.FC<PeopleSectionProps> = ({
             return (
               <div
                 key={fig.id}
-                className={`border bg-[var(--atlas-surface)] p-6 flex flex-col justify-between transition-colors ${
+                id={`person-card-${fig.id}`}
+                tabIndex={-1}
+                data-person-id={fig.id}
+                className={`scroll-mt-32 outline-none border bg-[var(--atlas-surface)] p-6 flex flex-col justify-between transition-colors ${
                   isFocused
                     ? 'border-[#D82B2B] ring-1 ring-[#D82B2B]'
                     : 'border-[var(--atlas-border)] hover:border-[var(--atlas-text)]'
