@@ -134,6 +134,28 @@ ALL_OBJECTS.forEach((obj) => {
   }
 });
 
+const normalizeCreatorName = (value: string) =>
+  value
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, ' ')
+    .trim();
+
+export const getObjectsForPersonName = (personName: string): ArchivalObject[] => {
+  const normalizedPerson = normalizeCreatorName(personName);
+  if (!normalizedPerson) return [];
+
+  return ALL_OBJECTS.filter((object) => {
+    const normalizedCreator = normalizeCreatorName(object.creator);
+    return (
+      normalizedCreator === normalizedPerson ||
+      normalizedCreator.includes(normalizedPerson) ||
+      normalizedPerson.includes(normalizedCreator)
+    );
+  });
+};
+
 export const getObjectById = (id: string): ArchivalObject | undefined => {
   if (!id) return undefined;
   if (objectsRegistry[id]) return objectsRegistry[id];
