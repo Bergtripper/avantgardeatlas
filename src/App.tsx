@@ -281,6 +281,16 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const handleSelectPersonFromObject = (personId: string) => {
+    setSelectedMovementId(null);
+    setCurrentTab('people');
+    setLastOverviewTab('people');
+    setPeopleFocus({ scope: 'atlas', id: personId });
+    setGlobalPersonFocus({ scope: 'atlas', id: personId });
+    window.history.pushState({}, '', pathForTab('people'));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   const handleExploreGlobalObject = (object: ArchivalObject) => {
     setSelectedMovementId(null);
     setCurrentTab('global');
@@ -448,6 +458,7 @@ export default function App() {
             {currentTab === 'archive' && (
               <ObjectsRouteSection
                 onSelectMovement={handleSelectMovement}
+                onSelectPerson={handleSelectPersonFromObject}
                 selectedYear={selectedYear}
                 focusedObjectId={focusedObjectId}
                 onExploreGlobalObject={handleExploreGlobalObject}

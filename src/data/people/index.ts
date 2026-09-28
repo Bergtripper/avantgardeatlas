@@ -227,6 +227,28 @@ peopleRegistry['corbusier'] = leCorbusier;
 peopleRegistry['figini-pollini'] = luigiFigini;
 peopleRegistry['luigi-figini-gino-pollini'] = luigiFigini;
 
+const normalizePersonName = (value: string) =>
+  value
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, ' ')
+    .trim();
+
+export const getPersonByName = (name: string): HistoricalFigure | undefined => {
+  const normalized = normalizePersonName(name);
+  if (!normalized) return undefined;
+
+  return ALL_PEOPLE.find((person) => {
+    const candidate = normalizePersonName(person.name);
+    return (
+      candidate === normalized ||
+      candidate.includes(normalized) ||
+      normalized.includes(candidate)
+    );
+  });
+};
+
 export const getPersonById = (id: string): HistoricalFigure | undefined => {
   if (!id) return undefined;
   return peopleRegistry[id] || ALL_PEOPLE.find((p) => p.id === id);
