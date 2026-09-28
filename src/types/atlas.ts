@@ -42,6 +42,71 @@ export interface VisualDNA {
 export type PersonId = string;
 export type ObjectId = string;
 
+export type MediaAssetRole =
+  | 'portrait'
+  | 'representative-work'
+  | 'object-image'
+  | 'institutional-thumbnail';
+
+export type MediaSourceType =
+  | 'hosted'
+  | 'external'
+  | 'iiif';
+
+export type MediaRightsStatus =
+  | 'public-domain'
+  | 'cc0'
+  | 'cc-by'
+  | 'cc-by-sa'
+  | 'copyrighted-permission'
+  | 'copyrighted-link-only'
+  | 'unknown-review-required';
+
+export interface InstitutionalCollectionLink {
+  institution: string;
+  label: string;
+  url: string;
+  collectionType?: 'artist' | 'movement' | 'object' | 'search' | 'archive';
+  note?: string;
+}
+
+export interface MediaAsset {
+  id: string;
+  role: MediaAssetRole;
+  sourceType: MediaSourceType;
+  alt: string;
+  caption?: string;
+  creator?: string;
+  workTitle?: string;
+  year?: number;
+  institution?: string;
+  creditLine?: string;
+  sourceUrl: string;
+  rightsStatus: MediaRightsStatus;
+  rightsLabel?: string;
+  rightsUrl?: string;
+  imageUrl?: string;
+  thumbnailUrl?: string;
+  iiifManifestUrl?: string;
+  iiifImageServiceUrl?: string;
+  verified: boolean;
+}
+
+export interface MovementMedia {
+  representativeWorks?: MediaAsset[];
+  externalCollections?: InstitutionalCollectionLink[];
+}
+
+export interface PersonMedia {
+  portrait?: MediaAsset;
+  externalCollections?: InstitutionalCollectionLink[];
+}
+
+export interface ObjectMedia {
+  image?: MediaAsset;
+  externalCollections?: InstitutionalCollectionLink[];
+}
+
 export type EvidenceStatus =
   | 'documented'
   | 'editorial-synthesis'
@@ -110,6 +175,7 @@ export interface Movement {
   historicalContext: string;
   visualPrinciples: string[];
   visualDna: VisualDNA;
+  media?: MovementMedia;
   architectureNotes: string;
   graphicDesignNotes: string;
   industryRelationship: string;
@@ -148,6 +214,7 @@ export interface ArchivalObject {
   provenance?: Partial<Record<ObjectClaimKey, ClaimEvidence>>;
   graphicType: SvgGraphicPlateType;
   svgGraphicType?: SvgGraphicPlateType;
+  media?: ObjectMedia;
 }
 
 export interface HistoricalFigure {
@@ -162,6 +229,7 @@ export interface HistoricalFigure {
   keyQuote?: string;
   role?: string;
   birthDeath?: string;
+  media?: PersonMedia;
 }
 
 export interface ConnectionStoryStep {
