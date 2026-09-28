@@ -3,6 +3,7 @@ import { MovementId } from '../types/atlas';
 import { ALL_STORIES } from '../data/stories';
 import { ALL_DIFFUSION_ROUTES } from '../data/global';
 import { ClaimSources } from './ClaimSources';
+import { EntityLink } from './EntityLink';
 
 interface StoriesSectionProps {
   onSelectMovement: (id: MovementId) => void;
@@ -144,13 +145,16 @@ export const StoriesSection: React.FC<StoriesSectionProps> = ({
               <div className="mt-6 flex items-center gap-2 flex-wrap">
                 <span className="font-mono text-[11px] text-[var(--atlas-text-quiet)] uppercase">Movements in Focus:</span>
                 {activeStep.focalMovements.map((mId) => (
-                  <button
+                  <EntityLink
                     key={mId}
-                    onClick={() => onSelectMovement(mId)}
-                    className="font-mono text-xs px-2.5 py-1 bg-[var(--atlas-surface-alt)] hover:bg-[var(--atlas-ink-button)] hover:text-white border border-[var(--atlas-border-control)] cursor-pointer transition-colors"
+                    kind="movement"
+                    label={mId}
+                    variant="chip"
+                    onActivate={() => onSelectMovement(mId)}
+                    className="text-xs bg-[var(--atlas-surface-alt)]"
                   >
                     {mId.toUpperCase()} →
-                  </button>
+                  </EntityLink>
                 ))}
               </div>
             </div>

@@ -12,6 +12,7 @@ import {
 import { getPlaceById } from '../data/places';
 import { ClaimSources } from './ClaimSources';
 import { useAccessibility } from '../context/AccessibilityContext';
+import { EntityLink } from './EntityLink';
 
 interface MovementDetailViewProps {
   movement: Movement;
@@ -318,14 +319,15 @@ export const MovementDetailView: React.FC<MovementDetailViewProps> = ({
                   <span className="text-xs font-mono text-[var(--atlas-text-muted)]">
                     ARCHIVAL SPECIFICATION // MONOGRAPH RECORD
                   </span>
-                  <button
-                    type="button"
-                    onClick={() => onSelectObject(activeWork.id)}
-                    className="font-mono text-[10px] uppercase tracking-wider px-3 py-2 border border-[var(--atlas-text)] text-[var(--atlas-text)] hover:bg-[var(--atlas-text)] hover:text-[var(--atlas-bg)] transition-colors"
-                    aria-label={`Open object record for ${activeWork.title}`}
+                  <EntityLink
+                    kind="object"
+                    label={activeWork.title}
+                    variant="action"
+                    onActivate={() => onSelectObject(activeWork.id)}
+                    ariaLabel={`Open object record for ${activeWork.title}`}
                   >
                     Open object record →
-                  </button>
+                  </EntityLink>
                 </div>
               </div>
             </div>
@@ -370,12 +372,14 @@ export const MovementDetailView: React.FC<MovementDetailViewProps> = ({
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {keyPeople.map((person, idx) => (
-              <button
+              <EntityLink
                 key={person.id || idx}
-                type="button"
-                onClick={() => onSelectPerson(person.id)}
-                className="group border border-[var(--atlas-border)] bg-[var(--atlas-surface)] p-4 flex flex-col justify-between text-left hover:border-[var(--atlas-text)] focus-visible:border-[var(--atlas-text)] transition-colors"
-                aria-label={`Open person record for ${person.name}`}
+                kind="person"
+                label={person.name}
+                variant="card"
+                onActivate={() => onSelectPerson(person.id)}
+                className="p-4 flex flex-col justify-between"
+                ariaLabel={`Open person record for ${person.name}`}
               >
                 <div>
                   <div className="font-bold text-sm text-[var(--atlas-text)] group-hover:underline">
@@ -393,7 +397,7 @@ export const MovementDetailView: React.FC<MovementDetailViewProps> = ({
                 <span className="mt-4 pt-3 border-t border-[var(--atlas-border)] font-mono text-[9px] uppercase tracking-wider text-[var(--atlas-text-muted)] group-hover:text-[#D82B2B]">
                   Open person record →
                 </span>
-              </button>
+              </EntityLink>
             ))}
           </div>
         </section>
@@ -420,19 +424,14 @@ export const MovementDetailView: React.FC<MovementDetailViewProps> = ({
               ) : (
                 <div className="space-y-3">
                   {influencesFrom.map((m) => (
-                    <div
+                    <EntityLink
                       key={m.id}
-                      role="button"
-                      tabIndex={0}
-                      aria-label={`Open ${m.name} monograph`}
-                      onClick={() => onSelectMovement(m.id)}
-                      onKeyDown={(event) => {
-                        if (event.key === 'Enter' || event.key === ' ') {
-                          event.preventDefault();
-                          onSelectMovement(m.id);
-                        }
-                      }}
-                      className="p-3 bg-[var(--atlas-card)] border border-[var(--atlas-border-control)] hover:border-[var(--atlas-text)] cursor-pointer transition-colors"
+                      kind="movement"
+                      label={m.name}
+                      variant="card"
+                      onActivate={() => onSelectMovement(m.id)}
+                      className="p-3 bg-[var(--atlas-card)]"
+                      ariaLabel={`Open ${m.name} monograph`}
                     >
                       <div className="font-semibold text-sm text-[var(--atlas-text)]">
                         {m.name} ({m.period})
@@ -440,7 +439,7 @@ export const MovementDetailView: React.FC<MovementDetailViewProps> = ({
                       <div className="text-xs text-[var(--atlas-text-subtle)] mt-1 line-clamp-2">
                         {m.summary}
                       </div>
-                    </div>
+                    </EntityLink>
                   ))}
                 </div>
               )}
@@ -458,19 +457,14 @@ export const MovementDetailView: React.FC<MovementDetailViewProps> = ({
               ) : (
                 <div className="space-y-3">
                   {influencesTo.map((m) => (
-                    <div
+                    <EntityLink
                       key={m.id}
-                      role="button"
-                      tabIndex={0}
-                      aria-label={`Open ${m.name} monograph`}
-                      onClick={() => onSelectMovement(m.id)}
-                      onKeyDown={(event) => {
-                        if (event.key === 'Enter' || event.key === ' ') {
-                          event.preventDefault();
-                          onSelectMovement(m.id);
-                        }
-                      }}
-                      className="p-3 bg-[var(--atlas-card)] border border-[var(--atlas-border-control)] hover:border-[var(--atlas-text)] cursor-pointer transition-colors"
+                      kind="movement"
+                      label={m.name}
+                      variant="card"
+                      onActivate={() => onSelectMovement(m.id)}
+                      className="p-3 bg-[var(--atlas-card)]"
+                      ariaLabel={`Open ${m.name} monograph`}
                     >
                       <div className="font-semibold text-sm text-[var(--atlas-text)]">
                         {m.name} ({m.period})
@@ -478,7 +472,7 @@ export const MovementDetailView: React.FC<MovementDetailViewProps> = ({
                       <div className="text-xs text-[var(--atlas-text-subtle)] mt-1 line-clamp-2">
                         {m.summary}
                       </div>
-                    </div>
+                    </EntityLink>
                   ))}
                 </div>
               )}

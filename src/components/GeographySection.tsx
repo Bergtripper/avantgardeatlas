@@ -1,6 +1,7 @@
 import React, { useMemo, useRef, useState } from 'react';
 import { MovementId } from '../types/atlas';
 import { ALL_PLACES } from '../data/places';
+import { EntityLink } from './EntityLink';
 import {
   EUROPE_BASEMAP_PATH,
   EUROPE_MAP,
@@ -551,14 +552,16 @@ export const GeographySection: React.FC<GeographySectionProps> = ({
                   </span>
                   <div className="flex flex-wrap gap-1.5">
                     {selectedCity.activeMovements.map((movementId) => (
-                      <button
-                        type="button"
+                      <EntityLink
                         key={movementId}
-                        onClick={() => onSelectMovement(movementId)}
-                        className="font-mono text-xs px-2.5 py-1 bg-[var(--atlas-card)] hover:bg-[var(--atlas-text)] hover:text-white border border-[var(--atlas-border-control)] cursor-pointer transition-colors"
+                        kind="movement"
+                        label={movementId}
+                        variant="chip"
+                        onActivate={() => onSelectMovement(movementId)}
+                        className="text-xs"
                       >
                         {movementId.toUpperCase()} →
-                      </button>
+                      </EntityLink>
                     ))}
                   </div>
                 </div>
