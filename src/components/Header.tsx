@@ -61,7 +61,16 @@ export const Header: React.FC<HeaderProps> = ({
 }) => {
   const [sectionsOpen, setSectionsOpen] = useState(false);
   const [mapsOpen, setMapsOpen] = useState(false);
-  const { togglePanel, isPanelOpen } = useAccessibility();
+  const { togglePanel, isPanelOpen, settings, textScale } = useAccessibility();
+  const hasActiveAccessibility =
+    textScale !== 100 ||
+    settings.highContrast ||
+    settings.relaxedSpacing ||
+    settings.readableFont ||
+    settings.highlightLinks ||
+    settings.readingWidth ||
+    settings.reduceMotion ||
+    settings.pauseDynamicType;
 
   const selectTab = (tab: NavTab) => {
     setSectionsOpen(false);
@@ -243,8 +252,9 @@ export const Header: React.FC<HeaderProps> = ({
               onClick={togglePanel}
               aria-expanded={isPanelOpen}
               aria-label="Open accessibility and reading tools"
-              className="atlas-control inline-flex items-center gap-1.5 px-2 py-1 border border-[var(--atlas-border)] bg-[var(--atlas-bg)] font-mono text-[9px] uppercase tracking-wider text-[var(--atlas-text)]"
+              className={`atlas-control atlas-a11y-header-trigger ${hasActiveAccessibility ? 'is-active' : ''} inline-flex items-center gap-1.5 px-2 py-1 border border-[var(--atlas-border)] bg-[var(--atlas-bg)] font-mono text-[9px] uppercase tracking-wider text-[var(--atlas-text)]`}
             >
+              <span className="atlas-a11y-header-mark" aria-hidden="true" />
               <Type size={12} />
               <span>Access</span>
             </button>

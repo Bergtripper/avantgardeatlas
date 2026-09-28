@@ -41,6 +41,15 @@ export const AccessibilityTool: React.FC = () => {
   const [collapsed, setCollapsed] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
   const dockRight = settings.dockPosition === 'right';
+  const hasActiveAccessibility =
+    textScale !== 100 ||
+    settings.highContrast ||
+    settings.relaxedSpacing ||
+    settings.readableFont ||
+    settings.highlightLinks ||
+    settings.readingWidth ||
+    settings.reduceMotion ||
+    settings.pauseDynamicType;
 
   useEffect(() => {
     if (isPanelOpen) {
@@ -53,8 +62,8 @@ export const AccessibilityTool: React.FC = () => {
       <aside
         aria-label="Accessibility and reading tools"
         className={`atlas-a11y-desktop-trigger absolute top-28 xl:top-20 z-50 hidden xl:block ${
-          dockRight ? 'right-0' : 'left-0'
-        }`}
+          hasActiveAccessibility ? 'is-active' : ''
+        } ${dockRight ? 'right-0' : 'left-0'}`}
       >
         {collapsed ? (
           <button
