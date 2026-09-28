@@ -5,6 +5,7 @@ import { ObjectsArchiveSection } from '../components/ObjectsArchiveSection';
 
 interface ObjectsRouteSectionProps {
   onSelectMovement: (id: MovementId) => void;
+  onSelectPerson: (id: string) => void;
   selectedYear: number;
   focusedObjectId?: string | null;
   onExploreGlobalObject: (object: ArchivalObject) => void;
@@ -12,6 +13,7 @@ interface ObjectsRouteSectionProps {
 
 export default function ObjectsRouteSection({
   onSelectMovement,
+  onSelectPerson,
   selectedYear,
   focusedObjectId,
   onExploreGlobalObject,
@@ -20,6 +22,7 @@ export default function ObjectsRouteSection({
     <ObjectsArchiveSection
       objects={ALL_OBJECTS}
       onSelectMovement={onSelectMovement}
+      onSelectPerson={onSelectPerson}
       selectedYear={selectedYear}
       focusedObjectId={focusedObjectId}
       onExploreGlobalObject={onExploreGlobalObject}
