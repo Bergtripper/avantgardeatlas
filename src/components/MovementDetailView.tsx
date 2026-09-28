@@ -201,11 +201,36 @@ export const MovementDetailView: React.FC<MovementDetailViewProps> = ({
           </p>
         </header>
 
-        {/* 01 / IDEA & 02 / ORIGIN */}
-        <section className="py-16 border-b border-[var(--atlas-border)] grid grid-cols-1 md:grid-cols-12 gap-8">
+        <nav
+          aria-label={`${movement.name} monograph sections`}
+          className="sticky top-[113px] z-20 -mx-4 sm:-mx-8 px-4 sm:px-8 py-2 border-b border-[var(--atlas-border)] bg-[var(--atlas-bg)]/95 backdrop-blur-xs overflow-x-auto"
+        >
+          <div className="flex items-center gap-1 min-w-max font-mono text-[9px] uppercase tracking-wider">
+            {[
+              ['context', '01 Context'],
+              ['visual-dna', '02 Visual DNA'],
+              ['people', '03 People'],
+              ['objects', '04 Objects'],
+              ['practices', '05 Practices'],
+              ['connections', '06 Connections'],
+              ['places', '07 Places'],
+            ].map(([id, label]) => (
+              <a
+                key={id}
+                href={`#movement-${id}`}
+                className="px-2.5 py-1.5 border border-transparent hover:border-[var(--atlas-border-control)] hover:bg-[var(--atlas-surface)] text-[var(--atlas-text-muted)] hover:text-[var(--atlas-text)]"
+              >
+                {label}
+              </a>
+            ))}
+          </div>
+        </nav>
+
+        {/* 01 / CONTEXT */}
+        <section id="movement-context" className="scroll-mt-32 py-16 border-b border-[var(--atlas-border)] grid grid-cols-1 md:grid-cols-12 gap-8">
           <div className="md:col-span-6 pr-0 md:pr-8 border-b md:border-b-0 md:border-r border-[var(--atlas-border)] pb-8 md:pb-0">
             <span className="font-mono text-xs uppercase tracking-widest text-[var(--atlas-text-quiet)] block mb-2">
-              01 / IDEA
+              01A / CORE IDEAS
             </span>
             <h2 className="text-2xl font-semibold tracking-tight text-[var(--atlas-text)] mb-4">
               Core Philosophy & Social Stance
@@ -218,7 +243,7 @@ export const MovementDetailView: React.FC<MovementDetailViewProps> = ({
 
           <div className="md:col-span-6 pl-0 md:pl-8">
             <span className="font-mono text-xs uppercase tracking-widest text-[var(--atlas-text-quiet)] block mb-2">
-              02 / ORIGIN
+              01B / HISTORICAL CONTEXT
             </span>
             <h2 className="text-2xl font-semibold tracking-tight text-[var(--atlas-text)] mb-4">
               Historical Context & Catalyst
@@ -230,10 +255,10 @@ export const MovementDetailView: React.FC<MovementDetailViewProps> = ({
           </div>
         </section>
 
-        {/* 03 / FORM: VISUAL PRINCIPLES */}
-        <section className="py-16 border-b border-[var(--atlas-border)]">
+        {/* 02A / VISUAL PRINCIPLES */}
+        <section id="movement-visual-principles" className="scroll-mt-32 py-16 border-b border-[var(--atlas-border)]">
           <span className="font-mono text-xs uppercase tracking-widest text-[var(--atlas-text-quiet)] block mb-2">
-            03 / FORM
+            02A / VISUAL PRINCIPLES
           </span>
           <h2 className="text-3xl font-semibold tracking-tight text-[var(--atlas-text)] mb-8">
             Governing Visual Principles
@@ -253,23 +278,64 @@ export const MovementDetailView: React.FC<MovementDetailViewProps> = ({
           </div>
         </section>
 
-        {/* VISUAL DNA MODULE */}
-        <section className="py-16 border-b border-[var(--atlas-border)]">
+        {/* 02B / VISUAL DNA */}
+        <section id="movement-visual-dna" className="scroll-mt-32 py-16 border-b border-[var(--atlas-border)]">
           <span className="font-mono text-xs uppercase tracking-widest text-[var(--atlas-text-quiet)] block mb-4">
-            04 & 05 / COLOUR, TYPOGRAPHY & VISUAL DNA
+            02B / VISUAL DNA — COLOUR, TYPOGRAPHY & FORM
           </span>
           <VisualDnaMatrix dna={movement.visualDna} movementName={movement.name} />
         </section>
 
-        {/* 06 / OBJECT: FEATURED ARCHIVAL ARTIFACTS */}
-        <section className="py-16 border-b border-[var(--atlas-border)]">
+        {/* 03 / PEOPLE */}
+        <section id="movement-people" className="scroll-mt-32 py-16 border-b border-[var(--atlas-border)]">
+          <span className="font-mono text-xs uppercase tracking-widest text-[var(--atlas-text-quiet)] block mb-2">
+            03 / KEY FIGURES
+          </span>
+          <h2 className="text-3xl font-semibold tracking-tight text-[var(--atlas-text)] mb-8">
+            Key Figures
+          </h2>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {keyPeople.map((person, idx) => (
+              <EntityLink
+                key={person.id || idx}
+                kind="person"
+                label={person.name}
+                variant="card"
+                onActivate={() => onSelectPerson(person.id)}
+                className="p-4 flex flex-col justify-between"
+                ariaLabel={`Open person record for ${person.name}`}
+              >
+                <div>
+                  <div className="font-bold text-sm text-[var(--atlas-text)] group-hover:underline">
+                    {person.name}
+                  </div>
+                  {(person.birthDeath || person.years) && (
+                    <div className="font-mono text-[11px] text-[var(--atlas-text-muted)] mt-0.5">
+                      {person.birthDeath || person.years}
+                    </div>
+                  )}
+                  <p className="mt-2 text-xs text-[var(--atlas-text-secondary)] leading-relaxed">
+                    {person.role || (person.interventions && person.interventions[0]) || person.biography}
+                  </p>
+                </div>
+                <span className="mt-4 pt-3 border-t border-[var(--atlas-border)] font-mono text-[9px] uppercase tracking-wider text-[var(--atlas-text-muted)] group-hover:text-[#D82B2B]">
+                  Open person record →
+                </span>
+              </EntityLink>
+            ))}
+          </div>
+        </section>
+
+        {/* 04 / SELECTED OBJECTS */}
+        <section id="movement-objects" className="scroll-mt-32 py-16 border-b border-[var(--atlas-border)]">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 gap-4">
             <div>
               <span className="font-mono text-xs uppercase tracking-widest text-[var(--atlas-text-quiet)] block mb-2">
-                06 / OBJECT & MANIFESTO
+                04 / SELECTED OBJECTS
               </span>
               <h2 className="text-3xl font-semibold tracking-tight text-[var(--atlas-text)]">
-                Key Works & Canonical Artifacts
+                Selected Objects
               </h2>
             </div>
             {keyWorks.length > 1 && (
@@ -317,7 +383,7 @@ export const MovementDetailView: React.FC<MovementDetailViewProps> = ({
                 </div>
                 <div className="mt-8 pt-4 border-t border-[var(--atlas-border)] flex flex-wrap items-center justify-between gap-3">
                   <span className="text-xs font-mono text-[var(--atlas-text-muted)]">
-                    ARCHIVAL SPECIFICATION // MONOGRAPH RECORD
+                    SELECTED OBJECT // MONOGRAPH RECORD
                   </span>
                   <EntityLink
                     kind="object"
@@ -334,11 +400,11 @@ export const MovementDetailView: React.FC<MovementDetailViewProps> = ({
           )}
         </section>
 
-        {/* 07 / ARCHITECTURE & GRAPHIC DESIGN DISCIPLINE */}
-        <section className="py-16 border-b border-[var(--atlas-border)] grid grid-cols-1 md:grid-cols-2 gap-8">
+        {/* 05 / PRACTICES */}
+        <section id="movement-practices" className="scroll-mt-32 py-16 border-b border-[var(--atlas-border)] grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="border border-[var(--atlas-border)] bg-[var(--atlas-surface)] p-8">
             <span className="font-mono text-xs uppercase tracking-widest text-[var(--atlas-text-quiet)] block mb-2">
-              07 / ARCHITECTURAL MANIFESTATION
+              05A / ARCHITECTURE
             </span>
             <h3 className="text-xl font-semibold tracking-tight text-[var(--atlas-text)] mb-4">
               Spatial & Tectonic Language
@@ -350,7 +416,7 @@ export const MovementDetailView: React.FC<MovementDetailViewProps> = ({
 
           <div className="border border-[var(--atlas-border)] bg-[var(--atlas-surface)] p-8">
             <span className="font-mono text-xs uppercase tracking-widest text-[var(--atlas-text-quiet)] block mb-2">
-              GRAPHIC & PRINT DISCIPLINE
+              05B / GRAPHIC & PRINT
             </span>
             <h3 className="text-xl font-semibold tracking-tight text-[var(--atlas-text)] mb-4">
               Typography, Layout & Photomontage
@@ -359,53 +425,25 @@ export const MovementDetailView: React.FC<MovementDetailViewProps> = ({
               {movement.graphicDesignNotes}
             </p>
           </div>
-        </section>
 
-        {/* 08 / PEOPLE: LEADING FIGURES */}
-        <section className="py-16 border-b border-[var(--atlas-border)]">
-          <span className="font-mono text-xs uppercase tracking-widest text-[var(--atlas-text-quiet)] block mb-2">
-            08 / PEOPLE
-          </span>
-          <h2 className="text-3xl font-semibold tracking-tight text-[var(--atlas-text)] mb-8">
-            Key Figures & Protagonists
-          </h2>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {keyPeople.map((person, idx) => (
-              <EntityLink
-                key={person.id || idx}
-                kind="person"
-                label={person.name}
-                variant="card"
-                onActivate={() => onSelectPerson(person.id)}
-                className="p-4 flex flex-col justify-between"
-                ariaLabel={`Open person record for ${person.name}`}
-              >
-                <div>
-                  <div className="font-bold text-sm text-[var(--atlas-text)] group-hover:underline">
-                    {person.name}
-                  </div>
-                  {(person.birthDeath || person.years) && (
-                    <div className="font-mono text-[11px] text-[var(--atlas-text-muted)] mt-0.5">
-                      {person.birthDeath || person.years}
-                    </div>
-                  )}
-                  <p className="mt-2 text-xs text-[var(--atlas-text-secondary)] leading-relaxed">
-                    {person.role || (person.interventions && person.interventions[0]) || person.biography}
-                  </p>
-                </div>
-                <span className="mt-4 pt-3 border-t border-[var(--atlas-border)] font-mono text-[9px] uppercase tracking-wider text-[var(--atlas-text-muted)] group-hover:text-[#D82B2B]">
-                  Open person record →
-                </span>
-              </EntityLink>
-            ))}
+          <div className="border border-[var(--atlas-border)] bg-[var(--atlas-surface)] p-8">
+            <span className="font-mono text-xs uppercase tracking-widest text-[var(--atlas-text-quiet)] block mb-2">
+              05C / INDUSTRY & PRODUCTION
+            </span>
+            <h3 className="text-xl font-semibold tracking-tight text-[var(--atlas-text)] mb-4">
+              Industry, Craft & Production
+            </h3>
+            <p className="text-sm text-[var(--atlas-text-body)] leading-relaxed">
+              {movement.industryRelationship}
+            </p>
+            <ClaimSources evidence={movement.provenance?.industryRelationship} />
           </div>
         </section>
 
-        {/* 09 / INFLUENCE & 10 / CONNECTIONS */}
-        <section className="py-16 border-b border-[var(--atlas-border)]">
+        {/* 06 / CONNECTIONS */}
+        <section id="movement-connections" className="scroll-mt-32 py-16 border-b border-[var(--atlas-border)]">
           <span className="font-mono text-xs uppercase tracking-widest text-[var(--atlas-text-quiet)] block mb-2">
-            09 & 10 / GENEALOGICAL CONNECTIONS
+            06 / CONNECTIONS & INFLUENCE
           </span>
           <h2 className="text-3xl font-semibold tracking-tight text-[var(--atlas-text)] mb-8">
             Cross-Movement Inheritances
@@ -480,12 +518,12 @@ export const MovementDetailView: React.FC<MovementDetailViewProps> = ({
           </div>
         </section>
 
-        {/* 11 / GLOBAL TRANSMISSION */}
-        <section className="py-16 border-b border-[var(--atlas-border)]">
+        {/* 07 / PLACES & GLOBAL TRANSMISSION */}
+        <section id="movement-places" className="scroll-mt-32 py-16 border-b border-[var(--atlas-border)]">
           <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-5 mb-8">
             <div>
               <span className="font-mono text-xs uppercase tracking-widest text-[var(--atlas-text-quiet)] block mb-2">
-                11 / GLOBAL TRANSMISSION
+                07 / PLACES & GLOBAL TRANSMISSION
               </span>
               <h2 className="text-3xl font-semibold tracking-tight text-[var(--atlas-text)]">
                 Movement in the Global Network
@@ -493,6 +531,16 @@ export const MovementDetailView: React.FC<MovementDetailViewProps> = ({
               <p className="mt-3 max-w-3xl text-sm leading-relaxed text-[var(--atlas-text-secondary)]">
                 Documented routes and local nodes linked to {movement.name} in the Atlas up to the shared Active Year {selectedYear}.
               </p>
+              <div className="mt-4 flex flex-wrap gap-1.5">
+                {movement.cities.map((city) => (
+                  <span
+                    key={city}
+                    className="font-mono text-[9px] uppercase tracking-wider px-2 py-1 border border-[var(--atlas-border-control)] bg-[var(--atlas-card)] text-[var(--atlas-text-secondary)]"
+                  >
+                    {city}
+                  </span>
+                ))}
+              </div>
             </div>
             <button
               type="button"
