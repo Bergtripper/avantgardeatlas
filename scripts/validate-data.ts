@@ -42,6 +42,61 @@ const requireText = (label: string, value: string | undefined) => {
   if (!value || !value.trim()) errors.push(`${label}: missing required text`);
 };
 
+const isValidUrl = (value: string) => {
+  try {
+    new URL(value);
+    return true;
+  } catch {
+    return false;
+  }
+};
+
+const validateMediaAsset = (label: string, asset: {
+  id: string;
+  alt: string;
+  sourceType: 'hosted' | 'external' | 'iiif';
+  sourceUrl: string;
+  rightsStatus: string;
+  imageUrl?: string;
+  thumbnailUrl?: string;
+  iiifManifestUrl?: string;
+  iiifImageServiceUrl?: string;
+  verified: boolean;
+}) => {
+  requireText(`${label} id`, asset.id);
+  requireText(`${label} alt`, asset.alt);
+  if (!isValidUrl(asset.sourceUrl)) {
+    errors.push(`${label}: invalid sourceUrl "${asset.sourceUrl}"`);
+  }
+  for (const [field, value] of [
+    ['imageUrl', asset.imageUrl],
+    ['thumbnailUrl', asset.thumbnailUrl],
+    ['iiifManifestUrl', asset.iiifManifestUrl],
+    ['iiifImageServiceUrl', asset.iiifImageServiceUrl],
+  ] as const) {
+    if (value && !isValidUrl(value)) {
+      errors.push(`${label}: invalid ${field} "${value}"`);
+    }
+  }
+  if (asset.sourceType === 'hosted' && !asset.imageUrl) {
+    errors.push(`${label}: hosted media requires imageUrl`);
+  }
+  if (asset.sourceType === 'iiif' && !asset.iiifManifestUrl && !asset.iiifImageServiceUrl) {
+    errors.push(`${label}: IIIF media requires iiifManifestUrl or iiifImageServiceUrl`);
+  }
+  if (asset.rightsStatus === 'unknown-review-required' && asset.verified) {
+    errors.push(`${label}: media with unknown rights cannot be marked verified`);
+  }
+};
+
+const validateCollectionLink = (label: string, link: { institution: string; label: string; url: string }) => {
+  requireText(`${label} institution`, link.institution);
+  requireText(`${label} label`, link.label);
+  if (!isValidUrl(link.url)) {
+    errors.push(`${label}: invalid url "${link.url}"`);
+  }
+};
+
 checkUnique('Movement', ALL_MOVEMENTS.map((m) => m.id));
 checkUnique('Person', ALL_PEOPLE.map((p) => p.id));
 checkUnique('Object', ALL_OBJECTS.map((o) => o.id));
@@ -116,6 +171,13 @@ for (const movement of ALL_MOVEMENTS) {
       errors.push(`Movement ${movement.id}: invalid colour hex "${colour.hex}"`);
     }
   }
+
+  movement.media?.representativeWorks?.forEach((asset, index) =>
+    validateMediaAsset(`Movement ${movement.id} representativeWorks[${index}]`, asset),
+  );
+  movement.media?.externalCollections?.forEach((link, index) =>
+    validateCollectionLink(`Movement ${movement.id} externalCollections[${index}]`, link),
+  );
 }
 
 for (const person of ALL_PEOPLE) {
@@ -125,6 +187,12 @@ for (const person of ALL_PEOPLE) {
       errors.push(`Person ${person.id}: unknown primaryMovements reference "${movementId}"`);
     }
   }
+  if (person.media?.portrait) {
+    validateMediaAsset(`Person ${person.id} portrait`, person.media.portrait);
+  }
+  person.media?.externalCollections?.forEach((link, index) =>
+    validateCollectionLink(`Person ${person.id} externalCollections[${index}]`, link),
+  );
 }
 
 for (const object of ALL_OBJECTS) {
@@ -135,6 +203,13 @@ for (const object of ALL_OBJECTS) {
   if (!Number.isInteger(object.year) || object.year < 1800 || object.year > 2000) {
     errors.push(`Object ${object.id}: implausible year ${object.year}`);
   }
+
+  if (object.media?.image) {
+    validateMediaAsset(`Object ${object.id} image`, object.media.image);
+  }
+  object.media?.externalCollections?.forEach((link, index) =>
+    validateCollectionLink(`Object ${object.id} externalCollections[${index}]`, link),
+  );
 
   for (const [claimKey, evidence] of Object.entries(object.provenance ?? {})) {
     if (!evidence || evidence.sourceIds.length === 0) {
