@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { Type } from 'lucide-react';
+import { useAccessibility } from '../context/AccessibilityContext';
 
 export type NavTab =
   | 'timeline'
@@ -59,6 +61,7 @@ export const Header: React.FC<HeaderProps> = ({
 }) => {
   const [sectionsOpen, setSectionsOpen] = useState(false);
   const [mapsOpen, setMapsOpen] = useState(false);
+  const { togglePanel, isPanelOpen } = useAccessibility();
 
   const selectTab = (tab: NavTab) => {
     setSectionsOpen(false);
@@ -231,9 +234,21 @@ export const Header: React.FC<HeaderProps> = ({
             <span>Sections</span>
             <span aria-hidden="true">{sectionsOpen ? '−' : '+'}</span>
           </button>
-          <span className="font-mono text-[10px] sm:text-xs uppercase tracking-wider text-[var(--atlas-text-muted)]">
-            {activeLabelForTab(currentTab)}
-          </span>
+          <div className="flex items-center gap-2">
+            <span className="hidden min-[420px]:inline font-mono text-[10px] sm:text-xs uppercase tracking-wider text-[var(--atlas-text-muted)]">
+              {activeLabelForTab(currentTab)}
+            </span>
+            <button
+              type="button"
+              onClick={togglePanel}
+              aria-expanded={isPanelOpen}
+              aria-label="Open accessibility and reading tools"
+              className="atlas-control inline-flex items-center gap-1.5 px-2 py-1 border border-[var(--atlas-border)] bg-[var(--atlas-bg)] font-mono text-[9px] uppercase tracking-wider text-[var(--atlas-text)]"
+            >
+              <Type size={12} />
+              <span>Access</span>
+            </button>
+          </div>
         </div>
 
         {sectionsOpen && (

@@ -356,6 +356,23 @@
 
 
 /* Phase F — Accessibility & Inclusive Reading */
+.atlas-a11y-desktop-trigger {
+  pointer-events: auto;
+}
+
+.atlas-a11y-desktop-trigger.right-0 {
+  transform: translateX(calc(100% - 1.2rem));
+}
+
+.atlas-a11y-desktop-trigger.left-0 {
+  transform: translateX(calc(-100% + 1.2rem));
+}
+
+.atlas-a11y-desktop-trigger:hover,
+.atlas-a11y-desktop-trigger:focus-within {
+  transform: translateX(0);
+}
+
 .atlas-a11y-tab {
   display: flex;
   flex-direction: column;
@@ -637,9 +654,16 @@ html.a11y-highlight-links .atlas-shell :where(a, button:not([disabled])) {
 }
 
 @media (max-width: 640px) {
-  .atlas-a11y-tab {
-    top: auto;
-    bottom: max(1rem, env(safe-area-inset-bottom));
+  .atlas-a11y-sheet {
+    border-left: 0;
+    border-right: 0;
+    border-bottom: 0;
+    max-height: min(88svh, 44rem);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .atlas-a11y-panel-header {
+    padding-top: 0.85rem;
   }
 }
 
