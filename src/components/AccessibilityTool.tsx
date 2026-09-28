@@ -52,7 +52,7 @@ export const AccessibilityTool: React.FC = () => {
     <>
       <aside
         aria-label="Accessibility and reading tools"
-        className={`fixed top-28 xl:top-20 z-50 ${
+        className={`atlas-a11y-desktop-trigger absolute top-28 xl:top-20 z-50 hidden sm:block ${
           dockRight ? 'right-0' : 'left-0'
         }`}
       >
@@ -128,7 +128,7 @@ export const AccessibilityTool: React.FC = () => {
 
       {isPanelOpen && (
         <div
-          className="fixed inset-0 z-[70] bg-black/45 flex items-center justify-center sm:justify-end p-3 sm:p-6"
+          className="fixed inset-0 z-[70] bg-black/45 flex items-end sm:items-center sm:justify-end p-0 sm:p-6"
           role="dialog"
           aria-modal="true"
           aria-labelledby="atlas-a11y-title"
@@ -143,7 +143,7 @@ export const AccessibilityTool: React.FC = () => {
           <div
             ref={panelRef}
             tabIndex={-1}
-            className="atlas-a11y-panel relative z-10 w-full max-w-md max-h-[92vh] overflow-y-auto"
+            className="atlas-a11y-panel atlas-a11y-sheet relative z-10 w-full max-w-md max-h-[88svh] sm:max-h-[92vh] overflow-y-auto"
           >
             <div className="atlas-a11y-panel-header">
               <div>
@@ -351,7 +351,7 @@ export const AccessibilityTool: React.FC = () => {
                 <button
                   type="button"
                   onClick={toggleDockPosition}
-                  className="atlas-a11y-secondary-button"
+                  className="atlas-a11y-secondary-button hidden sm:inline-flex"
                 >
                   <MoveHorizontal size={13} />
                   DOCK // {dockRight ? 'RIGHT' : 'LEFT'}
