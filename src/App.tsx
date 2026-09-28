@@ -223,6 +223,25 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const handleSelectPersonFromMovement = (personId: string) => {
+    setSelectedMovementId(null);
+    setCurrentTab('people');
+    setLastOverviewTab('people');
+    setPeopleFocus({ scope: 'atlas', id: personId });
+    setGlobalPersonFocus({ scope: 'atlas', id: personId });
+    window.history.pushState({}, '', pathForTab('people'));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleSelectObjectFromMovement = (objectId: string) => {
+    setSelectedMovementId(null);
+    setCurrentTab('archive');
+    setLastOverviewTab('archive');
+    setFocusedObjectId(objectId);
+    window.history.pushState({}, '', pathForTab('archive'));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   const handleExploreGlobalMovement = (id: MovementId) => {
     setSelectedMovementId(null);
     setCurrentTab('global');
@@ -364,6 +383,8 @@ export default function App() {
             movement={selectedMovement}
             onBack={handleBackToOverview}
             onSelectMovement={handleSelectMovement}
+            onSelectPerson={handleSelectPersonFromMovement}
+            onSelectObject={handleSelectObjectFromMovement}
             allMovements={ALL_MOVEMENTS}
             selectedYear={selectedYear}
             onExploreGlobalMovement={handleExploreGlobalMovement}
