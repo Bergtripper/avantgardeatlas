@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { MovementId } from '../types/atlas';
 import { ALL_PEOPLE } from '../data/people';
+import { EntityLink } from './EntityLink';
 import {
   ALL_DIFFUSION_ROUTES,
   ALL_GLOBAL_PEOPLE,
@@ -143,13 +144,16 @@ export const PeopleSection: React.FC<PeopleSectionProps> = ({
 
                   <div className="flex flex-wrap gap-1 my-3">
                     {fig.primaryMovements.map((mId) => (
-                      <button
+                      <EntityLink
                         key={mId}
-                        onClick={() => onSelectMovement(mId)}
-                        className="font-mono text-[10px] uppercase px-2 py-0.5 bg-[var(--atlas-soft-fill)] hover:bg-[var(--atlas-ink-button)] hover:text-white border border-[var(--atlas-border-strong)] cursor-pointer transition-colors"
+                        kind="movement"
+                        label={mId}
+                        variant="chip"
+                        onActivate={() => onSelectMovement(mId)}
+                        className="py-0.5 bg-[var(--atlas-soft-fill)]"
                       >
                         {mId}
-                      </button>
+                      </EntityLink>
                     ))}
                   </div>
 
