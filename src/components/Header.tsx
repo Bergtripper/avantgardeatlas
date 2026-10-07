@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Type } from 'lucide-react';\nimport { DotzeroSignature } from './DotzeroSignature';
+import { Type } from 'lucide-react';
+import { DotzeroSignature } from './DotzeroSignature';
 import { useAccessibility } from '../context/AccessibilityContext';
 
 export type NavTab =
