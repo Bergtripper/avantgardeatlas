@@ -8,14 +8,10 @@ export const DotzeroSignature: React.FC = () => (
     href="https://dotzero.ch"
     target="_blank"
     rel="noreferrer"
-    aria-label="DOTZERO — Personal Research Lab"
-    title="DOTZERO — Personal Research Lab"
-    className="hidden md:inline-flex items-center gap-2 border-r border-[var(--atlas-border)] pr-2.5 mr-0.5 text-[var(--atlas-text)] opacity-60 transition-opacity hover:opacity-100 focus-visible:opacity-100"
+    aria-label=".DOTZERO project"
+    title=".DOTZERO project"
+    className="group hidden md:inline-flex items-center gap-0 border-r border-[var(--atlas-border)] pr-2.5 mr-0.5 text-[var(--atlas-text)] opacity-60 transition-opacity duration-200 hover:opacity-100 focus-visible:opacity-100"
   >
-    <span className="hidden 2xl:flex flex-col items-end font-mono uppercase leading-[1.05]">
-      <span className="text-[7px] tracking-[0.18em]">DOTZERO /</span>
-      <span className="mt-0.5 text-[6px] tracking-[0.14em] text-[var(--atlas-text-muted)]">Personal Research Lab</span>
-    </span>
     <svg
       viewBox="1545 55 370 510"
       className="h-[18px] w-auto shrink-0"
@@ -26,5 +22,12 @@ export const DotzeroSignature: React.FC = () => (
       <path d={RED_PATH} fill="#F70B0D" fillRule="evenodd" />
       <path d={BLACK_PATH} fill="currentColor" />
     </svg>
+
+    <span
+      aria-hidden="true"
+      className="max-w-0 overflow-hidden whitespace-nowrap pl-0 font-mono text-[7px] uppercase tracking-[0.15em] opacity-0 transition-[max-width,opacity,padding] duration-300 ease-out group-hover:max-w-[7.5rem] group-hover:pl-2 group-hover:opacity-100 group-focus-visible:max-w-[7.5rem] group-focus-visible:pl-2 group-focus-visible:opacity-100"
+    >
+      .DOTZERO project
+    </span>
   </a>
 );
